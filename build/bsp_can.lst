@@ -1,0 +1,625 @@
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"bsp_can.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Bsp/bsp_can.c"
+  20              		.section	.rodata.bsp_can_create.str1.4,"aMS",%progbits,1
+  21              		.align	2
+  22              	.LC0:
+  23 0000 4661696C 		.ascii	"Failed to configure CAN filter\015\012\000"
+  23      65642074 
+  23      6F20636F 
+  23      6E666967 
+  23      75726520 
+  24 0021 000000   		.align	2
+  25              	.LC1:
+  26 0024 20205449 		.ascii	"  TIMEOUT! INAK still set.\015\012\000"
+  26      4D454F55 
+  26      54212049 
+  26      4E414B20 
+  26      7374696C 
+  27              		.section	.text.bsp_can_create,"ax",%progbits
+  28              		.align	1
+  29              		.global	bsp_can_create
+  30              		.syntax unified
+  31              		.thumb
+  32              		.thumb_func
+  34              	bsp_can_create:
+  35              	.LFB137:
+   1:Bsp/bsp_can.c **** #include "bsp_can.h"
+   2:Bsp/bsp_can.c **** #include "app_log.h"
+   3:Bsp/bsp_can.c **** 
+   4:Bsp/bsp_can.c **** static CAN_TxHeaderTypeDef tx_header;
+   5:Bsp/bsp_can.c **** static CAN_RxHeaderTypeDef rx_header;
+   6:Bsp/bsp_can.c **** static uint32_t tx_mailbox;
+   7:Bsp/bsp_can.c **** 
+   8:Bsp/bsp_can.c **** uint8_t flag_recv_data = 0;
+   9:Bsp/bsp_can.c **** uint8_t rx_data[256];
+  10:Bsp/bsp_can.c **** /* ---------- CAN 初始化 ---------- */
+  11:Bsp/bsp_can.c **** void bsp_can_create(void)
+  12:Bsp/bsp_can.c **** {
+  36              		.loc 1 12 1 view -0
+  37              		.cfi_startproc
+  38              		@ args = 0, pretend = 0, frame = 40
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s 			page 2
+
+
+  39              		@ frame_needed = 0, uses_anonymous_args = 0
+  40 0000 10B5     		push	{r4, lr}
+  41              	.LCFI0:
+  42              		.cfi_def_cfa_offset 8
+  43              		.cfi_offset 4, -8
+  44              		.cfi_offset 14, -4
+  45 0002 8AB0     		sub	sp, sp, #40
+  46              	.LCFI1:
+  47              		.cfi_def_cfa_offset 48
+  13:Bsp/bsp_can.c **** 	CAN_FilterTypeDef sFilterConfig;
+  48              		.loc 1 13 2 view .LVU1
+  14:Bsp/bsp_can.c **** 
+  15:Bsp/bsp_can.c **** 	/* 1. 配置滤波器 */
+  16:Bsp/bsp_can.c **** 	sFilterConfig.FilterBank = 0;
+  49              		.loc 1 16 2 view .LVU2
+  50              		.loc 1 16 27 is_stmt 0 view .LVU3
+  51 0004 0023     		movs	r3, #0
+  52 0006 0593     		str	r3, [sp, #20]
+  17:Bsp/bsp_can.c **** 	sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
+  53              		.loc 1 17 2 is_stmt 1 view .LVU4
+  54              		.loc 1 17 27 is_stmt 0 view .LVU5
+  55 0008 0693     		str	r3, [sp, #24]
+  18:Bsp/bsp_can.c **** 	sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
+  56              		.loc 1 18 2 is_stmt 1 view .LVU6
+  57              		.loc 1 18 28 is_stmt 0 view .LVU7
+  58 000a 0122     		movs	r2, #1
+  59 000c 0792     		str	r2, [sp, #28]
+  19:Bsp/bsp_can.c **** 	sFilterConfig.FilterIdHigh = 0x0000;
+  60              		.loc 1 19 2 is_stmt 1 view .LVU8
+  61              		.loc 1 19 29 is_stmt 0 view .LVU9
+  62 000e 0093     		str	r3, [sp]
+  20:Bsp/bsp_can.c **** 	sFilterConfig.FilterIdLow = 0x0000;
+  63              		.loc 1 20 2 is_stmt 1 view .LVU10
+  64              		.loc 1 20 28 is_stmt 0 view .LVU11
+  65 0010 0193     		str	r3, [sp, #4]
+  21:Bsp/bsp_can.c **** 	sFilterConfig.FilterMaskIdHigh = 0x0000;
+  66              		.loc 1 21 2 is_stmt 1 view .LVU12
+  67              		.loc 1 21 33 is_stmt 0 view .LVU13
+  68 0012 0293     		str	r3, [sp, #8]
+  22:Bsp/bsp_can.c **** 	sFilterConfig.FilterMaskIdLow = 0x0000;
+  69              		.loc 1 22 2 is_stmt 1 view .LVU14
+  70              		.loc 1 22 32 is_stmt 0 view .LVU15
+  71 0014 0393     		str	r3, [sp, #12]
+  23:Bsp/bsp_can.c **** 	sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO1;
+  72              		.loc 1 23 2 is_stmt 1 view .LVU16
+  73              		.loc 1 23 37 is_stmt 0 view .LVU17
+  74 0016 0492     		str	r2, [sp, #16]
+  24:Bsp/bsp_can.c **** 	sFilterConfig.FilterActivation = ENABLE;
+  75              		.loc 1 24 2 is_stmt 1 view .LVU18
+  76              		.loc 1 24 33 is_stmt 0 view .LVU19
+  77 0018 0892     		str	r2, [sp, #32]
+  25:Bsp/bsp_can.c **** 
+  26:Bsp/bsp_can.c **** 	if (HAL_CAN_ConfigFilter(&hcan1, &sFilterConfig) != HAL_OK)
+  78              		.loc 1 26 2 is_stmt 1 view .LVU20
+  79              		.loc 1 26 6 is_stmt 0 view .LVU21
+  80 001a 6946     		mov	r1, sp
+  81 001c 1948     		ldr	r0, .L10
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s 			page 3
+
+
+  82 001e FFF7FEFF 		bl	HAL_CAN_ConfigFilter
+  83              	.LVL0:
+  84              		.loc 1 26 5 discriminator 1 view .LVU22
+  85 0022 D0B9     		cbnz	r0, .L8
+  27:Bsp/bsp_can.c **** 	{
+  28:Bsp/bsp_can.c **** 		app_log("Failed to configure CAN filter\r\n");
+  29:Bsp/bsp_can.c **** 		return;
+  30:Bsp/bsp_can.c **** 	}
+  31:Bsp/bsp_can.c **** 
+  32:Bsp/bsp_can.c **** 	/* 2. 手动退出初始化 */
+  33:Bsp/bsp_can.c **** 	hcan1.State = HAL_CAN_STATE_LISTENING;
+  86              		.loc 1 33 2 is_stmt 1 view .LVU23
+  87              		.loc 1 33 14 is_stmt 0 view .LVU24
+  88 0024 174B     		ldr	r3, .L10
+  89 0026 0222     		movs	r2, #2
+  90 0028 83F82020 		strb	r2, [r3, #32]
+  34:Bsp/bsp_can.c **** 	CLEAR_BIT(CAN1->MCR, CAN_MCR_INRQ);
+  91              		.loc 1 34 2 is_stmt 1 view .LVU25
+  92 002c 164A     		ldr	r2, .L10+4
+  93 002e 1368     		ldr	r3, [r2]
+  94 0030 23F00103 		bic	r3, r3, #1
+  95 0034 1360     		str	r3, [r2]
+  35:Bsp/bsp_can.c **** 
+  36:Bsp/bsp_can.c **** 	uint32_t tickstart = HAL_GetTick();
+  96              		.loc 1 36 2 view .LVU26
+  97              		.loc 1 36 23 is_stmt 0 view .LVU27
+  98 0036 FFF7FEFF 		bl	HAL_GetTick
+  99              	.LVL1:
+ 100 003a 0446     		mov	r4, r0
+ 101              	.LVL2:
+  37:Bsp/bsp_can.c **** 	while ((CAN1->MSR & CAN_MSR_INAK) != 0U)
+ 102              		.loc 1 37 2 is_stmt 1 view .LVU28
+ 103              	.L4:
+ 104              		.loc 1 37 36 view .LVU29
+ 105              		.loc 1 37 14 is_stmt 0 view .LVU30
+ 106 003c 124B     		ldr	r3, .L10+4
+ 107 003e 5B68     		ldr	r3, [r3, #4]
+ 108              		.loc 1 37 36 view .LVU31
+ 109 0040 13F0010F 		tst	r3, #1
+ 110 0044 0ED0     		beq	.L9
+  38:Bsp/bsp_can.c **** 	{
+  39:Bsp/bsp_can.c **** 		if ((HAL_GetTick() - tickstart) > 1000U)
+ 111              		.loc 1 39 3 is_stmt 1 view .LVU32
+ 112              		.loc 1 39 8 is_stmt 0 view .LVU33
+ 113 0046 FFF7FEFF 		bl	HAL_GetTick
+ 114              	.LVL3:
+ 115              		.loc 1 39 22 discriminator 1 view .LVU34
+ 116 004a 001B     		subs	r0, r0, r4
+ 117              		.loc 1 39 6 discriminator 1 view .LVU35
+ 118 004c B0F57A7F 		cmp	r0, #1000
+ 119 0050 F4D9     		bls	.L4
+  40:Bsp/bsp_can.c **** 		{
+  41:Bsp/bsp_can.c **** 			app_log("  TIMEOUT! INAK still set.\r\n");
+ 120              		.loc 1 41 4 is_stmt 1 view .LVU36
+ 121 0052 0E48     		ldr	r0, .L10+8
+ 122 0054 FFF7FEFF 		bl	app_log
+ 123              	.LVL4:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s 			page 4
+
+
+  42:Bsp/bsp_can.c **** 			return;
+ 124              		.loc 1 42 4 view .LVU37
+ 125 0058 02E0     		b	.L1
+ 126              	.LVL5:
+ 127              	.L8:
+  28:Bsp/bsp_can.c **** 		return;
+ 128              		.loc 1 28 3 view .LVU38
+ 129 005a 0D48     		ldr	r0, .L10+12
+ 130 005c FFF7FEFF 		bl	app_log
+ 131              	.LVL6:
+  29:Bsp/bsp_can.c **** 	}
+ 132              		.loc 1 29 3 view .LVU39
+ 133              	.L1:
+  43:Bsp/bsp_can.c **** 		}
+  44:Bsp/bsp_can.c **** 	}
+  45:Bsp/bsp_can.c **** 
+  46:Bsp/bsp_can.c **** 	/* 3. 使能 FIFO1 消息挂起中断 */
+  47:Bsp/bsp_can.c **** 	HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO1_MSG_PENDING);
+  48:Bsp/bsp_can.c **** 
+  49:Bsp/bsp_can.c **** 	/* 4. 发送帧头 */
+  50:Bsp/bsp_can.c **** 	tx_header.StdId = 0x100;
+  51:Bsp/bsp_can.c **** 	tx_header.ExtId = 0;
+  52:Bsp/bsp_can.c **** 	tx_header.IDE = CAN_ID_STD;
+  53:Bsp/bsp_can.c **** 	tx_header.RTR = CAN_RTR_DATA;
+  54:Bsp/bsp_can.c **** 	tx_header.DLC = 8;
+  55:Bsp/bsp_can.c **** 	tx_header.TransmitGlobalTime = DISABLE;
+  56:Bsp/bsp_can.c **** }
+ 134              		.loc 1 56 1 is_stmt 0 view .LVU40
+ 135 0060 0AB0     		add	sp, sp, #40
+ 136              	.LCFI2:
+ 137              		.cfi_remember_state
+ 138              		.cfi_def_cfa_offset 8
+ 139              		@ sp needed
+ 140 0062 10BD     		pop	{r4, pc}
+ 141              	.LVL7:
+ 142              	.L9:
+ 143              	.LCFI3:
+ 144              		.cfi_restore_state
+  47:Bsp/bsp_can.c **** 
+ 145              		.loc 1 47 2 is_stmt 1 view .LVU41
+ 146 0064 1021     		movs	r1, #16
+ 147 0066 0748     		ldr	r0, .L10
+ 148 0068 FFF7FEFF 		bl	HAL_CAN_ActivateNotification
+ 149              	.LVL8:
+  50:Bsp/bsp_can.c **** 	tx_header.ExtId = 0;
+ 150              		.loc 1 50 2 view .LVU42
+  50:Bsp/bsp_can.c **** 	tx_header.ExtId = 0;
+ 151              		.loc 1 50 18 is_stmt 0 view .LVU43
+ 152 006c 094B     		ldr	r3, .L10+16
+ 153 006e 4FF48072 		mov	r2, #256
+ 154 0072 1A60     		str	r2, [r3]
+  51:Bsp/bsp_can.c **** 	tx_header.IDE = CAN_ID_STD;
+ 155              		.loc 1 51 2 is_stmt 1 view .LVU44
+  51:Bsp/bsp_can.c **** 	tx_header.IDE = CAN_ID_STD;
+ 156              		.loc 1 51 18 is_stmt 0 view .LVU45
+ 157 0074 0022     		movs	r2, #0
+ 158 0076 5A60     		str	r2, [r3, #4]
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s 			page 5
+
+
+  52:Bsp/bsp_can.c **** 	tx_header.RTR = CAN_RTR_DATA;
+ 159              		.loc 1 52 2 is_stmt 1 view .LVU46
+  52:Bsp/bsp_can.c **** 	tx_header.RTR = CAN_RTR_DATA;
+ 160              		.loc 1 52 16 is_stmt 0 view .LVU47
+ 161 0078 9A60     		str	r2, [r3, #8]
+  53:Bsp/bsp_can.c **** 	tx_header.DLC = 8;
+ 162              		.loc 1 53 2 is_stmt 1 view .LVU48
+  53:Bsp/bsp_can.c **** 	tx_header.DLC = 8;
+ 163              		.loc 1 53 16 is_stmt 0 view .LVU49
+ 164 007a DA60     		str	r2, [r3, #12]
+  54:Bsp/bsp_can.c **** 	tx_header.TransmitGlobalTime = DISABLE;
+ 165              		.loc 1 54 2 is_stmt 1 view .LVU50
+  54:Bsp/bsp_can.c **** 	tx_header.TransmitGlobalTime = DISABLE;
+ 166              		.loc 1 54 16 is_stmt 0 view .LVU51
+ 167 007c 0821     		movs	r1, #8
+ 168 007e 1961     		str	r1, [r3, #16]
+  55:Bsp/bsp_can.c **** }
+ 169              		.loc 1 55 2 is_stmt 1 view .LVU52
+  55:Bsp/bsp_can.c **** }
+ 170              		.loc 1 55 31 is_stmt 0 view .LVU53
+ 171 0080 1A75     		strb	r2, [r3, #20]
+ 172 0082 EDE7     		b	.L1
+ 173              	.L11:
+ 174              		.align	2
+ 175              	.L10:
+ 176 0084 00000000 		.word	hcan1
+ 177 0088 00640040 		.word	1073767424
+ 178 008c 24000000 		.word	.LC1
+ 179 0090 00000000 		.word	.LC0
+ 180 0094 00000000 		.word	tx_header
+ 181              		.cfi_endproc
+ 182              	.LFE137:
+ 184              		.section	.text.HAL_CAN_RxFifo1MsgPendingCallback,"ax",%progbits
+ 185              		.align	1
+ 186              		.global	HAL_CAN_RxFifo1MsgPendingCallback
+ 187              		.syntax unified
+ 188              		.thumb
+ 189              		.thumb_func
+ 191              	HAL_CAN_RxFifo1MsgPendingCallback:
+ 192              	.LVL9:
+ 193              	.LFB138:
+  57:Bsp/bsp_can.c **** void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *CanHandle)
+  58:Bsp/bsp_can.c **** {
+ 194              		.loc 1 58 1 is_stmt 1 view -0
+ 195              		.cfi_startproc
+ 196              		@ args = 0, pretend = 0, frame = 0
+ 197              		@ frame_needed = 0, uses_anonymous_args = 0
+ 198              		.loc 1 58 1 is_stmt 0 view .LVU55
+ 199 0000 08B5     		push	{r3, lr}
+ 200              	.LCFI4:
+ 201              		.cfi_def_cfa_offset 8
+ 202              		.cfi_offset 3, -8
+ 203              		.cfi_offset 14, -4
+  59:Bsp/bsp_can.c **** 	/* Get RX message */
+  60:Bsp/bsp_can.c **** 	if (HAL_CAN_GetRxMessage(CanHandle, CAN_RX_FIFO1, &rx_header, rx_data) != HAL_OK)
+ 204              		.loc 1 60 2 is_stmt 1 view .LVU56
+ 205              		.loc 1 60 6 is_stmt 0 view .LVU57
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s 			page 6
+
+
+ 206 0002 064B     		ldr	r3, .L16
+ 207 0004 064A     		ldr	r2, .L16+4
+ 208 0006 0121     		movs	r1, #1
+ 209 0008 FFF7FEFF 		bl	HAL_CAN_GetRxMessage
+ 210              	.LVL10:
+ 211              		.loc 1 60 5 discriminator 1 view .LVU58
+ 212 000c 18B9     		cbnz	r0, .L15
+ 213              	.L13:
+  61:Bsp/bsp_can.c **** 	{
+  62:Bsp/bsp_can.c **** 		/* Reception Error */
+  63:Bsp/bsp_can.c **** 		Error_Handler();
+  64:Bsp/bsp_can.c **** 	}
+  65:Bsp/bsp_can.c **** 	flag_recv_data = 1;
+ 214              		.loc 1 65 2 is_stmt 1 view .LVU59
+ 215              		.loc 1 65 17 is_stmt 0 view .LVU60
+ 216 000e 054B     		ldr	r3, .L16+8
+ 217 0010 0122     		movs	r2, #1
+ 218 0012 1A70     		strb	r2, [r3]
+  66:Bsp/bsp_can.c **** }
+ 219              		.loc 1 66 1 view .LVU61
+ 220 0014 08BD     		pop	{r3, pc}
+ 221              	.L15:
+  63:Bsp/bsp_can.c **** 	}
+ 222              		.loc 1 63 3 is_stmt 1 view .LVU62
+ 223 0016 FFF7FEFF 		bl	Error_Handler
+ 224              	.LVL11:
+ 225 001a F8E7     		b	.L13
+ 226              	.L17:
+ 227              		.align	2
+ 228              	.L16:
+ 229 001c 00000000 		.word	rx_data
+ 230 0020 00000000 		.word	rx_header
+ 231 0024 00000000 		.word	flag_recv_data
+ 232              		.cfi_endproc
+ 233              	.LFE138:
+ 235              		.section	.rodata.bsp_can_send.str1.4,"aMS",%progbits,1
+ 236              		.align	2
+ 237              	.LC2:
+ 238 0000 43414E20 		.ascii	"CAN data length exceeds 8 bytes\015\012\000"
+ 238      64617461 
+ 238      206C656E 
+ 238      67746820 
+ 238      65786365 
+ 239 0022 0000     		.align	2
+ 240              	.LC3:
+ 241 0024 4661696C 		.ascii	"Failed to send CAN message\015\012\000"
+ 241      65642074 
+ 241      6F207365 
+ 241      6E642043 
+ 241      414E206D 
+ 242              		.section	.text.bsp_can_send,"ax",%progbits
+ 243              		.align	1
+ 244              		.global	bsp_can_send
+ 245              		.syntax unified
+ 246              		.thumb
+ 247              		.thumb_func
+ 249              	bsp_can_send:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s 			page 7
+
+
+ 250              	.LVL12:
+ 251              	.LFB139:
+  67:Bsp/bsp_can.c **** 
+  68:Bsp/bsp_can.c **** void bsp_can_send(uint8_t *data, uint8_t len)
+  69:Bsp/bsp_can.c **** {
+ 252              		.loc 1 69 1 view -0
+ 253              		.cfi_startproc
+ 254              		@ args = 0, pretend = 0, frame = 0
+ 255              		@ frame_needed = 0, uses_anonymous_args = 0
+ 256              		.loc 1 69 1 is_stmt 0 view .LVU64
+ 257 0000 08B5     		push	{r3, lr}
+ 258              	.LCFI5:
+ 259              		.cfi_def_cfa_offset 8
+ 260              		.cfi_offset 3, -8
+ 261              		.cfi_offset 14, -4
+  70:Bsp/bsp_can.c ****     if (len > 8)
+ 262              		.loc 1 70 5 is_stmt 1 view .LVU65
+ 263              		.loc 1 70 8 is_stmt 0 view .LVU66
+ 264 0002 0829     		cmp	r1, #8
+ 265 0004 07D8     		bhi	.L22
+ 266 0006 0246     		mov	r2, r0
+  71:Bsp/bsp_can.c ****     {
+  72:Bsp/bsp_can.c ****         app_log("CAN data length exceeds 8 bytes\r\n");
+  73:Bsp/bsp_can.c ****         return;
+  74:Bsp/bsp_can.c ****     }
+  75:Bsp/bsp_can.c **** 
+  76:Bsp/bsp_can.c ****     HAL_StatusTypeDef ret = HAL_CAN_AddTxMessage(&hcan1, &tx_header, data, &tx_mailbox);
+ 267              		.loc 1 76 5 is_stmt 1 view .LVU67
+ 268              		.loc 1 76 29 is_stmt 0 view .LVU68
+ 269 0008 074B     		ldr	r3, .L24
+ 270 000a 0849     		ldr	r1, .L24+4
+ 271              	.LVL13:
+ 272              		.loc 1 76 29 view .LVU69
+ 273 000c 0848     		ldr	r0, .L24+8
+ 274              	.LVL14:
+ 275              		.loc 1 76 29 view .LVU70
+ 276 000e FFF7FEFF 		bl	HAL_CAN_AddTxMessage
+ 277              	.LVL15:
+  77:Bsp/bsp_can.c ****     if (ret != HAL_OK)
+ 278              		.loc 1 77 5 is_stmt 1 view .LVU71
+ 279              		.loc 1 77 8 is_stmt 0 view .LVU72
+ 280 0012 20B9     		cbnz	r0, .L23
+ 281              	.LVL16:
+ 282              	.L18:
+  78:Bsp/bsp_can.c ****     {
+  79:Bsp/bsp_can.c ****         app_log("Failed to send CAN message\r\n");
+  80:Bsp/bsp_can.c ****     }
+  81:Bsp/bsp_can.c **** }
+ 283              		.loc 1 81 1 view .LVU73
+ 284 0014 08BD     		pop	{r3, pc}
+ 285              	.LVL17:
+ 286              	.L22:
+  72:Bsp/bsp_can.c ****         return;
+ 287              		.loc 1 72 9 is_stmt 1 view .LVU74
+ 288 0016 0748     		ldr	r0, .L24+12
+ 289              	.LVL18:
+  72:Bsp/bsp_can.c ****         return;
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s 			page 8
+
+
+ 290              		.loc 1 72 9 is_stmt 0 view .LVU75
+ 291 0018 FFF7FEFF 		bl	app_log
+ 292              	.LVL19:
+  73:Bsp/bsp_can.c ****     }
+ 293              		.loc 1 73 9 is_stmt 1 view .LVU76
+ 294 001c FAE7     		b	.L18
+ 295              	.LVL20:
+ 296              	.L23:
+  79:Bsp/bsp_can.c ****     }
+ 297              		.loc 1 79 9 view .LVU77
+ 298 001e 0648     		ldr	r0, .L24+16
+ 299              	.LVL21:
+  79:Bsp/bsp_can.c ****     }
+ 300              		.loc 1 79 9 is_stmt 0 view .LVU78
+ 301 0020 FFF7FEFF 		bl	app_log
+ 302              	.LVL22:
+ 303 0024 F6E7     		b	.L18
+ 304              	.L25:
+ 305 0026 00BF     		.align	2
+ 306              	.L24:
+ 307 0028 00000000 		.word	tx_mailbox
+ 308 002c 00000000 		.word	tx_header
+ 309 0030 00000000 		.word	hcan1
+ 310 0034 00000000 		.word	.LC2
+ 311 0038 24000000 		.word	.LC3
+ 312              		.cfi_endproc
+ 313              	.LFE139:
+ 315              		.section	.text.bsp_can_receive,"ax",%progbits
+ 316              		.align	1
+ 317              		.global	bsp_can_receive
+ 318              		.syntax unified
+ 319              		.thumb
+ 320              		.thumb_func
+ 322              	bsp_can_receive:
+ 323              	.LVL23:
+ 324              	.LFB140:
+  82:Bsp/bsp_can.c **** void bsp_can_receive(uint8_t *data, uint8_t *len)
+  83:Bsp/bsp_can.c **** {
+ 325              		.loc 1 83 1 is_stmt 1 view -0
+ 326              		.cfi_startproc
+ 327              		@ args = 0, pretend = 0, frame = 0
+ 328              		@ frame_needed = 0, uses_anonymous_args = 0
+ 329              		@ link register save eliminated.
+ 330              		.loc 1 83 1 is_stmt 0 view .LVU80
+ 331 0000 0246     		mov	r2, r0
+ 332 0002 0B46     		mov	r3, r1
+  84:Bsp/bsp_can.c ****     if (flag_recv_data)
+ 333              		.loc 1 84 5 is_stmt 1 view .LVU81
+ 334              		.loc 1 84 9 is_stmt 0 view .LVU82
+ 335 0004 0849     		ldr	r1, .L30
+ 336              	.LVL24:
+ 337              		.loc 1 84 9 view .LVU83
+ 338 0006 0978     		ldrb	r1, [r1]	@ zero_extendqisi2
+ 339              		.loc 1 84 8 view .LVU84
+ 340 0008 09B9     		cbnz	r1, .L29
+  85:Bsp/bsp_can.c ****     {
+  86:Bsp/bsp_can.c ****         memcpy(data, rx_data, 8);
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s 			page 9
+
+
+  87:Bsp/bsp_can.c ****         *len = rx_header.DLC;
+  88:Bsp/bsp_can.c ****         flag_recv_data = 0;
+  89:Bsp/bsp_can.c ****     }
+  90:Bsp/bsp_can.c ****     else
+  91:Bsp/bsp_can.c ****     {
+  92:Bsp/bsp_can.c ****         *len = 0; // No data received
+ 341              		.loc 1 92 9 is_stmt 1 view .LVU85
+ 342              		.loc 1 92 14 is_stmt 0 view .LVU86
+ 343 000a 1970     		strb	r1, [r3]
+  93:Bsp/bsp_can.c ****     }
+  94:Bsp/bsp_can.c **** }...
+ 344              		.loc 1 94 1 view .LVU87
+ 345 000c 7047     		bx	lr
+ 346              	.L29:
+  86:Bsp/bsp_can.c ****         memcpy(data, rx_data, 8);
+ 347              		.loc 1 86 9 is_stmt 1 view .LVU88
+ 348 000e DFF820C0 		ldr	ip, .L30+8
+ 349 0012 BCE80300 		ldmia	ip!, {r0, r1}
+ 350              	.LVL25:
+  86:Bsp/bsp_can.c ****         memcpy(data, rx_data, 8);
+ 351              		.loc 1 86 9 is_stmt 0 view .LVU89
+ 352 0016 1060     		str	r0, [r2]	@ unaligned
+ 353 0018 5160     		str	r1, [r2, #4]	@ unaligned
+  87:Bsp/bsp_can.c ****         *len = rx_header.DLC;
+ 354              		.loc 1 87 9 is_stmt 1 view .LVU90
+  87:Bsp/bsp_can.c ****         *len = rx_header.DLC;
+ 355              		.loc 1 87 25 is_stmt 0 view .LVU91
+ 356 001a 044A     		ldr	r2, .L30+4
+ 357              	.LVL26:
+  87:Bsp/bsp_can.c ****         *len = rx_header.DLC;
+ 358              		.loc 1 87 25 view .LVU92
+ 359 001c 1269     		ldr	r2, [r2, #16]
+  87:Bsp/bsp_can.c ****         *len = rx_header.DLC;
+ 360              		.loc 1 87 14 view .LVU93
+ 361 001e 1A70     		strb	r2, [r3]
+  88:Bsp/bsp_can.c ****         flag_recv_data = 0;
+ 362              		.loc 1 88 9 is_stmt 1 view .LVU94
+  88:Bsp/bsp_can.c ****         flag_recv_data = 0;
+ 363              		.loc 1 88 24 is_stmt 0 view .LVU95
+ 364 0020 014B     		ldr	r3, .L30
+ 365              	.LVL27:
+  88:Bsp/bsp_can.c ****         flag_recv_data = 0;
+ 366              		.loc 1 88 24 view .LVU96
+ 367 0022 0022     		movs	r2, #0
+ 368 0024 1A70     		strb	r2, [r3]
+ 369 0026 7047     		bx	lr
+ 370              	.L31:
+ 371              		.align	2
+ 372              	.L30:
+ 373 0028 00000000 		.word	flag_recv_data
+ 374 002c 00000000 		.word	rx_header
+ 375 0030 00000000 		.word	rx_data
+ 376              		.cfi_endproc
+ 377              	.LFE140:
+ 379              		.global	rx_data
+ 380              		.section	.bss.rx_data,"aw",%nobits
+ 381              		.align	2
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s 			page 10
+
+
+ 384              	rx_data:
+ 385 0000 00000000 		.space	256
+ 385      00000000 
+ 385      00000000 
+ 385      00000000 
+ 385      00000000 
+ 386              		.global	flag_recv_data
+ 387              		.section	.bss.flag_recv_data,"aw",%nobits
+ 390              	flag_recv_data:
+ 391 0000 00       		.space	1
+ 392              		.section	.bss.tx_mailbox,"aw",%nobits
+ 393              		.align	2
+ 396              	tx_mailbox:
+ 397 0000 00000000 		.space	4
+ 398              		.section	.bss.rx_header,"aw",%nobits
+ 399              		.align	2
+ 402              	rx_header:
+ 403 0000 00000000 		.space	28
+ 403      00000000 
+ 403      00000000 
+ 403      00000000 
+ 403      00000000 
+ 404              		.section	.bss.tx_header,"aw",%nobits
+ 405              		.align	2
+ 408              	tx_header:
+ 409 0000 00000000 		.space	24
+ 409      00000000 
+ 409      00000000 
+ 409      00000000 
+ 409      00000000 
+ 410              		.text
+ 411              	.Letext0:
+ 412              		.file 2 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 413              		.file 3 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 414              		.file 4 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h"
+ 415              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
+ 416              		.file 6 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 417              		.file 7 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h"
+ 418              		.file 8 "Core/Inc/can.h"
+ 419              		.file 9 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 420              		.file 10 "Core/Inc/main.h"
+ 421              		.file 11 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ 422              		.file 12 "KTimeSlice/app_log.h"
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s 			page 11
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 bsp_can.c
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:21     .rodata.bsp_can_create.str1.4:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:28     .text.bsp_can_create:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:34     .text.bsp_can_create:00000000 bsp_can_create
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:176    .text.bsp_can_create:00000084 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:408    .bss.tx_header:00000000 tx_header
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:185    .text.HAL_CAN_RxFifo1MsgPendingCallback:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:191    .text.HAL_CAN_RxFifo1MsgPendingCallback:00000000 HAL_CAN_RxFifo1MsgPendingCallback
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:229    .text.HAL_CAN_RxFifo1MsgPendingCallback:0000001c $d
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:384    .bss.rx_data:00000000 rx_data
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:402    .bss.rx_header:00000000 rx_header
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:390    .bss.flag_recv_data:00000000 flag_recv_data
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:236    .rodata.bsp_can_send.str1.4:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:243    .text.bsp_can_send:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:249    .text.bsp_can_send:00000000 bsp_can_send
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:307    .text.bsp_can_send:00000028 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:396    .bss.tx_mailbox:00000000 tx_mailbox
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:316    .text.bsp_can_receive:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:322    .text.bsp_can_receive:00000000 bsp_can_receive
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:373    .text.bsp_can_receive:00000028 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:381    .bss.rx_data:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:391    .bss.flag_recv_data:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:393    .bss.tx_mailbox:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:399    .bss.rx_header:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccIQgOb7.s:405    .bss.tx_header:00000000 $d
+
+UNDEFINED SYMBOLS
+HAL_CAN_ConfigFilter
+HAL_GetTick
+app_log
+HAL_CAN_ActivateNotification
+hcan1
+HAL_CAN_GetRxMessage
+Error_Handler
+HAL_CAN_AddTxMessage

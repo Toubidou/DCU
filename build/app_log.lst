@@ -1,0 +1,207 @@
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"app_log.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "KTimeSlice/app_log.c"
+  20              		.section	.text.bsp_debug_log_send_buf,"ax",%progbits
+  21              		.align	1
+  22              		.global	bsp_debug_log_send_buf
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	bsp_debug_log_send_buf:
+  28              	.LVL0:
+  29              	.LFB137:
+   1:KTimeSlice/app_log.c **** #include "app_log.h"
+   2:KTimeSlice/app_log.c **** 
+   3:KTimeSlice/app_log.c **** static char _log_buf[256];
+   4:KTimeSlice/app_log.c **** void bsp_debug_log_send_buf( const char *pBuf, uint32_t len, uint32_t time_out )
+   5:KTimeSlice/app_log.c **** {
+  30              		.loc 1 5 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 5 1 is_stmt 0 view .LVU1
+  35 0000 08B5     		push	{r3, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 3, -8
+  39              		.cfi_offset 14, -4
+   6:KTimeSlice/app_log.c **** #if DEBUG == 1
+   7:KTimeSlice/app_log.c ****     // bsp_usart_transmit( UART_LOG , (uint8_t * ) pBuf, len, 100);
+   8:KTimeSlice/app_log.c ****     HAL_UART_Transmit(UART_LOG, (uint8_t *) pBuf, len, 100);
+  40              		.loc 1 8 5 is_stmt 1 view .LVU2
+  41 0002 6423     		movs	r3, #100
+  42 0004 8AB2     		uxth	r2, r1
+  43              	.LVL1:
+  44              		.loc 1 8 5 is_stmt 0 view .LVU3
+  45 0006 0146     		mov	r1, r0
+  46              	.LVL2:
+  47              		.loc 1 8 5 view .LVU4
+  48 0008 0148     		ldr	r0, .L3
+  49              	.LVL3:
+  50              		.loc 1 8 5 view .LVU5
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 2
+
+
+  51 000a FFF7FEFF 		bl	HAL_UART_Transmit
+  52              	.LVL4:
+   9:KTimeSlice/app_log.c **** #endif
+  10:KTimeSlice/app_log.c **** }
+  53              		.loc 1 10 1 view .LVU6
+  54 000e 08BD     		pop	{r3, pc}
+  55              	.L4:
+  56              		.align	2
+  57              	.L3:
+  58 0010 00000000 		.word	huart2
+  59              		.cfi_endproc
+  60              	.LFE137:
+  62              		.section	.text.app_log,"ax",%progbits
+  63              		.align	1
+  64              		.global	app_log
+  65              		.syntax unified
+  66              		.thumb
+  67              		.thumb_func
+  69              	app_log:
+  70              	.LVL5:
+  71              	.LFB138:
+  11:KTimeSlice/app_log.c **** void app_log( char *format, ... )
+  12:KTimeSlice/app_log.c **** {
+  72              		.loc 1 12 1 is_stmt 1 view -0
+  73              		.cfi_startproc
+  74              		@ args = 4, pretend = 16, frame = 8
+  75              		@ frame_needed = 0, uses_anonymous_args = 1
+  76              		.loc 1 12 1 is_stmt 0 view .LVU8
+  77 0000 0FB4     		push	{r0, r1, r2, r3}
+  78              	.LCFI1:
+  79              		.cfi_def_cfa_offset 16
+  80              		.cfi_offset 0, -16
+  81              		.cfi_offset 1, -12
+  82              		.cfi_offset 2, -8
+  83              		.cfi_offset 3, -4
+  84 0002 10B5     		push	{r4, lr}
+  85              	.LCFI2:
+  86              		.cfi_def_cfa_offset 24
+  87              		.cfi_offset 4, -24
+  88              		.cfi_offset 14, -20
+  89 0004 82B0     		sub	sp, sp, #8
+  90              	.LCFI3:
+  91              		.cfi_def_cfa_offset 32
+  92 0006 04AB     		add	r3, sp, #16
+  93 0008 53F8042B 		ldr	r2, [r3], #4
+  13:KTimeSlice/app_log.c ****     va_list ap;
+  94              		.loc 1 13 5 is_stmt 1 view .LVU9
+  14:KTimeSlice/app_log.c **** 
+  15:KTimeSlice/app_log.c ****     va_start( ap, format );
+  95              		.loc 1 15 5 view .LVU10
+  96 000c 0193     		str	r3, [sp, #4]
+  16:KTimeSlice/app_log.c ****     vsnprintf( _log_buf, sizeof( _log_buf ), format, ap );
+  97              		.loc 1 16 5 view .LVU11
+  98 000e 094C     		ldr	r4, .L7
+  99 0010 4FF48071 		mov	r1, #256
+ 100 0014 2046     		mov	r0, r4
+ 101 0016 FFF7FEFF 		bl	vsnprintf
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 3
+
+
+ 102              	.LVL6:
+  17:KTimeSlice/app_log.c ****     va_end( ap );
+ 103              		.loc 1 17 5 view .LVU12
+  18:KTimeSlice/app_log.c ****     bsp_debug_log_send_buf( ( const char * ) _log_buf, strlen( _log_buf ), 10 );
+ 104              		.loc 1 18 5 view .LVU13
+ 105              		.loc 1 18 56 is_stmt 0 view .LVU14
+ 106 001a 2046     		mov	r0, r4
+ 107 001c FFF7FEFF 		bl	strlen
+ 108              	.LVL7:
+ 109 0020 0146     		mov	r1, r0
+ 110              		.loc 1 18 5 discriminator 1 view .LVU15
+ 111 0022 0A22     		movs	r2, #10
+ 112 0024 2046     		mov	r0, r4
+ 113 0026 FFF7FEFF 		bl	bsp_debug_log_send_buf
+ 114              	.LVL8:
+  19:KTimeSlice/app_log.c **** }...
+ 115              		.loc 1 19 1 view .LVU16
+ 116 002a 02B0     		add	sp, sp, #8
+ 117              	.LCFI4:
+ 118              		.cfi_def_cfa_offset 24
+ 119              		@ sp needed
+ 120 002c BDE81040 		pop	{r4, lr}
+ 121              	.LCFI5:
+ 122              		.cfi_restore 14
+ 123              		.cfi_restore 4
+ 124              		.cfi_def_cfa_offset 16
+ 125 0030 04B0     		add	sp, sp, #16
+ 126              	.LCFI6:
+ 127              		.cfi_restore 3
+ 128              		.cfi_restore 2
+ 129              		.cfi_restore 1
+ 130              		.cfi_restore 0
+ 131              		.cfi_def_cfa_offset 0
+ 132 0032 7047     		bx	lr
+ 133              	.L8:
+ 134              		.align	2
+ 135              	.L7:
+ 136 0034 00000000 		.word	_log_buf
+ 137              		.cfi_endproc
+ 138              	.LFE138:
+ 140              		.section	.bss._log_buf,"aw",%nobits
+ 141              		.align	2
+ 144              	_log_buf:
+ 145 0000 00000000 		.space	256
+ 145      00000000 
+ 145      00000000 
+ 145      00000000 
+ 145      00000000 
+ 146              		.text
+ 147              	.Letext0:
+ 148              		.file 2 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 149              		.file 3 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/lib/gcc/arm-none-eab
+ 150              		.file 4 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/lib/gcc/arm-none-eab
+ 151              		.file 5 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 152              		.file 6 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 153              		.file 7 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h"
+ 154              		.file 8 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 4
+
+
+ 155              		.file 9 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 156              		.file 10 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h"
+ 157              		.file 11 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/inclu
+ 158              		.file 12 "<built-in>"
+ 159              		.file 13 "Core/Inc/usart.h"
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 app_log.c
+C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s:21     .text.bsp_debug_log_send_buf:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s:27     .text.bsp_debug_log_send_buf:00000000 bsp_debug_log_send_buf
+C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s:58     .text.bsp_debug_log_send_buf:00000010 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s:63     .text.app_log:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s:69     .text.app_log:00000000 app_log
+C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s:136    .text.app_log:00000034 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s:144    .bss._log_buf:00000000 _log_buf
+C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s:141    .bss._log_buf:00000000 $d
+
+UNDEFINED SYMBOLS
+HAL_UART_Transmit
+huart2
+vsnprintf
+strlen

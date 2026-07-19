@@ -1,0 +1,789 @@
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"ringbuff.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "KTimeSlice/ringbuff.c"
+  20              		.section	.text.ringbuffer_create,"ax",%progbits
+  21              		.align	1
+  22              		.global	ringbuffer_create
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	ringbuffer_create:
+  28              	.LVL0:
+  29              	.LFB134:
+   1:KTimeSlice/ringbuff.c **** #include "ringbuff.h"
+   2:KTimeSlice/ringbuff.c **** 
+   3:KTimeSlice/ringbuff.c **** RingBuff *ringbuffer_create(uint32_t length)
+   4:KTimeSlice/ringbuff.c **** {
+  30              		.loc 1 4 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 4 1 is_stmt 0 view .LVU1
+  35 0000 70B5     		push	{r4, r5, r6, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 16
+  38              		.cfi_offset 4, -16
+  39              		.cfi_offset 5, -12
+  40              		.cfi_offset 6, -8
+  41              		.cfi_offset 14, -4
+  42 0002 0546     		mov	r5, r0
+  43 0004 0646     		mov	r6, r0
+   5:KTimeSlice/ringbuff.c ****     
+   6:KTimeSlice/ringbuff.c ****     RingBuff *rb = (RingBuff *)malloc(sizeof(RingBuff));
+  44              		.loc 1 6 5 is_stmt 1 view .LVU2
+  45              		.loc 1 6 32 is_stmt 0 view .LVU3
+  46 0006 1020     		movs	r0, #16
+  47              	.LVL1:
+  48              		.loc 1 6 32 view .LVU4
+  49 0008 FFF7FEFF 		bl	malloc
+  50              	.LVL2:
+   7:KTimeSlice/ringbuff.c ****     if (rb == NULL)
+  51              		.loc 1 7 5 is_stmt 1 view .LVU5
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 2
+
+
+  52              		.loc 1 7 8 is_stmt 0 view .LVU6
+  53 000c 0446     		mov	r4, r0
+  54 000e 48B1     		cbz	r0, .L1
+   8:KTimeSlice/ringbuff.c ****         return rb;
+   9:KTimeSlice/ringbuff.c ****     rb->buffer = (uint8_t *)malloc(length);
+  55              		.loc 1 9 5 is_stmt 1 view .LVU7
+  56              		.loc 1 9 29 is_stmt 0 view .LVU8
+  57 0010 2846     		mov	r0, r5
+  58              	.LVL3:
+  59              		.loc 1 9 29 view .LVU9
+  60 0012 FFF7FEFF 		bl	malloc
+  61              	.LVL4:
+  62 0016 0546     		mov	r5, r0
+  63              	.LVL5:
+  64              		.loc 1 9 16 discriminator 1 view .LVU10
+  65 0018 A060     		str	r0, [r4, #8]
+  10:KTimeSlice/ringbuff.c ****     if (rb->buffer == NULL)
+  66              		.loc 1 10 5 is_stmt 1 view .LVU11
+  67              		.loc 1 10 8 is_stmt 0 view .LVU12
+  68 001a 28B1     		cbz	r0, .L5
+  11:KTimeSlice/ringbuff.c ****     {
+  12:KTimeSlice/ringbuff.c ****         free(rb);
+  13:KTimeSlice/ringbuff.c ****         rb = NULL;
+  14:KTimeSlice/ringbuff.c ****         return rb;
+  15:KTimeSlice/ringbuff.c ****     }
+  16:KTimeSlice/ringbuff.c ****     rb->head = 0;
+  69              		.loc 1 16 5 is_stmt 1 view .LVU13
+  70              		.loc 1 16 14 is_stmt 0 view .LVU14
+  71 001c 0023     		movs	r3, #0
+  72 001e 2360     		str	r3, [r4]
+  17:KTimeSlice/ringbuff.c ****     rb->tail = 0;
+  73              		.loc 1 17 5 is_stmt 1 view .LVU15
+  74              		.loc 1 17 14 is_stmt 0 view .LVU16
+  75 0020 6360     		str	r3, [r4, #4]
+  18:KTimeSlice/ringbuff.c ****     rb->length = length;
+  76              		.loc 1 18 5 is_stmt 1 view .LVU17
+  77              		.loc 1 18 16 is_stmt 0 view .LVU18
+  78 0022 E660     		str	r6, [r4, #12]
+  19:KTimeSlice/ringbuff.c ****     return rb;
+  79              		.loc 1 19 5 is_stmt 1 view .LVU19
+  80              	.LVL6:
+  81              	.L1:
+  20:KTimeSlice/ringbuff.c **** }
+  82              		.loc 1 20 1 is_stmt 0 view .LVU20
+  83 0024 2046     		mov	r0, r4
+  84 0026 70BD     		pop	{r4, r5, r6, pc}
+  85              	.LVL7:
+  86              	.L5:
+  12:KTimeSlice/ringbuff.c ****         rb = NULL;
+  87              		.loc 1 12 9 is_stmt 1 view .LVU21
+  88 0028 2046     		mov	r0, r4
+  89 002a FFF7FEFF 		bl	free
+  90              	.LVL8:
+  13:KTimeSlice/ringbuff.c ****         return rb;
+  91              		.loc 1 13 9 view .LVU22
+  14:KTimeSlice/ringbuff.c ****     }
+  92              		.loc 1 14 9 view .LVU23
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 3
+
+
+  14:KTimeSlice/ringbuff.c ****     }
+  93              		.loc 1 14 16 is_stmt 0 view .LVU24
+  94 002e 2C46     		mov	r4, r5
+  95 0030 F8E7     		b	.L1
+  96              		.cfi_endproc
+  97              	.LFE134:
+  99              		.section	.text.ringbuffer_get_stored_length,"ax",%progbits
+ 100              		.align	1
+ 101              		.global	ringbuffer_get_stored_length
+ 102              		.syntax unified
+ 103              		.thumb
+ 104              		.thumb_func
+ 106              	ringbuffer_get_stored_length:
+ 107              	.LVL9:
+ 108              	.LFB135:
+  21:KTimeSlice/ringbuff.c **** uint32_t ringbuffer_get_stored_length(RingBuff *rb)
+  22:KTimeSlice/ringbuff.c **** {
+ 109              		.loc 1 22 1 is_stmt 1 view -0
+ 110              		.cfi_startproc
+ 111              		@ args = 0, pretend = 0, frame = 0
+ 112              		@ frame_needed = 0, uses_anonymous_args = 0
+ 113              		@ link register save eliminated.
+  23:KTimeSlice/ringbuff.c ****     if (rb->tail >= rb->head)
+ 114              		.loc 1 23 5 view .LVU26
+ 115              		.loc 1 23 11 is_stmt 0 view .LVU27
+ 116 0000 4368     		ldr	r3, [r0, #4]
+ 117              		.loc 1 23 23 view .LVU28
+ 118 0002 0268     		ldr	r2, [r0]
+ 119              		.loc 1 23 8 view .LVU29
+ 120 0004 9342     		cmp	r3, r2
+ 121 0006 01D3     		bcc	.L7
+  24:KTimeSlice/ringbuff.c ****     {
+  25:KTimeSlice/ringbuff.c ****         return rb->tail - rb->head;
+ 122              		.loc 1 25 9 is_stmt 1 view .LVU30
+ 123              		.loc 1 25 25 is_stmt 0 view .LVU31
+ 124 0008 981A     		subs	r0, r3, r2
+ 125              	.LVL10:
+ 126              		.loc 1 25 25 view .LVU32
+ 127 000a 7047     		bx	lr
+ 128              	.LVL11:
+ 129              	.L7:
+  26:KTimeSlice/ringbuff.c ****     }
+  27:KTimeSlice/ringbuff.c ****     else
+  28:KTimeSlice/ringbuff.c ****     {
+  29:KTimeSlice/ringbuff.c ****         return rb->length - (rb->head - rb->tail);
+ 130              		.loc 1 29 9 is_stmt 1 view .LVU33
+ 131              		.loc 1 29 18 is_stmt 0 view .LVU34
+ 132 000c C068     		ldr	r0, [r0, #12]
+ 133              	.LVL12:
+ 134              		.loc 1 29 27 view .LVU35
+ 135 000e 9B1A     		subs	r3, r3, r2
+ 136 0010 1844     		add	r0, r0, r3
+  30:KTimeSlice/ringbuff.c ****     }
+  31:KTimeSlice/ringbuff.c **** }
+ 137              		.loc 1 31 1 view .LVU36
+ 138 0012 7047     		bx	lr
+ 139              		.cfi_endproc
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 4
+
+
+ 140              	.LFE135:
+ 142              		.section	.text.ringbuffer_is_empty,"ax",%progbits
+ 143              		.align	1
+ 144              		.global	ringbuffer_is_empty
+ 145              		.syntax unified
+ 146              		.thumb
+ 147              		.thumb_func
+ 149              	ringbuffer_is_empty:
+ 150              	.LVL13:
+ 151              	.LFB136:
+  32:KTimeSlice/ringbuff.c **** 
+  33:KTimeSlice/ringbuff.c **** bool ringbuffer_is_empty(RingBuff *rb)
+  34:KTimeSlice/ringbuff.c **** {
+ 152              		.loc 1 34 1 is_stmt 1 view -0
+ 153              		.cfi_startproc
+ 154              		@ args = 0, pretend = 0, frame = 0
+ 155              		@ frame_needed = 0, uses_anonymous_args = 0
+ 156              		@ link register save eliminated.
+  35:KTimeSlice/ringbuff.c ****     if (rb == NULL)
+ 157              		.loc 1 35 5 view .LVU38
+ 158              		.loc 1 35 8 is_stmt 0 view .LVU39
+ 159 0000 0346     		mov	r3, r0
+ 160 0002 28B1     		cbz	r0, .L10
+  36:KTimeSlice/ringbuff.c ****     {
+  37:KTimeSlice/ringbuff.c ****         return false;
+  38:KTimeSlice/ringbuff.c ****     }
+  39:KTimeSlice/ringbuff.c ****     return rb->head == rb->tail;
+ 161              		.loc 1 39 5 is_stmt 1 view .LVU40
+ 162              		.loc 1 39 14 is_stmt 0 view .LVU41
+ 163 0004 0068     		ldr	r0, [r0]
+ 164              	.LVL14:
+ 165              		.loc 1 39 26 view .LVU42
+ 166 0006 5B68     		ldr	r3, [r3, #4]
+ 167              	.LVL15:
+ 168              		.loc 1 39 21 view .LVU43
+ 169 0008 9842     		cmp	r0, r3
+ 170 000a 14BF     		ite	ne
+ 171 000c 0020     		movne	r0, #0
+ 172 000e 0120     		moveq	r0, #1
+ 173              	.L10:
+  40:KTimeSlice/ringbuff.c **** }
+ 174              		.loc 1 40 1 view .LVU44
+ 175 0010 7047     		bx	lr
+ 176              		.cfi_endproc
+ 177              	.LFE136:
+ 179              		.section	.text.ringbuffer_is_full,"ax",%progbits
+ 180              		.align	1
+ 181              		.global	ringbuffer_is_full
+ 182              		.syntax unified
+ 183              		.thumb
+ 184              		.thumb_func
+ 186              	ringbuffer_is_full:
+ 187              	.LVL16:
+ 188              	.LFB137:
+  41:KTimeSlice/ringbuff.c **** bool ringbuffer_is_full(RingBuff *rb)
+  42:KTimeSlice/ringbuff.c **** {
+ 189              		.loc 1 42 1 is_stmt 1 view -0
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 5
+
+
+ 190              		.cfi_startproc
+ 191              		@ args = 0, pretend = 0, frame = 0
+ 192              		@ frame_needed = 0, uses_anonymous_args = 0
+ 193              		@ link register save eliminated.
+  43:KTimeSlice/ringbuff.c ****     if (rb == NULL)
+ 194              		.loc 1 43 5 view .LVU46
+ 195              		.loc 1 43 8 is_stmt 0 view .LVU47
+ 196 0000 0346     		mov	r3, r0
+ 197 0002 58B1     		cbz	r0, .L13
+  44:KTimeSlice/ringbuff.c ****     {
+  45:KTimeSlice/ringbuff.c ****         return false;
+  46:KTimeSlice/ringbuff.c ****     }
+  47:KTimeSlice/ringbuff.c ****     return ((rb->tail + 1) % rb->length) == rb->head;
+ 198              		.loc 1 47 5 is_stmt 1 view .LVU48
+ 199              		.loc 1 47 16 is_stmt 0 view .LVU49
+ 200 0004 4068     		ldr	r0, [r0, #4]
+ 201              	.LVL17:
+ 202              		.loc 1 47 23 view .LVU50
+ 203 0006 0130     		adds	r0, r0, #1
+ 204              		.loc 1 47 32 view .LVU51
+ 205 0008 DA68     		ldr	r2, [r3, #12]
+ 206              		.loc 1 47 28 view .LVU52
+ 207 000a B0FBF2F1 		udiv	r1, r0, r2
+ 208 000e 02FB1100 		mls	r0, r2, r1, r0
+ 209              		.loc 1 47 47 view .LVU53
+ 210 0012 1B68     		ldr	r3, [r3]
+ 211              	.LVL18:
+ 212              		.loc 1 47 42 view .LVU54
+ 213 0014 9842     		cmp	r0, r3
+ 214 0016 14BF     		ite	ne
+ 215 0018 0020     		movne	r0, #0
+ 216 001a 0120     		moveq	r0, #1
+ 217              	.L13:
+  48:KTimeSlice/ringbuff.c **** }
+ 218              		.loc 1 48 1 view .LVU55
+ 219 001c 7047     		bx	lr
+ 220              		.cfi_endproc
+ 221              	.LFE137:
+ 223              		.section	.text.ringbuffer_put,"ax",%progbits
+ 224              		.align	1
+ 225              		.global	ringbuffer_put
+ 226              		.syntax unified
+ 227              		.thumb
+ 228              		.thumb_func
+ 230              	ringbuffer_put:
+ 231              	.LVL19:
+ 232              	.LFB138:
+  49:KTimeSlice/ringbuff.c **** 
+  50:KTimeSlice/ringbuff.c **** int ringbuffer_put(RingBuff *rb, uint8_t *src_data, uint32_t num)
+  51:KTimeSlice/ringbuff.c **** {
+ 233              		.loc 1 51 1 is_stmt 1 view -0
+ 234              		.cfi_startproc
+ 235              		@ args = 0, pretend = 0, frame = 0
+ 236              		@ frame_needed = 0, uses_anonymous_args = 0
+ 237              		.loc 1 51 1 is_stmt 0 view .LVU57
+ 238 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 239              	.LCFI1:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 6
+
+
+ 240              		.cfi_def_cfa_offset 24
+ 241              		.cfi_offset 4, -24
+ 242              		.cfi_offset 5, -20
+ 243              		.cfi_offset 6, -16
+ 244              		.cfi_offset 7, -12
+ 245              		.cfi_offset 8, -8
+ 246              		.cfi_offset 14, -4
+ 247 0004 0446     		mov	r4, r0
+ 248 0006 8846     		mov	r8, r1
+ 249 0008 1746     		mov	r7, r2
+  52:KTimeSlice/ringbuff.c ****     if (ringbuffer_is_full(rb))
+ 250              		.loc 1 52 5 is_stmt 1 view .LVU58
+ 251              		.loc 1 52 9 is_stmt 0 view .LVU59
+ 252 000a FFF7FEFF 		bl	ringbuffer_is_full
+ 253              	.LVL20:
+ 254              		.loc 1 52 8 discriminator 1 view .LVU60
+ 255 000e 0028     		cmp	r0, #0
+ 256 0010 33D1     		bne	.L19
+  53:KTimeSlice/ringbuff.c ****     {
+  54:KTimeSlice/ringbuff.c ****         return -1;
+  55:KTimeSlice/ringbuff.c ****     }
+  56:KTimeSlice/ringbuff.c ****     if (num == 0)
+ 257              		.loc 1 56 5 is_stmt 1 view .LVU61
+ 258              		.loc 1 56 8 is_stmt 0 view .LVU62
+ 259 0012 002F     		cmp	r7, #0
+ 260 0014 34D0     		beq	.L20
+  57:KTimeSlice/ringbuff.c ****     {
+  58:KTimeSlice/ringbuff.c ****         return -2;
+  59:KTimeSlice/ringbuff.c ****     }
+  60:KTimeSlice/ringbuff.c ****     uint32_t space_size = rb->length - ringbuffer_get_stored_length(rb);
+ 261              		.loc 1 60 5 is_stmt 1 view .LVU63
+ 262              		.loc 1 60 29 is_stmt 0 view .LVU64
+ 263 0016 E668     		ldr	r6, [r4, #12]
+ 264              		.loc 1 60 40 view .LVU65
+ 265 0018 2046     		mov	r0, r4
+ 266 001a FFF7FEFF 		bl	ringbuffer_get_stored_length
+ 267              	.LVL21:
+ 268              		.loc 1 60 14 discriminator 1 view .LVU66
+ 269 001e 351A     		subs	r5, r6, r0
+ 270              	.LVL22:
+  61:KTimeSlice/ringbuff.c ****     uint8_t status = 0;
+ 271              		.loc 1 61 5 is_stmt 1 view .LVU67
+  62:KTimeSlice/ringbuff.c ****     if ((rb->length - ringbuffer_get_stored_length(rb) < num))
+ 272              		.loc 1 62 5 view .LVU68
+ 273              		.loc 1 62 8 is_stmt 0 discriminator 1 view .LVU69
+ 274 0020 AF42     		cmp	r7, r5
+ 275 0022 1DD8     		bhi	.L21
+ 276 0024 3D46     		mov	r5, r7
+ 277              	.LVL23:
+  61:KTimeSlice/ringbuff.c ****     uint8_t status = 0;
+ 278              		.loc 1 61 13 view .LVU70
+ 279 0026 0027     		movs	r7, #0
+ 280              	.LVL24:
+ 281              	.L17:
+  63:KTimeSlice/ringbuff.c ****     {
+  64:KTimeSlice/ringbuff.c ****         num = space_size;
+  65:KTimeSlice/ringbuff.c ****         status = -3;
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 7
+
+
+  66:KTimeSlice/ringbuff.c ****     }
+  67:KTimeSlice/ringbuff.c ****     if (rb->length - rb->tail > num)
+ 282              		.loc 1 67 5 is_stmt 1 view .LVU71
+ 283              		.loc 1 67 24 is_stmt 0 view .LVU72
+ 284 0028 6068     		ldr	r0, [r4, #4]
+ 285              	.LVL25:
+ 286              		.loc 1 67 20 view .LVU73
+ 287 002a 321A     		subs	r2, r6, r0
+ 288              		.loc 1 67 8 view .LVU74
+ 289 002c AA42     		cmp	r2, r5
+ 290 002e 19D8     		bhi	.L23
+  68:KTimeSlice/ringbuff.c ****     {
+  69:KTimeSlice/ringbuff.c ****         memcpy(rb->buffer + rb->tail, src_data, num);
+  70:KTimeSlice/ringbuff.c ****         rb->tail += num;
+  71:KTimeSlice/ringbuff.c ****         return status;
+  72:KTimeSlice/ringbuff.c ****     }
+  73:KTimeSlice/ringbuff.c ****     //到缓冲区末端不足存储全部数据，拆成两段
+  74:KTimeSlice/ringbuff.c ****     memcpy(rb->buffer + rb->tail, src_data, rb->length - rb->tail);
+ 291              		.loc 1 74 5 is_stmt 1 view .LVU75
+ 292              		.loc 1 74 14 is_stmt 0 view .LVU76
+ 293 0030 A368     		ldr	r3, [r4, #8]
+ 294              		.loc 1 74 5 view .LVU77
+ 295 0032 4146     		mov	r1, r8
+ 296 0034 1844     		add	r0, r0, r3
+ 297 0036 FFF7FEFF 		bl	memcpy
+ 298              	.LVL26:
+  75:KTimeSlice/ringbuff.c ****     memcpy(rb->buffer, src_data + (rb->length - rb->tail), num - (rb->length - rb->tail));
+ 299              		.loc 1 75 5 is_stmt 1 view .LVU78
+ 300              		.loc 1 75 38 is_stmt 0 view .LVU79
+ 301 003a E368     		ldr	r3, [r4, #12]
+ 302              		.loc 1 75 51 view .LVU80
+ 303 003c 6268     		ldr	r2, [r4, #4]
+ 304              		.loc 1 75 47 view .LVU81
+ 305 003e 991A     		subs	r1, r3, r2
+ 306              		.loc 1 75 64 view .LVU82
+ 307 0040 D21A     		subs	r2, r2, r3
+ 308              		.loc 1 75 5 view .LVU83
+ 309 0042 2A44     		add	r2, r2, r5
+ 310 0044 4346     		mov	r3, r8
+ 311 0046 0B44     		add	r3, r3, r1
+ 312 0048 1946     		mov	r1, r3
+ 313 004a A068     		ldr	r0, [r4, #8]
+ 314 004c FFF7FEFF 		bl	memcpy
+ 315              	.LVL27:
+  76:KTimeSlice/ringbuff.c ****     rb->tail = num - (rb->length - rb->tail);
+ 316              		.loc 1 76 5 is_stmt 1 view .LVU84
+ 317              		.loc 1 76 38 is_stmt 0 view .LVU85
+ 318 0050 6368     		ldr	r3, [r4, #4]
+ 319              		.loc 1 76 25 view .LVU86
+ 320 0052 E268     		ldr	r2, [r4, #12]
+ 321              		.loc 1 76 20 view .LVU87
+ 322 0054 9B1A     		subs	r3, r3, r2
+ 323 0056 2B44     		add	r3, r3, r5
+ 324              		.loc 1 76 14 view .LVU88
+ 325 0058 6360     		str	r3, [r4, #4]
+  77:KTimeSlice/ringbuff.c ****     return status;
+ 326              		.loc 1 77 5 is_stmt 1 view .LVU89
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 8
+
+
+ 327              		.loc 1 77 12 is_stmt 0 view .LVU90
+ 328 005a 3846     		mov	r0, r7
+ 329              	.LVL28:
+ 330              	.L15:
+  78:KTimeSlice/ringbuff.c **** }
+ 331              		.loc 1 78 1 view .LVU91
+ 332 005c BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 333              	.LVL29:
+ 334              	.L21:
+  65:KTimeSlice/ringbuff.c ****     }
+ 335              		.loc 1 65 16 view .LVU92
+ 336 0060 FD27     		movs	r7, #253
+ 337              	.LVL30:
+  65:KTimeSlice/ringbuff.c ****     }
+ 338              		.loc 1 65 16 view .LVU93
+ 339 0062 E1E7     		b	.L17
+ 340              	.LVL31:
+ 341              	.L23:
+  69:KTimeSlice/ringbuff.c ****         rb->tail += num;
+ 342              		.loc 1 69 9 is_stmt 1 view .LVU94
+  69:KTimeSlice/ringbuff.c ****         rb->tail += num;
+ 343              		.loc 1 69 18 is_stmt 0 view .LVU95
+ 344 0064 A368     		ldr	r3, [r4, #8]
+  69:KTimeSlice/ringbuff.c ****         rb->tail += num;
+ 345              		.loc 1 69 9 view .LVU96
+ 346 0066 2A46     		mov	r2, r5
+ 347 0068 4146     		mov	r1, r8
+ 348 006a 1844     		add	r0, r0, r3
+ 349 006c FFF7FEFF 		bl	memcpy
+ 350              	.LVL32:
+  70:KTimeSlice/ringbuff.c ****         return status;
+ 351              		.loc 1 70 9 is_stmt 1 view .LVU97
+  70:KTimeSlice/ringbuff.c ****         return status;
+ 352              		.loc 1 70 11 is_stmt 0 view .LVU98
+ 353 0070 6368     		ldr	r3, [r4, #4]
+  70:KTimeSlice/ringbuff.c ****         return status;
+ 354              		.loc 1 70 18 view .LVU99
+ 355 0072 2B44     		add	r3, r3, r5
+ 356 0074 6360     		str	r3, [r4, #4]
+  71:KTimeSlice/ringbuff.c ****     }
+ 357              		.loc 1 71 9 is_stmt 1 view .LVU100
+  71:KTimeSlice/ringbuff.c ****     }
+ 358              		.loc 1 71 16 is_stmt 0 view .LVU101
+ 359 0076 3846     		mov	r0, r7
+ 360 0078 F0E7     		b	.L15
+ 361              	.LVL33:
+ 362              	.L19:
+  54:KTimeSlice/ringbuff.c ****     }
+ 363              		.loc 1 54 16 view .LVU102
+ 364 007a 4FF0FF30 		mov	r0, #-1
+ 365 007e EDE7     		b	.L15
+ 366              	.L20:
+  58:KTimeSlice/ringbuff.c ****     }
+ 367              		.loc 1 58 16 view .LVU103
+ 368 0080 6FF00100 		mvn	r0, #1
+ 369 0084 EAE7     		b	.L15
+ 370              		.cfi_endproc
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 9
+
+
+ 371              	.LFE138:
+ 373              		.section	.text.ringbuffer_get,"ax",%progbits
+ 374              		.align	1
+ 375              		.global	ringbuffer_get
+ 376              		.syntax unified
+ 377              		.thumb
+ 378              		.thumb_func
+ 380              	ringbuffer_get:
+ 381              	.LVL34:
+ 382              	.LFB139:
+  79:KTimeSlice/ringbuff.c **** int ringbuffer_get(RingBuff *rb, uint8_t *dst_data, uint32_t num)
+  80:KTimeSlice/ringbuff.c **** {
+ 383              		.loc 1 80 1 is_stmt 1 view -0
+ 384              		.cfi_startproc
+ 385              		@ args = 0, pretend = 0, frame = 0
+ 386              		@ frame_needed = 0, uses_anonymous_args = 0
+ 387              		.loc 1 80 1 is_stmt 0 view .LVU105
+ 388 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 389              	.LCFI2:
+ 390              		.cfi_def_cfa_offset 24
+ 391              		.cfi_offset 3, -24
+ 392              		.cfi_offset 4, -20
+ 393              		.cfi_offset 5, -16
+ 394              		.cfi_offset 6, -12
+ 395              		.cfi_offset 7, -8
+ 396              		.cfi_offset 14, -4
+ 397 0002 0446     		mov	r4, r0
+ 398 0004 0F46     		mov	r7, r1
+ 399 0006 1646     		mov	r6, r2
+  81:KTimeSlice/ringbuff.c ****     if (ringbuffer_is_empty(rb))
+ 400              		.loc 1 81 5 is_stmt 1 view .LVU106
+ 401              		.loc 1 81 9 is_stmt 0 view .LVU107
+ 402 0008 FFF7FEFF 		bl	ringbuffer_is_empty
+ 403              	.LVL35:
+ 404              		.loc 1 81 8 discriminator 1 view .LVU108
+ 405 000c 70BB     		cbnz	r0, .L28
+  82:KTimeSlice/ringbuff.c ****     {
+  83:KTimeSlice/ringbuff.c ****         return -1;
+  84:KTimeSlice/ringbuff.c ****     }
+  85:KTimeSlice/ringbuff.c ****     if (num == 0)
+ 406              		.loc 1 85 5 is_stmt 1 view .LVU109
+ 407              		.loc 1 85 8 is_stmt 0 view .LVU110
+ 408 000e 86B3     		cbz	r6, .L29
+  86:KTimeSlice/ringbuff.c ****     {
+  87:KTimeSlice/ringbuff.c ****         return -2;
+  88:KTimeSlice/ringbuff.c ****     }
+  89:KTimeSlice/ringbuff.c **** 
+  90:KTimeSlice/ringbuff.c ****     uint32_t stored_length = ringbuffer_get_stored_length(rb);
+ 409              		.loc 1 90 5 is_stmt 1 view .LVU111
+ 410              		.loc 1 90 30 is_stmt 0 view .LVU112
+ 411 0010 2046     		mov	r0, r4
+ 412 0012 FFF7FEFF 		bl	ringbuffer_get_stored_length
+ 413              	.LVL36:
+ 414 0016 0546     		mov	r5, r0
+ 415              	.LVL37:
+  91:KTimeSlice/ringbuff.c ****     /* less data */
+  92:KTimeSlice/ringbuff.c ****     if (stored_length < num)
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 10
+
+
+ 416              		.loc 1 92 5 is_stmt 1 view .LVU113
+ 417              		.loc 1 92 8 is_stmt 0 view .LVU114
+ 418 0018 8642     		cmp	r6, r0
+ 419 001a 00D8     		bhi	.L26
+ 420 001c 3546     		mov	r5, r6
+ 421              	.L26:
+ 422              	.LVL38:
+  93:KTimeSlice/ringbuff.c ****         num = stored_length;
+  94:KTimeSlice/ringbuff.c ****     if (rb->length - rb->head > num)
+ 423              		.loc 1 94 5 is_stmt 1 view .LVU115
+ 424              		.loc 1 94 11 is_stmt 0 view .LVU116
+ 425 001e E268     		ldr	r2, [r4, #12]
+ 426              		.loc 1 94 24 view .LVU117
+ 427 0020 2368     		ldr	r3, [r4]
+ 428              		.loc 1 94 20 view .LVU118
+ 429 0022 D21A     		subs	r2, r2, r3
+ 430              		.loc 1 94 8 view .LVU119
+ 431 0024 AA42     		cmp	r2, r5
+ 432 0026 16D8     		bhi	.L31
+  95:KTimeSlice/ringbuff.c ****     {
+  96:KTimeSlice/ringbuff.c ****         memcpy(dst_data, rb->buffer + rb->head, num);
+  97:KTimeSlice/ringbuff.c ****         rb->head += num;
+  98:KTimeSlice/ringbuff.c ****         return 0;
+  99:KTimeSlice/ringbuff.c ****     }
+ 100:KTimeSlice/ringbuff.c ****     //拆成两段
+ 101:KTimeSlice/ringbuff.c ****     memcpy(dst_data, rb->buffer + rb->head, rb->length - rb->head);
+ 433              		.loc 1 101 5 is_stmt 1 view .LVU120
+ 434              		.loc 1 101 24 is_stmt 0 view .LVU121
+ 435 0028 A168     		ldr	r1, [r4, #8]
+ 436              		.loc 1 101 5 view .LVU122
+ 437 002a 1944     		add	r1, r1, r3
+ 438 002c 3846     		mov	r0, r7
+ 439              	.LVL39:
+ 440              		.loc 1 101 5 view .LVU123
+ 441 002e FFF7FEFF 		bl	memcpy
+ 442              	.LVL40:
+ 102:KTimeSlice/ringbuff.c ****     memcpy(dst_data + (rb->length - rb->head), rb->buffer, num - (rb->length - rb->head));
+ 443              		.loc 1 102 5 is_stmt 1 view .LVU124
+ 444              		.loc 1 102 26 is_stmt 0 view .LVU125
+ 445 0032 E368     		ldr	r3, [r4, #12]
+ 446              		.loc 1 102 39 view .LVU126
+ 447 0034 2268     		ldr	r2, [r4]
+ 448              		.loc 1 102 35 view .LVU127
+ 449 0036 981A     		subs	r0, r3, r2
+ 450              		.loc 1 102 64 view .LVU128
+ 451 0038 D21A     		subs	r2, r2, r3
+ 452              		.loc 1 102 5 view .LVU129
+ 453 003a 2A44     		add	r2, r2, r5
+ 454 003c A168     		ldr	r1, [r4, #8]
+ 455 003e 3B46     		mov	r3, r7
+ 456 0040 0344     		add	r3, r3, r0
+ 457 0042 1846     		mov	r0, r3
+ 458 0044 FFF7FEFF 		bl	memcpy
+ 459              	.LVL41:
+ 103:KTimeSlice/ringbuff.c ****     rb->head = num - (rb->length - rb->head);
+ 460              		.loc 1 103 5 is_stmt 1 view .LVU130
+ 461              		.loc 1 103 38 is_stmt 0 view .LVU131
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 11
+
+
+ 462 0048 2368     		ldr	r3, [r4]
+ 463              		.loc 1 103 25 view .LVU132
+ 464 004a E268     		ldr	r2, [r4, #12]
+ 465              		.loc 1 103 20 view .LVU133
+ 466 004c 9B1A     		subs	r3, r3, r2
+ 467 004e 2B44     		add	r3, r3, r5
+ 468              		.loc 1 103 14 view .LVU134
+ 469 0050 2360     		str	r3, [r4]
+ 104:KTimeSlice/ringbuff.c ****     return 0;
+ 470              		.loc 1 104 5 is_stmt 1 view .LVU135
+ 471              		.loc 1 104 12 is_stmt 0 view .LVU136
+ 472 0052 0020     		movs	r0, #0
+ 473              	.LVL42:
+ 474              	.L24:
+ 105:KTimeSlice/ringbuff.c **** }
+ 475              		.loc 1 105 1 view .LVU137
+ 476 0054 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 477              	.LVL43:
+ 478              	.L31:
+  96:KTimeSlice/ringbuff.c ****         rb->head += num;
+ 479              		.loc 1 96 9 is_stmt 1 view .LVU138
+  96:KTimeSlice/ringbuff.c ****         rb->head += num;
+ 480              		.loc 1 96 28 is_stmt 0 view .LVU139
+ 481 0056 A168     		ldr	r1, [r4, #8]
+  96:KTimeSlice/ringbuff.c ****         rb->head += num;
+ 482              		.loc 1 96 9 view .LVU140
+ 483 0058 2A46     		mov	r2, r5
+ 484 005a 1944     		add	r1, r1, r3
+ 485 005c 3846     		mov	r0, r7
+ 486              	.LVL44:
+  96:KTimeSlice/ringbuff.c ****         rb->head += num;
+ 487              		.loc 1 96 9 view .LVU141
+ 488 005e FFF7FEFF 		bl	memcpy
+ 489              	.LVL45:
+  97:KTimeSlice/ringbuff.c ****         return 0;
+ 490              		.loc 1 97 9 is_stmt 1 view .LVU142
+  97:KTimeSlice/ringbuff.c ****         return 0;
+ 491              		.loc 1 97 11 is_stmt 0 view .LVU143
+ 492 0062 2368     		ldr	r3, [r4]
+  97:KTimeSlice/ringbuff.c ****         return 0;
+ 493              		.loc 1 97 18 view .LVU144
+ 494 0064 2B44     		add	r3, r3, r5
+ 495 0066 2360     		str	r3, [r4]
+  98:KTimeSlice/ringbuff.c ****     }
+ 496              		.loc 1 98 9 is_stmt 1 view .LVU145
+  98:KTimeSlice/ringbuff.c ****     }
+ 497              		.loc 1 98 16 is_stmt 0 view .LVU146
+ 498 0068 0020     		movs	r0, #0
+ 499 006a F3E7     		b	.L24
+ 500              	.LVL46:
+ 501              	.L28:
+  83:KTimeSlice/ringbuff.c ****     }
+ 502              		.loc 1 83 16 view .LVU147
+ 503 006c 4FF0FF30 		mov	r0, #-1
+ 504 0070 F0E7     		b	.L24
+ 505              	.L29:
+  87:KTimeSlice/ringbuff.c ****     }
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 12
+
+
+ 506              		.loc 1 87 16 view .LVU148
+ 507 0072 6FF00100 		mvn	r0, #1
+ 508 0076 EDE7     		b	.L24
+ 509              		.cfi_endproc
+ 510              	.LFE139:
+ 512              		.section	.text.ringbuffer_getchar,"ax",%progbits
+ 513              		.align	1
+ 514              		.global	ringbuffer_getchar
+ 515              		.syntax unified
+ 516              		.thumb
+ 517              		.thumb_func
+ 519              	ringbuffer_getchar:
+ 520              	.LVL47:
+ 521              	.LFB140:
+ 106:KTimeSlice/ringbuff.c **** uint8_t ringbuffer_getchar(RingBuff *rb)
+ 107:KTimeSlice/ringbuff.c **** {
+ 522              		.loc 1 107 1 is_stmt 1 view -0
+ 523              		.cfi_startproc
+ 524              		@ args = 0, pretend = 0, frame = 0
+ 525              		@ frame_needed = 0, uses_anonymous_args = 0
+ 108:KTimeSlice/ringbuff.c ****     uint8_t c;
+ 526              		.loc 1 108 5 view .LVU150
+ 109:KTimeSlice/ringbuff.c ****     if (rb == NULL)
+ 527              		.loc 1 109 5 view .LVU151
+ 528              		.loc 1 109 8 is_stmt 0 view .LVU152
+ 529 0000 88B1     		cbz	r0, .L37
+ 107:KTimeSlice/ringbuff.c ****     uint8_t c;
+ 530              		.loc 1 107 1 view .LVU153
+ 531 0002 10B5     		push	{r4, lr}
+ 532              	.LCFI3:
+ 533              		.cfi_def_cfa_offset 8
+ 534              		.cfi_offset 4, -8
+ 535              		.cfi_offset 14, -4
+ 536 0004 0446     		mov	r4, r0
+ 110:KTimeSlice/ringbuff.c ****     {
+ 111:KTimeSlice/ringbuff.c ****         return c;
+ 112:KTimeSlice/ringbuff.c ****     }
+ 113:KTimeSlice/ringbuff.c ****     if (ringbuffer_is_empty(rb))
+ 537              		.loc 1 113 5 is_stmt 1 view .LVU154
+ 538              		.loc 1 113 9 is_stmt 0 view .LVU155
+ 539 0006 FFF7FEFF 		bl	ringbuffer_is_empty
+ 540              	.LVL48:
+ 541              		.loc 1 113 8 discriminator 1 view .LVU156
+ 542 000a 50B9     		cbnz	r0, .L35
+ 114:KTimeSlice/ringbuff.c ****     {
+ 115:KTimeSlice/ringbuff.c ****         return c;
+ 116:KTimeSlice/ringbuff.c ****     }
+ 117:KTimeSlice/ringbuff.c ****     
+ 118:KTimeSlice/ringbuff.c ****     c = rb->buffer[rb->head];
+ 543              		.loc 1 118 5 is_stmt 1 view .LVU157
+ 544              		.loc 1 118 11 is_stmt 0 view .LVU158
+ 545 000c A268     		ldr	r2, [r4, #8]
+ 546              		.loc 1 118 22 view .LVU159
+ 547 000e 2368     		ldr	r3, [r4]
+ 548              		.loc 1 118 7 view .LVU160
+ 549 0010 D05C     		ldrb	r0, [r2, r3]	@ zero_extendqisi2
+ 550              	.LVL49:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 13
+
+
+ 119:KTimeSlice/ringbuff.c ****     rb->head = (rb->head + 1) % rb->length;
+ 551              		.loc 1 119 5 is_stmt 1 view .LVU161
+ 552              		.loc 1 119 26 is_stmt 0 view .LVU162
+ 553 0012 0133     		adds	r3, r3, #1
+ 554              		.loc 1 119 35 view .LVU163
+ 555 0014 E268     		ldr	r2, [r4, #12]
+ 556              		.loc 1 119 31 view .LVU164
+ 557 0016 B3FBF2F1 		udiv	r1, r3, r2
+ 558 001a 02FB1133 		mls	r3, r2, r1, r3
+ 559              		.loc 1 119 14 view .LVU165
+ 560 001e 2360     		str	r3, [r4]
+ 120:KTimeSlice/ringbuff.c ****     return c;
+ 561              		.loc 1 120 5 is_stmt 1 view .LVU166
+ 562              	.LVL50:
+ 563              	.L33:
+ 121:KTimeSlice/ringbuff.c **** }...
+ 564              		.loc 1 121 1 is_stmt 0 view .LVU167
+ 565 0020 10BD     		pop	{r4, pc}
+ 566              	.LVL51:
+ 567              	.L35:
+ 115:KTimeSlice/ringbuff.c ****         return c;
+ 568              		.loc 1 115 16 view .LVU168
+ 569 0022 0020     		movs	r0, #0
+ 570 0024 FCE7     		b	.L33
+ 571              	.LVL52:
+ 572              	.L37:
+ 573              	.LCFI4:
+ 574              		.cfi_def_cfa_offset 0
+ 575              		.cfi_restore 4
+ 576              		.cfi_restore 14
+ 577              		.loc 1 121 1 view .LVU169
+ 578 0026 7047     		bx	lr
+ 579              		.cfi_endproc
+ 580              	.LFE140:
+ 582              		.text
+ 583              	.Letext0:
+ 584              		.file 2 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 585              		.file 3 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 586              		.file 4 "KTimeSlice/ringbuff.h"
+ 587              		.file 5 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 588              		.file 6 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 589              		.file 7 "<built-in>"
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 ringbuff.c
+C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:21     .text.ringbuffer_create:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:27     .text.ringbuffer_create:00000000 ringbuffer_create
+C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:100    .text.ringbuffer_get_stored_length:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:106    .text.ringbuffer_get_stored_length:00000000 ringbuffer_get_stored_length
+C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:143    .text.ringbuffer_is_empty:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:149    .text.ringbuffer_is_empty:00000000 ringbuffer_is_empty
+C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:180    .text.ringbuffer_is_full:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:186    .text.ringbuffer_is_full:00000000 ringbuffer_is_full
+C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:224    .text.ringbuffer_put:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:230    .text.ringbuffer_put:00000000 ringbuffer_put
+C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:374    .text.ringbuffer_get:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:380    .text.ringbuffer_get:00000000 ringbuffer_get
+C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:513    .text.ringbuffer_getchar:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:519    .text.ringbuffer_getchar:00000000 ringbuffer_getchar
+
+UNDEFINED SYMBOLS
+malloc
+free
+memcpy

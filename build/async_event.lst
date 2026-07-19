@@ -1,0 +1,796 @@
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"async_event.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "KTimeSlice/async_event.c"
+  20              		.section	.text.event_pool_init,"ax",%progbits
+  21              		.align	1
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	event_pool_init:
+  27              	.LFB137:
+   1:KTimeSlice/async_event.c **** #include "async_event.h"
+   2:KTimeSlice/async_event.c **** 
+   3:KTimeSlice/async_event.c **** static ASY_EVT_HANDLE AsyEvtHandle = {.no_evt_time = 0, .map = {0}};
+   4:KTimeSlice/async_event.c **** 
+   5:KTimeSlice/async_event.c **** /* ====== 静态事件节点池 ====== */
+   6:KTimeSlice/async_event.c **** static ASY_EVT  event_pool[ASY_EVT_QUEUE_MAX];
+   7:KTimeSlice/async_event.c **** static ListNode *event_free_head = NULL;   /* 指向空闲节点的 next 字段 */
+   8:KTimeSlice/async_event.c **** static bool pool_initialized = false;
+   9:KTimeSlice/async_event.c **** 
+  10:KTimeSlice/async_event.c **** static void event_pool_init(void)
+  11:KTimeSlice/async_event.c **** {
+  28              		.loc 1 11 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  12:KTimeSlice/async_event.c ****     if (pool_initialized) return;
+  33              		.loc 1 12 5 view .LVU1
+  34              		.loc 1 12 9 is_stmt 0 view .LVU2
+  35 0000 0D4B     		ldr	r3, .L5
+  36 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  37              		.loc 1 12 8 view .LVU3
+  38 0004 B3B9     		cbnz	r3, .L1
+  13:KTimeSlice/async_event.c ****     uint32_t i;
+  14:KTimeSlice/async_event.c ****     for (i = 0; i < ASY_EVT_QUEUE_MAX - 1; i++)
+  39              		.loc 1 14 12 view .LVU4
+  40 0006 1A46     		mov	r2, r3
+  41 0008 08E0     		b	.L3
+  42              	.LVL0:
+  43              	.L4:
+  15:KTimeSlice/async_event.c ****     {
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s 			page 2
+
+
+  16:KTimeSlice/async_event.c ****         event_pool[i].next.next = &event_pool[i + 1].next;
+  44              		.loc 1 16 9 is_stmt 1 view .LVU5
+  45              		.loc 1 16 49 is_stmt 0 view .LVU6
+  46 000a 501C     		adds	r0, r2, #1
+  47              		.loc 1 16 35 view .LVU7
+  48 000c 0B4B     		ldr	r3, .L5+4
+  49 000e 03EBC001 		add	r1, r3, r0, lsl #3
+  50 0012 0431     		adds	r1, r1, #4
+  51              		.loc 1 16 33 view .LVU8
+  52 0014 03EBC203 		add	r3, r3, r2, lsl #3
+  53 0018 5960     		str	r1, [r3, #4]
+  14:KTimeSlice/async_event.c ****     {
+  54              		.loc 1 14 45 is_stmt 1 discriminator 3 view .LVU9
+  55              	.LVL1:
+  14:KTimeSlice/async_event.c ****     {
+  56              		.loc 1 14 45 is_stmt 0 discriminator 3 view .LVU10
+  57 001a 0246     		mov	r2, r0
+  58              	.LVL2:
+  59              	.L3:
+  14:KTimeSlice/async_event.c ****     {
+  60              		.loc 1 14 19 is_stmt 1 discriminator 1 view .LVU11
+  61 001c 1E2A     		cmp	r2, #30
+  62 001e F4D9     		bls	.L4
+  17:KTimeSlice/async_event.c ****     }
+  18:KTimeSlice/async_event.c ****     event_pool[ASY_EVT_QUEUE_MAX - 1].next.next = NULL;
+  63              		.loc 1 18 5 view .LVU12
+  64              		.loc 1 18 49 is_stmt 0 view .LVU13
+  65 0020 064B     		ldr	r3, .L5+4
+  66 0022 0022     		movs	r2, #0
+  67              	.LVL3:
+  68              		.loc 1 18 49 view .LVU14
+  69 0024 C3F8FC20 		str	r2, [r3, #252]
+  19:KTimeSlice/async_event.c ****     event_free_head = &event_pool[0].next;
+  70              		.loc 1 19 5 is_stmt 1 view .LVU15
+  71              		.loc 1 19 21 is_stmt 0 view .LVU16
+  72 0028 0433     		adds	r3, r3, #4
+  73 002a 054A     		ldr	r2, .L5+8
+  74 002c 1360     		str	r3, [r2]
+  20:KTimeSlice/async_event.c ****     pool_initialized = true;
+  75              		.loc 1 20 5 is_stmt 1 view .LVU17
+  76              		.loc 1 20 22 is_stmt 0 view .LVU18
+  77 002e 024B     		ldr	r3, .L5
+  78 0030 0122     		movs	r2, #1
+  79 0032 1A70     		strb	r2, [r3]
+  80              	.LVL4:
+  81              	.L1:
+  21:KTimeSlice/async_event.c **** }
+  82              		.loc 1 21 1 view .LVU19
+  83 0034 7047     		bx	lr
+  84              	.L6:
+  85 0036 00BF     		.align	2
+  86              	.L5:
+  87 0038 00000000 		.word	pool_initialized
+  88 003c 00000000 		.word	event_pool
+  89 0040 00000000 		.word	event_free_head
+  90              		.cfi_endproc
+  91              	.LFE137:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s 			page 3
+
+
+  93              		.section	.text.event_pool_alloc,"ax",%progbits
+  94              		.align	1
+  95              		.syntax unified
+  96              		.thumb
+  97              		.thumb_func
+  99              	event_pool_alloc:
+ 100              	.LFB138:
+  22:KTimeSlice/async_event.c **** 
+  23:KTimeSlice/async_event.c **** static ASY_EVT *event_pool_alloc(void)
+  24:KTimeSlice/async_event.c **** {
+ 101              		.loc 1 24 1 is_stmt 1 view -0
+ 102              		.cfi_startproc
+ 103              		@ args = 0, pretend = 0, frame = 0
+ 104              		@ frame_needed = 0, uses_anonymous_args = 0
+ 105 0000 08B5     		push	{r3, lr}
+ 106              	.LCFI0:
+ 107              		.cfi_def_cfa_offset 8
+ 108              		.cfi_offset 3, -8
+ 109              		.cfi_offset 14, -4
+  25:KTimeSlice/async_event.c ****     if (!pool_initialized) event_pool_init();
+ 110              		.loc 1 25 5 view .LVU21
+ 111              		.loc 1 25 9 is_stmt 0 view .LVU22
+ 112 0002 064B     		ldr	r3, .L13
+ 113 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 114              		.loc 1 25 8 view .LVU23
+ 115 0006 33B1     		cbz	r3, .L12
+ 116              	.L8:
+  26:KTimeSlice/async_event.c ****     if (event_free_head == NULL) return NULL;   /* 池已耗尽 */
+ 117              		.loc 1 26 5 is_stmt 1 view .LVU24
+ 118              		.loc 1 26 25 is_stmt 0 view .LVU25
+ 119 0008 054B     		ldr	r3, .L13+4
+ 120 000a 1868     		ldr	r0, [r3]
+ 121              		.loc 1 26 8 view .LVU26
+ 122 000c 10B1     		cbz	r0, .L7
+  27:KTimeSlice/async_event.c **** 
+  28:KTimeSlice/async_event.c ****     ASY_EVT *evt = list_entry(event_free_head, ASY_EVT, next);
+ 123              		.loc 1 28 5 is_stmt 1 view .LVU27
+ 124              	.LVL5:
+  29:KTimeSlice/async_event.c ****     event_free_head = event_free_head->next;
+ 125              		.loc 1 29 5 view .LVU28
+ 126              		.loc 1 29 38 is_stmt 0 view .LVU29
+ 127 000e 50F80429 		ldr	r2, [r0], #-4
+ 128              	.LVL6:
+ 129              		.loc 1 29 21 view .LVU30
+ 130 0012 1A60     		str	r2, [r3]
+  30:KTimeSlice/async_event.c ****     return evt;
+ 131              		.loc 1 30 5 is_stmt 1 view .LVU31
+ 132              	.LVL7:
+ 133              	.L7:
+  31:KTimeSlice/async_event.c **** }
+ 134              		.loc 1 31 1 is_stmt 0 view .LVU32
+ 135 0014 08BD     		pop	{r3, pc}
+ 136              	.L12:
+  25:KTimeSlice/async_event.c ****     if (event_free_head == NULL) return NULL;   /* 池已耗尽 */
+ 137              		.loc 1 25 28 is_stmt 1 discriminator 1 view .LVU33
+ 138 0016 FFF7FEFF 		bl	event_pool_init
+ 139              	.LVL8:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s 			page 4
+
+
+ 140 001a F5E7     		b	.L8
+ 141              	.L14:
+ 142              		.align	2
+ 143              	.L13:
+ 144 001c 00000000 		.word	pool_initialized
+ 145 0020 00000000 		.word	event_free_head
+ 146              		.cfi_endproc
+ 147              	.LFE138:
+ 149              		.section	.text.event_pool_free,"ax",%progbits
+ 150              		.align	1
+ 151              		.syntax unified
+ 152              		.thumb
+ 153              		.thumb_func
+ 155              	event_pool_free:
+ 156              	.LVL9:
+ 157              	.LFB139:
+  32:KTimeSlice/async_event.c **** 
+  33:KTimeSlice/async_event.c **** static void event_pool_free(ASY_EVT *evt)
+  34:KTimeSlice/async_event.c **** {
+ 158              		.loc 1 34 1 view -0
+ 159              		.cfi_startproc
+ 160              		@ args = 0, pretend = 0, frame = 0
+ 161              		@ frame_needed = 0, uses_anonymous_args = 0
+ 162              		@ link register save eliminated.
+  35:KTimeSlice/async_event.c ****     if (evt == NULL) return;
+ 163              		.loc 1 35 5 view .LVU35
+ 164              		.loc 1 35 8 is_stmt 0 view .LVU36
+ 165 0000 0346     		mov	r3, r0
+ 166 0002 20B1     		cbz	r0, .L15
+  36:KTimeSlice/async_event.c ****     evt->next.next = event_free_head;
+ 167              		.loc 1 36 5 is_stmt 1 view .LVU37
+ 168              		.loc 1 36 20 is_stmt 0 view .LVU38
+ 169 0004 024A     		ldr	r2, .L17
+ 170 0006 1168     		ldr	r1, [r2]
+ 171 0008 43F8041F 		str	r1, [r3, #4]!
+  37:KTimeSlice/async_event.c ****     event_free_head = &evt->next;
+ 172              		.loc 1 37 5 is_stmt 1 view .LVU39
+ 173              		.loc 1 37 21 is_stmt 0 view .LVU40
+ 174 000c 1360     		str	r3, [r2]
+ 175              	.L15:
+  38:KTimeSlice/async_event.c **** }
+ 176              		.loc 1 38 1 view .LVU41
+ 177 000e 7047     		bx	lr
+ 178              	.L18:
+ 179              		.align	2
+ 180              	.L17:
+ 181 0010 00000000 		.word	event_free_head
+ 182              		.cfi_endproc
+ 183              	.LFE139:
+ 185              		.section	.text.asy_evt_register,"ax",%progbits
+ 186              		.align	1
+ 187              		.global	asy_evt_register
+ 188              		.syntax unified
+ 189              		.thumb
+ 190              		.thumb_func
+ 192              	asy_evt_register:
+ 193              	.LVL10:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s 			page 5
+
+
+ 194              	.LFB140:
+  39:KTimeSlice/async_event.c **** 
+  40:KTimeSlice/async_event.c **** /// @brief 
+  41:KTimeSlice/async_event.c **** /// @param sig  encoder sig: 0, 1;  button: 5~40 
+  42:KTimeSlice/async_event.c **** /// @param evt_cb 
+  43:KTimeSlice/async_event.c **** /// @return 
+  44:KTimeSlice/async_event.c **** uint8_t asy_evt_register(uint32_t sig, void (*evt_cb)(void))
+  45:KTimeSlice/async_event.c **** {
+ 195              		.loc 1 45 1 is_stmt 1 view -0
+ 196              		.cfi_startproc
+ 197              		@ args = 0, pretend = 0, frame = 0
+ 198              		@ frame_needed = 0, uses_anonymous_args = 0
+ 199              		@ link register save eliminated.
+  46:KTimeSlice/async_event.c ****     if((sig > SIG_NUM_MAX))
+ 200              		.loc 1 46 5 view .LVU43
+ 201              		.loc 1 46 7 is_stmt 0 view .LVU44
+ 202 0000 B0F5807F 		cmp	r0, #256
+ 203 0004 0BD8     		bhi	.L21
+  47:KTimeSlice/async_event.c ****         return 1;
+  48:KTimeSlice/async_event.c ****     if(AsyEvtHandle.map[sig].evt_cb != NULL)
+ 204              		.loc 1 48 5 is_stmt 1 view .LVU45
+ 205              		.loc 1 48 29 is_stmt 0 view .LVU46
+ 206 0006 084B     		ldr	r3, .L23
+ 207 0008 03EBC003 		add	r3, r3, r0, lsl #3
+ 208 000c 5B68     		ldr	r3, [r3, #4]
+ 209              		.loc 1 48 7 view .LVU47
+ 210 000e 43B9     		cbnz	r3, .L22
+  49:KTimeSlice/async_event.c ****         return 2;
+  50:KTimeSlice/async_event.c ****     AsyEvtHandle.map[sig].evt_cb = evt_cb;
+ 211              		.loc 1 50 5 is_stmt 1 view .LVU48
+ 212              		.loc 1 50 34 is_stmt 0 view .LVU49
+ 213 0010 054B     		ldr	r3, .L23
+ 214 0012 03EBC003 		add	r3, r3, r0, lsl #3
+ 215 0016 5960     		str	r1, [r3, #4]
+  51:KTimeSlice/async_event.c ****     AsyEvtHandle.map[sig].sig = sig;
+ 216              		.loc 1 51 5 is_stmt 1 view .LVU50
+ 217              		.loc 1 51 31 is_stmt 0 view .LVU51
+ 218 0018 9860     		str	r0, [r3, #8]
+  52:KTimeSlice/async_event.c ****     return 0;
+ 219              		.loc 1 52 5 is_stmt 1 view .LVU52
+ 220              		.loc 1 52 12 is_stmt 0 view .LVU53
+ 221 001a 0020     		movs	r0, #0
+ 222              	.LVL11:
+ 223              		.loc 1 52 12 view .LVU54
+ 224 001c 7047     		bx	lr
+ 225              	.LVL12:
+ 226              	.L21:
+  47:KTimeSlice/async_event.c ****     if(AsyEvtHandle.map[sig].evt_cb != NULL)
+ 227              		.loc 1 47 16 view .LVU55
+ 228 001e 0120     		movs	r0, #1
+ 229              	.LVL13:
+  47:KTimeSlice/async_event.c ****     if(AsyEvtHandle.map[sig].evt_cb != NULL)
+ 230              		.loc 1 47 16 view .LVU56
+ 231 0020 7047     		bx	lr
+ 232              	.LVL14:
+ 233              	.L22:
+  49:KTimeSlice/async_event.c ****     AsyEvtHandle.map[sig].evt_cb = evt_cb;
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s 			page 6
+
+
+ 234              		.loc 1 49 16 view .LVU57
+ 235 0022 0220     		movs	r0, #2
+ 236              	.LVL15:
+  53:KTimeSlice/async_event.c **** }
+ 237              		.loc 1 53 1 view .LVU58
+ 238 0024 7047     		bx	lr
+ 239              	.L24:
+ 240 0026 00BF     		.align	2
+ 241              	.L23:
+ 242 0028 00000000 		.word	AsyEvtHandle
+ 243              		.cfi_endproc
+ 244              	.LFE140:
+ 246              		.section	.text.asy_evt_unregister,"ax",%progbits
+ 247              		.align	1
+ 248              		.global	asy_evt_unregister
+ 249              		.syntax unified
+ 250              		.thumb
+ 251              		.thumb_func
+ 253              	asy_evt_unregister:
+ 254              	.LVL16:
+ 255              	.LFB141:
+  54:KTimeSlice/async_event.c **** void asy_evt_unregister(uint32_t sig)
+  55:KTimeSlice/async_event.c **** {
+ 256              		.loc 1 55 1 is_stmt 1 view -0
+ 257              		.cfi_startproc
+ 258              		@ args = 0, pretend = 0, frame = 0
+ 259              		@ frame_needed = 0, uses_anonymous_args = 0
+ 260              		@ link register save eliminated.
+  56:KTimeSlice/async_event.c ****     AsyEvtHandle.map[sig].evt_cb = NULL;
+ 261              		.loc 1 56 5 view .LVU60
+ 262              		.loc 1 56 34 is_stmt 0 view .LVU61
+ 263 0000 034B     		ldr	r3, .L26
+ 264 0002 03EBC000 		add	r0, r3, r0, lsl #3
+ 265              	.LVL17:
+ 266              		.loc 1 56 34 view .LVU62
+ 267 0006 0023     		movs	r3, #0
+ 268 0008 4360     		str	r3, [r0, #4]
+  57:KTimeSlice/async_event.c ****     AsyEvtHandle.map[sig].sig = 0;
+ 269              		.loc 1 57 5 is_stmt 1 view .LVU63
+ 270              		.loc 1 57 31 is_stmt 0 view .LVU64
+ 271 000a 8360     		str	r3, [r0, #8]
+  58:KTimeSlice/async_event.c **** }
+ 272              		.loc 1 58 1 view .LVU65
+ 273 000c 7047     		bx	lr
+ 274              	.L27:
+ 275 000e 00BF     		.align	2
+ 276              	.L26:
+ 277 0010 00000000 		.word	AsyEvtHandle
+ 278              		.cfi_endproc
+ 279              	.LFE141:
+ 281              		.section	.text.asy_evt_emit,"ax",%progbits
+ 282              		.align	1
+ 283              		.global	asy_evt_emit
+ 284              		.syntax unified
+ 285              		.thumb
+ 286              		.thumb_func
+ 288              	asy_evt_emit:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s 			page 7
+
+
+ 289              	.LVL18:
+ 290              	.LFB142:
+  59:KTimeSlice/async_event.c **** 
+  60:KTimeSlice/async_event.c **** uint8_t asy_evt_emit(uint32_t sig)
+  61:KTimeSlice/async_event.c **** {
+ 291              		.loc 1 61 1 is_stmt 1 view -0
+ 292              		.cfi_startproc
+ 293              		@ args = 0, pretend = 0, frame = 0
+ 294              		@ frame_needed = 0, uses_anonymous_args = 0
+  62:KTimeSlice/async_event.c ****     if((sig > SIG_NUM_MAX))
+ 295              		.loc 1 62 5 view .LVU67
+ 296              		.loc 1 62 7 is_stmt 0 view .LVU68
+ 297 0000 B0F5807F 		cmp	r0, #256
+ 298 0004 11D8     		bhi	.L30
+  61:KTimeSlice/async_event.c ****     if((sig > SIG_NUM_MAX))
+ 299              		.loc 1 61 1 view .LVU69
+ 300 0006 10B5     		push	{r4, lr}
+ 301              	.LCFI1:
+ 302              		.cfi_def_cfa_offset 8
+ 303              		.cfi_offset 4, -8
+ 304              		.cfi_offset 14, -4
+ 305 0008 0446     		mov	r4, r0
+  63:KTimeSlice/async_event.c ****         return 1;
+  64:KTimeSlice/async_event.c ****     if(AsyEvtHandle.map[sig].evt_cb == NULL)
+ 306              		.loc 1 64 5 is_stmt 1 view .LVU70
+ 307              		.loc 1 64 29 is_stmt 0 view .LVU71
+ 308 000a 0B4B     		ldr	r3, .L37
+ 309 000c 03EBC003 		add	r3, r3, r0, lsl #3
+ 310 0010 5B68     		ldr	r3, [r3, #4]
+ 311              		.loc 1 64 7 view .LVU72
+ 312 0012 63B1     		cbz	r3, .L31
+  65:KTimeSlice/async_event.c ****         return 2;
+  66:KTimeSlice/async_event.c ****     ASY_EVT *node = event_pool_alloc();
+ 313              		.loc 1 66 5 is_stmt 1 view .LVU73
+ 314              		.loc 1 66 21 is_stmt 0 view .LVU74
+ 315 0014 FFF7FEFF 		bl	event_pool_alloc
+ 316              	.LVL19:
+  67:KTimeSlice/async_event.c ****     if (node == NULL)
+ 317              		.loc 1 67 5 is_stmt 1 view .LVU75
+ 318              		.loc 1 67 8 is_stmt 0 view .LVU76
+ 319 0018 0146     		mov	r1, r0
+ 320 001a 50B1     		cbz	r0, .L32
+  68:KTimeSlice/async_event.c ****     {
+  69:KTimeSlice/async_event.c ****         return 3;
+  70:KTimeSlice/async_event.c ****     }
+  71:KTimeSlice/async_event.c **** 
+  72:KTimeSlice/async_event.c ****     node->sig = sig;
+ 321              		.loc 1 72 5 is_stmt 1 view .LVU77
+ 322              		.loc 1 72 15 is_stmt 0 view .LVU78
+ 323 001c 41F8044B 		str	r4, [r1], #4
+  73:KTimeSlice/async_event.c ****     list_append(&(AsyEvtHandle.list_head), &(node->next));
+ 324              		.loc 1 73 5 is_stmt 1 view .LVU79
+ 325 0020 0548     		ldr	r0, .L37
+ 326              	.LVL20:
+ 327              		.loc 1 73 5 is_stmt 0 view .LVU80
+ 328 0022 FFF7FEFF 		bl	list_append
+ 329              	.LVL21:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s 			page 8
+
+
+  74:KTimeSlice/async_event.c ****     return 0;
+ 330              		.loc 1 74 5 is_stmt 1 view .LVU81
+ 331              		.loc 1 74 12 is_stmt 0 view .LVU82
+ 332 0026 0020     		movs	r0, #0
+ 333              	.LVL22:
+ 334              	.L29:
+  75:KTimeSlice/async_event.c **** }
+ 335              		.loc 1 75 1 view .LVU83
+ 336 0028 10BD     		pop	{r4, pc}
+ 337              	.LVL23:
+ 338              	.L30:
+ 339              	.LCFI2:
+ 340              		.cfi_def_cfa_offset 0
+ 341              		.cfi_restore 4
+ 342              		.cfi_restore 14
+  63:KTimeSlice/async_event.c ****     if(AsyEvtHandle.map[sig].evt_cb == NULL)
+ 343              		.loc 1 63 16 view .LVU84
+ 344 002a 0120     		movs	r0, #1
+ 345              	.LVL24:
+ 346              		.loc 1 75 1 view .LVU85
+ 347 002c 7047     		bx	lr
+ 348              	.LVL25:
+ 349              	.L31:
+ 350              	.LCFI3:
+ 351              		.cfi_def_cfa_offset 8
+ 352              		.cfi_offset 4, -8
+ 353              		.cfi_offset 14, -4
+  65:KTimeSlice/async_event.c ****     ASY_EVT *node = event_pool_alloc();
+ 354              		.loc 1 65 16 view .LVU86
+ 355 002e 0220     		movs	r0, #2
+ 356              	.LVL26:
+  65:KTimeSlice/async_event.c ****     ASY_EVT *node = event_pool_alloc();
+ 357              		.loc 1 65 16 view .LVU87
+ 358 0030 FAE7     		b	.L29
+ 359              	.LVL27:
+ 360              	.L32:
+  69:KTimeSlice/async_event.c ****     }
+ 361              		.loc 1 69 16 view .LVU88
+ 362 0032 0320     		movs	r0, #3
+ 363              	.LVL28:
+  69:KTimeSlice/async_event.c ****     }
+ 364              		.loc 1 69 16 view .LVU89
+ 365 0034 F8E7     		b	.L29
+ 366              	.L38:
+ 367 0036 00BF     		.align	2
+ 368              	.L37:
+ 369 0038 00000000 		.word	AsyEvtHandle
+ 370              		.cfi_endproc
+ 371              	.LFE142:
+ 373              		.section	.text.asy_evt_process,"ax",%progbits
+ 374              		.align	1
+ 375              		.global	asy_evt_process
+ 376              		.syntax unified
+ 377              		.thumb
+ 378              		.thumb_func
+ 380              	asy_evt_process:
+ 381              	.LFB143:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s 			page 9
+
+
+  76:KTimeSlice/async_event.c **** 
+  77:KTimeSlice/async_event.c **** uint8_t asy_evt_process(void)
+  78:KTimeSlice/async_event.c **** {
+ 382              		.loc 1 78 1 is_stmt 1 view -0
+ 383              		.cfi_startproc
+ 384              		@ args = 0, pretend = 0, frame = 0
+ 385              		@ frame_needed = 0, uses_anonymous_args = 0
+ 386 0000 38B5     		push	{r3, r4, r5, lr}
+ 387              	.LCFI4:
+ 388              		.cfi_def_cfa_offset 16
+ 389              		.cfi_offset 3, -16
+ 390              		.cfi_offset 4, -12
+ 391              		.cfi_offset 5, -8
+ 392              		.cfi_offset 14, -4
+  79:KTimeSlice/async_event.c ****     if (AsyEvtHandle.list_head.next == NULL)
+ 393              		.loc 1 79 5 view .LVU91
+ 394              		.loc 1 79 31 is_stmt 0 view .LVU92
+ 395 0002 114B     		ldr	r3, .L46
+ 396 0004 1A68     		ldr	r2, [r3]
+ 397              		.loc 1 79 8 view .LVU93
+ 398 0006 5AB9     		cbnz	r2, .L40
+  80:KTimeSlice/async_event.c ****     {
+  81:KTimeSlice/async_event.c ****         AsyEvtHandle.no_evt_time += 5;
+ 399              		.loc 1 81 9 is_stmt 1 view .LVU94
+ 400              		.loc 1 81 21 is_stmt 0 view .LVU95
+ 401 0008 1A46     		mov	r2, r3
+ 402 000a D3F80438 		ldr	r3, [r3, #2052]
+ 403              		.loc 1 81 34 view .LVU96
+ 404 000e 0533     		adds	r3, r3, #5
+ 405 0010 C2F80438 		str	r3, [r2, #2052]
+  82:KTimeSlice/async_event.c ****         return 1;
+ 406              		.loc 1 82 9 is_stmt 1 view .LVU97
+ 407              		.loc 1 82 16 is_stmt 0 view .LVU98
+ 408 0014 0120     		movs	r0, #1
+ 409 0016 16E0     		b	.L41
+ 410              	.LVL29:
+ 411              	.L42:
+ 412              	.LBB2:
+  83:KTimeSlice/async_event.c ****     }
+  84:KTimeSlice/async_event.c **** 
+  85:KTimeSlice/async_event.c ****     /* 逐个从头部弹出，O(n)，比原 list_for_each + list_remove 的 O(n²) 高效 */
+  86:KTimeSlice/async_event.c ****     ListNode *node = AsyEvtHandle.list_head.next;
+  87:KTimeSlice/async_event.c ****     while (node != NULL)
+  88:KTimeSlice/async_event.c ****     {
+  89:KTimeSlice/async_event.c ****         ASY_EVT *evt = list_entry(node, ASY_EVT, next);
+  90:KTimeSlice/async_event.c ****         ListNode *next_node = node->next;           /* 先保存后继，防止 use-after-free */
+  91:KTimeSlice/async_event.c **** 
+  92:KTimeSlice/async_event.c ****         /* 从链表头部弹出 (O(1)) */
+  93:KTimeSlice/async_event.c ****         AsyEvtHandle.list_head.next = next_node;
+  94:KTimeSlice/async_event.c **** 
+  95:KTimeSlice/async_event.c ****         if (AsyEvtHandle.map[evt->sig].evt_cb != NULL)
+  96:KTimeSlice/async_event.c ****         {
+  97:KTimeSlice/async_event.c ****             AsyEvtHandle.map[evt->sig].evt_cb();    /* 执行回调 */
+  98:KTimeSlice/async_event.c ****         }
+  99:KTimeSlice/async_event.c **** 
+ 100:KTimeSlice/async_event.c ****         event_pool_free(evt);                        /* 归还到静态池 */
+ 413              		.loc 1 100 9 is_stmt 1 view .LVU99
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s 			page 10
+
+
+ 414 0018 2046     		mov	r0, r4
+ 415 001a FFF7FEFF 		bl	event_pool_free
+ 416              	.LVL30:
+ 101:KTimeSlice/async_event.c ****         node = next_node;
+ 417              		.loc 1 101 9 view .LVU100
+ 418              		.loc 1 101 14 is_stmt 0 view .LVU101
+ 419 001e 2A46     		mov	r2, r5
+ 420              	.LVL31:
+ 421              	.L40:
+ 422              		.loc 1 101 14 view .LVU102
+ 423              	.LBE2:
+  87:KTimeSlice/async_event.c ****     {
+ 424              		.loc 1 87 17 is_stmt 1 view .LVU103
+ 425 0020 6AB1     		cbz	r2, .L45
+ 426              	.LBB3:
+  89:KTimeSlice/async_event.c ****         ListNode *next_node = node->next;           /* 先保存后继，防止 use-after-free */
+ 427              		.loc 1 89 9 view .LVU104
+  89:KTimeSlice/async_event.c ****         ListNode *next_node = node->next;           /* 先保存后继，防止 use-after-free */
+ 428              		.loc 1 89 18 is_stmt 0 view .LVU105
+ 429 0022 1446     		mov	r4, r2
+ 430              	.LVL32:
+  90:KTimeSlice/async_event.c **** 
+ 431              		.loc 1 90 9 is_stmt 1 view .LVU106
+  90:KTimeSlice/async_event.c **** 
+ 432              		.loc 1 90 19 is_stmt 0 view .LVU107
+ 433 0024 54F80459 		ldr	r5, [r4], #-4
+ 434              	.LVL33:
+  93:KTimeSlice/async_event.c **** 
+ 435              		.loc 1 93 9 is_stmt 1 view .LVU108
+  93:KTimeSlice/async_event.c **** 
+ 436              		.loc 1 93 37 is_stmt 0 view .LVU109
+ 437 0028 074B     		ldr	r3, .L46
+ 438 002a 1D60     		str	r5, [r3]
+  95:KTimeSlice/async_event.c ****         {
+ 439              		.loc 1 95 9 is_stmt 1 view .LVU110
+  95:KTimeSlice/async_event.c ****         {
+ 440              		.loc 1 95 33 is_stmt 0 view .LVU111
+ 441 002c 52F8042C 		ldr	r2, [r2, #-4]
+ 442              	.LVL34:
+  95:KTimeSlice/async_event.c ****         {
+ 443              		.loc 1 95 39 view .LVU112
+ 444 0030 03EBC203 		add	r3, r3, r2, lsl #3
+ 445 0034 5B68     		ldr	r3, [r3, #4]
+  95:KTimeSlice/async_event.c ****         {
+ 446              		.loc 1 95 12 view .LVU113
+ 447 0036 002B     		cmp	r3, #0
+ 448 0038 EED0     		beq	.L42
+  97:KTimeSlice/async_event.c ****         }
+ 449              		.loc 1 97 13 is_stmt 1 view .LVU114
+ 450 003a 9847     		blx	r3
+ 451              	.LVL35:
+ 452 003c ECE7     		b	.L42
+ 453              	.LVL36:
+ 454              	.L45:
+  97:KTimeSlice/async_event.c ****         }
+ 455              		.loc 1 97 13 is_stmt 0 view .LVU115
+ 456              	.LBE3:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s 			page 11
+
+
+ 102:KTimeSlice/async_event.c ****     }
+ 103:KTimeSlice/async_event.c **** 
+ 104:KTimeSlice/async_event.c ****     AsyEvtHandle.no_evt_time = 0;
+ 457              		.loc 1 104 5 is_stmt 1 view .LVU116
+ 458              		.loc 1 104 30 is_stmt 0 view .LVU117
+ 459 003e 1046     		mov	r0, r2
+ 460 0040 014B     		ldr	r3, .L46
+ 461 0042 C3F80428 		str	r2, [r3, #2052]
+ 105:KTimeSlice/async_event.c ****     return 0;
+ 462              		.loc 1 105 5 is_stmt 1 view .LVU118
+ 463              	.LVL37:
+ 464              	.L41:
+ 106:KTimeSlice/async_event.c **** }
+ 465              		.loc 1 106 1 is_stmt 0 view .LVU119
+ 466 0046 38BD     		pop	{r3, r4, r5, pc}
+ 467              	.L47:
+ 468              		.align	2
+ 469              	.L46:
+ 470 0048 00000000 		.word	AsyEvtHandle
+ 471              		.cfi_endproc
+ 472              	.LFE143:
+ 474              		.section	.text.asy_evt_task_process,"ax",%progbits
+ 475              		.align	1
+ 476              		.global	asy_evt_task_process
+ 477              		.syntax unified
+ 478              		.thumb
+ 479              		.thumb_func
+ 481              	asy_evt_task_process:
+ 482              	.LVL38:
+ 483              	.LFB144:
+ 107:KTimeSlice/async_event.c **** 
+ 108:KTimeSlice/async_event.c **** //5ms调度
+ 109:KTimeSlice/async_event.c **** void asy_evt_task_process(void *p)
+ 110:KTimeSlice/async_event.c **** {
+ 484              		.loc 1 110 1 is_stmt 1 view -0
+ 485              		.cfi_startproc
+ 486              		@ args = 0, pretend = 0, frame = 0
+ 487              		@ frame_needed = 0, uses_anonymous_args = 0
+ 488              		.loc 1 110 1 is_stmt 0 view .LVU121
+ 489 0000 08B5     		push	{r3, lr}
+ 490              	.LCFI5:
+ 491              		.cfi_def_cfa_offset 8
+ 492              		.cfi_offset 3, -8
+ 493              		.cfi_offset 14, -4
+ 111:KTimeSlice/async_event.c ****     asy_evt_process();
+ 494              		.loc 1 111 5 is_stmt 1 view .LVU122
+ 495 0002 FFF7FEFF 		bl	asy_evt_process
+ 496              	.LVL39:
+ 112:KTimeSlice/async_event.c **** }
+ 497              		.loc 1 112 1 is_stmt 0 view .LVU123
+ 498 0006 08BD     		pop	{r3, pc}
+ 499              		.cfi_endproc
+ 500              	.LFE144:
+ 502              		.section	.text.asy_get_no_evt_time,"ax",%progbits
+ 503              		.align	1
+ 504              		.global	asy_get_no_evt_time
+ 505              		.syntax unified
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s 			page 12
+
+
+ 506              		.thumb
+ 507              		.thumb_func
+ 509              	asy_get_no_evt_time:
+ 510              	.LFB145:
+ 113:KTimeSlice/async_event.c **** 
+ 114:KTimeSlice/async_event.c **** unsigned int asy_get_no_evt_time(void)
+ 115:KTimeSlice/async_event.c **** {
+ 511              		.loc 1 115 1 is_stmt 1 view -0
+ 512              		.cfi_startproc
+ 513              		@ args = 0, pretend = 0, frame = 0
+ 514              		@ frame_needed = 0, uses_anonymous_args = 0
+ 515              		@ link register save eliminated.
+ 116:KTimeSlice/async_event.c ****     return AsyEvtHandle.no_evt_time;
+ 516              		.loc 1 116 5 view .LVU125
+ 117:KTimeSlice/async_event.c **** }
+ 517              		.loc 1 117 1 is_stmt 0 view .LVU126
+ 518 0000 014B     		ldr	r3, .L51
+ 519 0002 D3F80408 		ldr	r0, [r3, #2052]
+ 520 0006 7047     		bx	lr
+ 521              	.L52:
+ 522              		.align	2
+ 523              	.L51:
+ 524 0008 00000000 		.word	AsyEvtHandle
+ 525              		.cfi_endproc
+ 526              	.LFE145:
+ 528              		.section	.text.asy_clear_evt_time,"ax",%progbits
+ 529              		.align	1
+ 530              		.global	asy_clear_evt_time
+ 531              		.syntax unified
+ 532              		.thumb
+ 533              		.thumb_func
+ 535              	asy_clear_evt_time:
+ 536              	.LFB146:
+ 118:KTimeSlice/async_event.c **** 
+ 119:KTimeSlice/async_event.c **** void asy_clear_evt_time(void)
+ 120:KTimeSlice/async_event.c **** {
+ 537              		.loc 1 120 1 is_stmt 1 view -0
+ 538              		.cfi_startproc
+ 539              		@ args = 0, pretend = 0, frame = 0
+ 540              		@ frame_needed = 0, uses_anonymous_args = 0
+ 541              		@ link register save eliminated.
+ 121:KTimeSlice/async_event.c ****     AsyEvtHandle.no_evt_time = 0;
+ 542              		.loc 1 121 5 view .LVU128
+ 543              		.loc 1 121 30 is_stmt 0 view .LVU129
+ 544 0000 024B     		ldr	r3, .L54
+ 545 0002 0022     		movs	r2, #0
+ 546 0004 C3F80428 		str	r2, [r3, #2052]
+ 122:KTimeSlice/async_event.c **** }...
+ 547              		.loc 1 122 1 view .LVU130
+ 548 0008 7047     		bx	lr
+ 549              	.L55:
+ 550 000a 00BF     		.align	2
+ 551              	.L54:
+ 552 000c 00000000 		.word	AsyEvtHandle
+ 553              		.cfi_endproc
+ 554              	.LFE146:
+ 556              		.section	.bss.pool_initialized,"aw",%nobits
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s 			page 13
+
+
+ 559              	pool_initialized:
+ 560 0000 00       		.space	1
+ 561              		.section	.bss.event_free_head,"aw",%nobits
+ 562              		.align	2
+ 565              	event_free_head:
+ 566 0000 00000000 		.space	4
+ 567              		.section	.bss.event_pool,"aw",%nobits
+ 568              		.align	2
+ 571              	event_pool:
+ 572 0000 00000000 		.space	256
+ 572      00000000 
+ 572      00000000 
+ 572      00000000 
+ 572      00000000 
+ 573              		.section	.bss.AsyEvtHandle,"aw",%nobits
+ 574              		.align	2
+ 577              	AsyEvtHandle:
+ 578 0000 00000000 		.space	2056
+ 578      00000000 
+ 578      00000000 
+ 578      00000000 
+ 578      00000000 
+ 579              		.text
+ 580              	.Letext0:
+ 581              		.file 2 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 582              		.file 3 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 583              		.file 4 "KTimeSlice/list.h"
+ 584              		.file 5 "KTimeSlice/async_event.h"
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 async_event.c
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:21     .text.event_pool_init:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:26     .text.event_pool_init:00000000 event_pool_init
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:87     .text.event_pool_init:00000038 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:559    .bss.pool_initialized:00000000 pool_initialized
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:571    .bss.event_pool:00000000 event_pool
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:565    .bss.event_free_head:00000000 event_free_head
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:94     .text.event_pool_alloc:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:99     .text.event_pool_alloc:00000000 event_pool_alloc
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:144    .text.event_pool_alloc:0000001c $d
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:150    .text.event_pool_free:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:155    .text.event_pool_free:00000000 event_pool_free
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:181    .text.event_pool_free:00000010 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:186    .text.asy_evt_register:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:192    .text.asy_evt_register:00000000 asy_evt_register
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:242    .text.asy_evt_register:00000028 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:577    .bss.AsyEvtHandle:00000000 AsyEvtHandle
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:247    .text.asy_evt_unregister:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:253    .text.asy_evt_unregister:00000000 asy_evt_unregister
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:277    .text.asy_evt_unregister:00000010 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:282    .text.asy_evt_emit:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:288    .text.asy_evt_emit:00000000 asy_evt_emit
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:369    .text.asy_evt_emit:00000038 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:374    .text.asy_evt_process:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:380    .text.asy_evt_process:00000000 asy_evt_process
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:470    .text.asy_evt_process:00000048 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:475    .text.asy_evt_task_process:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:481    .text.asy_evt_task_process:00000000 asy_evt_task_process
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:503    .text.asy_get_no_evt_time:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:509    .text.asy_get_no_evt_time:00000000 asy_get_no_evt_time
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:524    .text.asy_get_no_evt_time:00000008 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:529    .text.asy_clear_evt_time:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:535    .text.asy_clear_evt_time:00000000 asy_clear_evt_time
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:552    .text.asy_clear_evt_time:0000000c $d
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:560    .bss.pool_initialized:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:562    .bss.event_free_head:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:568    .bss.event_pool:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccQReWpb.s:574    .bss.AsyEvtHandle:00000000 $d
+
+UNDEFINED SYMBOLS
+list_append

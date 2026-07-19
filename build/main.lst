@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -20,15 +20,14 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.file 1 "Core/Src/main.c"
-  20              		.section	.text.uart_print,"ax",%progbits
+  20              		.section	.text.Error_Handler,"ax",%progbits
   21              		.align	1
-  22              		.global	uart_print
+  22              		.global	Error_Handler
   23              		.syntax unified
   24              		.thumb
   25              		.thumb_func
-  27              	uart_print:
-  28              	.LVL0:
-  29              	.LFB137:
+  27              	Error_Handler:
+  28              	.LFB139:
    1:Core/Src/main.c **** /* USER CODE BEGIN Header */
    2:Core/Src/main.c **** /**
    3:Core/Src/main.c ****  ******************************************************************************
@@ -56,811 +55,192 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
   25:Core/Src/main.c **** 
   26:Core/Src/main.c **** /* Private includes ----------------------------------------------------------*/
   27:Core/Src/main.c **** /* USER CODE BEGIN Includes */
-  28:Core/Src/main.c **** 
-  29:Core/Src/main.c **** /* USER CODE END Includes */
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 2
+  28:Core/Src/main.c **** #include "ktime_slice.h"
+  29:Core/Src/main.c **** #include "app_log.h"
+  30:Core/Src/main.c **** #include "bsp_can.h"
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 2
 
 
-  30:Core/Src/main.c **** 
-  31:Core/Src/main.c **** /* Private typedef -----------------------------------------------------------*/
-  32:Core/Src/main.c **** /* USER CODE BEGIN PTD */
-  33:Core/Src/main.c **** 
-  34:Core/Src/main.c **** /* USER CODE END PTD */
+  31:Core/Src/main.c **** /* USER CODE END Includes */
+  32:Core/Src/main.c **** 
+  33:Core/Src/main.c **** /* Private typedef -----------------------------------------------------------*/
+  34:Core/Src/main.c **** /* USER CODE BEGIN PTD */
   35:Core/Src/main.c **** 
-  36:Core/Src/main.c **** /* Private define ------------------------------------------------------------*/
-  37:Core/Src/main.c **** /* USER CODE BEGIN PD */
-  38:Core/Src/main.c **** 
-  39:Core/Src/main.c **** /* USER CODE END PD */
+  36:Core/Src/main.c **** /* USER CODE END PTD */
+  37:Core/Src/main.c **** 
+  38:Core/Src/main.c **** /* Private define ------------------------------------------------------------*/
+  39:Core/Src/main.c **** /* USER CODE BEGIN PD */
   40:Core/Src/main.c **** 
-  41:Core/Src/main.c **** /* Private macro -------------------------------------------------------------*/
-  42:Core/Src/main.c **** /* USER CODE BEGIN PM */
-  43:Core/Src/main.c **** 
-  44:Core/Src/main.c **** /* USER CODE END PM */
+  41:Core/Src/main.c **** /* USER CODE END PD */
+  42:Core/Src/main.c **** 
+  43:Core/Src/main.c **** /* Private macro -------------------------------------------------------------*/
+  44:Core/Src/main.c **** /* USER CODE BEGIN PM */
   45:Core/Src/main.c **** 
-  46:Core/Src/main.c **** /* Private variables ---------------------------------------------------------*/
+  46:Core/Src/main.c **** /* USER CODE END PM */
   47:Core/Src/main.c **** 
-  48:Core/Src/main.c **** /* USER CODE BEGIN PV */
+  48:Core/Src/main.c **** /* Private variables ---------------------------------------------------------*/
   49:Core/Src/main.c **** 
-  50:Core/Src/main.c **** /* USER CODE END PV */
+  50:Core/Src/main.c **** /* USER CODE BEGIN PV */
   51:Core/Src/main.c **** 
-  52:Core/Src/main.c **** /* Private function prototypes -----------------------------------------------*/
-  53:Core/Src/main.c **** void SystemClock_Config(void);
-  54:Core/Src/main.c **** /* USER CODE BEGIN PFP */
-  55:Core/Src/main.c **** 
-  56:Core/Src/main.c **** /* USER CODE END PFP */
+  52:Core/Src/main.c **** /* USER CODE END PV */
+  53:Core/Src/main.c **** 
+  54:Core/Src/main.c **** /* Private function prototypes -----------------------------------------------*/
+  55:Core/Src/main.c **** void SystemClock_Config(void);
+  56:Core/Src/main.c **** /* USER CODE BEGIN PFP */
   57:Core/Src/main.c **** 
-  58:Core/Src/main.c **** /* Private user code ---------------------------------------------------------*/
-  59:Core/Src/main.c **** /* USER CODE BEGIN 0 */
-  60:Core/Src/main.c **** #include <stdio.h>
-  61:Core/Src/main.c **** #include <string.h>
+  58:Core/Src/main.c **** /* USER CODE END PFP */
+  59:Core/Src/main.c **** 
+  60:Core/Src/main.c **** /* Private user code ---------------------------------------------------------*/
+  61:Core/Src/main.c **** /* USER CODE BEGIN 0 */
   62:Core/Src/main.c **** 
-  63:Core/Src/main.c **** CAN_TxHeaderTypeDef tx_header;
-  64:Core/Src/main.c **** CAN_RxHeaderTypeDef rx_header;
-  65:Core/Src/main.c **** uint32_t tx_mailbox;
-  66:Core/Src/main.c **** uint8_t rx_data[16];
-  67:Core/Src/main.c **** uint8_t flag_recv_data = 0;
-  68:Core/Src/main.c **** /* ---------- 简易串口打印 ---------- */
-  69:Core/Src/main.c **** char uart_buf[128];
-  70:Core/Src/main.c **** 
-  71:Core/Src/main.c **** void uart_print(const char *s)
-  72:Core/Src/main.c **** {
-  30              		.loc 1 72 1 view -0
-  31              		.cfi_startproc
+  63:Core/Src/main.c **** /* USER CODE END 0 */
+  64:Core/Src/main.c **** 
+  65:Core/Src/main.c **** /**
+  66:Core/Src/main.c ****  * @brief  The application entry point.
+  67:Core/Src/main.c ****  * @retval int
+  68:Core/Src/main.c ****  */
+  69:Core/Src/main.c **** int main(void)
+  70:Core/Src/main.c **** {
+  71:Core/Src/main.c **** 
+  72:Core/Src/main.c **** 	/* USER CODE BEGIN 1 */
+  73:Core/Src/main.c **** 
+  74:Core/Src/main.c **** 	/* USER CODE END 1 */
+  75:Core/Src/main.c **** 
+  76:Core/Src/main.c **** 	/* MCU Configuration--------------------------------------------------------*/
+  77:Core/Src/main.c **** 
+  78:Core/Src/main.c **** 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  79:Core/Src/main.c **** 	HAL_Init();
+  80:Core/Src/main.c **** 
+  81:Core/Src/main.c **** 	/* USER CODE BEGIN Init */
+  82:Core/Src/main.c **** 
+  83:Core/Src/main.c **** 	/* USER CODE END Init */
+  84:Core/Src/main.c **** 
+  85:Core/Src/main.c **** 	/* Configure the system clock */
+  86:Core/Src/main.c **** 	SystemClock_Config();
+  87:Core/Src/main.c **** 
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 3
+
+
+  88:Core/Src/main.c **** 	/* USER CODE BEGIN SysInit */
+  89:Core/Src/main.c **** 
+  90:Core/Src/main.c **** 	/* USER CODE END SysInit */
+  91:Core/Src/main.c **** 
+  92:Core/Src/main.c **** 	/* Initialize all configured peripherals */
+  93:Core/Src/main.c **** 	MX_GPIO_Init();
+  94:Core/Src/main.c **** 	MX_CAN1_Init();
+  95:Core/Src/main.c **** 	MX_TIM2_Init();
+  96:Core/Src/main.c **** 	MX_USART2_UART_Init();
+  97:Core/Src/main.c **** 	/* USER CODE BEGIN 2 */
+  98:Core/Src/main.c **** 	bsp_can_create();
+  99:Core/Src/main.c **** 	uint8_t can_test_data[8] = {0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37};
+ 100:Core/Src/main.c **** 	uint8_t can_recv_data[8] = {0};
+ 101:Core/Src/main.c **** 	uint8_t can_recv_len = 0;
+ 102:Core/Src/main.c **** 	app_log("CAN test start\r\n");
+ 103:Core/Src/main.c **** 	/* USER CODE END 2 */
+ 104:Core/Src/main.c **** 
+ 105:Core/Src/main.c **** 	/* Infinite loop */
+ 106:Core/Src/main.c **** 	/* USER CODE BEGIN WHILE */
+ 107:Core/Src/main.c **** 	
+ 108:Core/Src/main.c **** 	while (1)
+ 109:Core/Src/main.c **** 	{
+ 110:Core/Src/main.c **** 		/* 发送 CAN 帧 */
+ 111:Core/Src/main.c **** 		bsp_can_send(can_test_data, 8);
+ 112:Core/Src/main.c **** 		HAL_Delay(1000);
+ 113:Core/Src/main.c **** 		bsp_can_receive(can_recv_data, &can_recv_len);
+ 114:Core/Src/main.c **** 		if (can_recv_len != 0)
+ 115:Core/Src/main.c **** 		{
+ 116:Core/Src/main.c **** 			app_log("Received CAN data: ");
+ 117:Core/Src/main.c **** 			for (uint8_t i = 0; i < can_recv_len; i++)
+ 118:Core/Src/main.c **** 			{
+ 119:Core/Src/main.c **** 				app_log("%02X ", can_recv_data[i]);
+ 120:Core/Src/main.c **** 			}
+ 121:Core/Src/main.c **** 			app_log("\r\n");
+ 122:Core/Src/main.c **** 		}	
+ 123:Core/Src/main.c **** 		/* USER CODE END WHILE */
+ 124:Core/Src/main.c **** 
+ 125:Core/Src/main.c **** 		/* USER CODE BEGIN 3 */
+ 126:Core/Src/main.c **** 	}
+ 127:Core/Src/main.c **** 	/* USER CODE END 3 */
+ 128:Core/Src/main.c **** }
+ 129:Core/Src/main.c **** 
+ 130:Core/Src/main.c **** /**
+ 131:Core/Src/main.c ****  * @brief System Clock Configuration
+ 132:Core/Src/main.c ****  * @retval None
+ 133:Core/Src/main.c ****  */
+ 134:Core/Src/main.c **** void SystemClock_Config(void)
+ 135:Core/Src/main.c **** {
+ 136:Core/Src/main.c **** 	RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+ 137:Core/Src/main.c **** 	RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+ 138:Core/Src/main.c **** 
+ 139:Core/Src/main.c **** 	/** Configure the main internal regulator output voltage
+ 140:Core/Src/main.c **** 	 */
+ 141:Core/Src/main.c **** 	__HAL_RCC_PWR_CLK_ENABLE();
+ 142:Core/Src/main.c **** 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+ 143:Core/Src/main.c **** 
+ 144:Core/Src/main.c **** 	/** Initializes the RCC Oscillators according to the specified parameters
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 4
+
+
+ 145:Core/Src/main.c **** 	 * in the RCC_OscInitTypeDef structure.
+ 146:Core/Src/main.c **** 	 */
+ 147:Core/Src/main.c **** 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+ 148:Core/Src/main.c **** 	RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+ 149:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+ 150:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+ 151:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLM = 4;
+ 152:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLN = 168;
+ 153:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+ 154:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLQ = 4;
+ 155:Core/Src/main.c **** 	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+ 156:Core/Src/main.c **** 	{
+ 157:Core/Src/main.c **** 		Error_Handler();
+ 158:Core/Src/main.c **** 	}
+ 159:Core/Src/main.c **** 
+ 160:Core/Src/main.c **** 	/** Initializes the CPU, AHB and APB buses clocks
+ 161:Core/Src/main.c **** 	 */
+ 162:Core/Src/main.c **** 	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RC
+ 163:Core/Src/main.c **** 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+ 164:Core/Src/main.c **** 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+ 165:Core/Src/main.c **** 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+ 166:Core/Src/main.c **** 	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+ 167:Core/Src/main.c **** 
+ 168:Core/Src/main.c **** 	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
+ 169:Core/Src/main.c **** 	{
+ 170:Core/Src/main.c **** 		Error_Handler();
+ 171:Core/Src/main.c **** 	}
+ 172:Core/Src/main.c **** }
+ 173:Core/Src/main.c **** 
+ 174:Core/Src/main.c **** /* USER CODE BEGIN 4 */
+ 175:Core/Src/main.c **** 
+ 176:Core/Src/main.c **** /* USER CODE END 4 */
+ 177:Core/Src/main.c **** 
+ 178:Core/Src/main.c **** /**
+ 179:Core/Src/main.c ****  * @brief  This function is executed in case of error occurrence.
+ 180:Core/Src/main.c ****  * @retval None
+ 181:Core/Src/main.c ****  */
+ 182:Core/Src/main.c **** void Error_Handler(void)
+ 183:Core/Src/main.c **** {
+  29              		.loc 1 183 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
   32              		@ args = 0, pretend = 0, frame = 0
   33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		.loc 1 72 1 is_stmt 0 view .LVU1
-  35 0000 10B5     		push	{r4, lr}
-  36              	.LCFI0:
-  37              		.cfi_def_cfa_offset 8
-  38              		.cfi_offset 4, -8
-  39              		.cfi_offset 14, -4
-  40 0002 0446     		mov	r4, r0
-  73:Core/Src/main.c **** 	HAL_UART_Transmit(&huart2, (uint8_t *)s, strlen(s), 100);
-  41              		.loc 1 73 2 is_stmt 1 view .LVU2
-  42              		.loc 1 73 43 is_stmt 0 view .LVU3
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 3
-
-
-  43 0004 FFF7FEFF 		bl	strlen
-  44              	.LVL1:
-  45              		.loc 1 73 2 discriminator 1 view .LVU4
-  46 0008 6423     		movs	r3, #100
-  47 000a 82B2     		uxth	r2, r0
-  48 000c 2146     		mov	r1, r4
-  49 000e 0248     		ldr	r0, .L3
-  50 0010 FFF7FEFF 		bl	HAL_UART_Transmit
-  51              	.LVL2:
-  74:Core/Src/main.c **** }
-  52              		.loc 1 74 1 view .LVU5
-  53 0014 10BD     		pop	{r4, pc}
-  54              	.LVL3:
-  55              	.L4:
-  56              		.loc 1 74 1 view .LVU6
-  57 0016 00BF     		.align	2
-  58              	.L3:
-  59 0018 00000000 		.word	huart2
-  60              		.cfi_endproc
-  61              	.LFE137:
-  63              		.section	.rodata.uart_print_hex.str1.4,"aMS",%progbits,1
-  64              		.align	2
-  65              	.LC0:
-  66 0000 2573203D 		.ascii	"%s = 0x%08lX\015\012\000"
-  66      20307825 
-  66      30386C58 
-  66      0D0A00
-  67              		.section	.text.uart_print_hex,"ax",%progbits
-  68              		.align	1
-  69              		.global	uart_print_hex
-  70              		.syntax unified
-  71              		.thumb
-  72              		.thumb_func
-  74              	uart_print_hex:
-  75              	.LVL4:
-  76              	.LFB138:
-  75:Core/Src/main.c **** 
-  76:Core/Src/main.c **** void uart_print_hex(const char *label, uint32_t val)
-  77:Core/Src/main.c **** {
-  77              		.loc 1 77 1 is_stmt 1 view -0
-  78              		.cfi_startproc
-  79              		@ args = 0, pretend = 0, frame = 0
-  80              		@ frame_needed = 0, uses_anonymous_args = 0
-  81              		.loc 1 77 1 is_stmt 0 view .LVU8
-  82 0000 10B5     		push	{r4, lr}
-  83              	.LCFI1:
-  84              		.cfi_def_cfa_offset 8
-  85              		.cfi_offset 4, -8
-  86              		.cfi_offset 14, -4
-  87 0002 0246     		mov	r2, r0
-  88 0004 0B46     		mov	r3, r1
-  78:Core/Src/main.c **** 	sprintf(uart_buf, "%s = 0x%08lX\r\n", label, val);
-  89              		.loc 1 78 2 is_stmt 1 view .LVU9
-  90 0006 044C     		ldr	r4, .L7
-  91 0008 0449     		ldr	r1, .L7+4
-  92              	.LVL5:
-  93              		.loc 1 78 2 is_stmt 0 view .LVU10
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 4
-
-
-  94 000a 2046     		mov	r0, r4
-  95              	.LVL6:
-  96              		.loc 1 78 2 view .LVU11
-  97 000c FFF7FEFF 		bl	sprintf
-  98              	.LVL7:
-  79:Core/Src/main.c **** 	uart_print(uart_buf);
-  99              		.loc 1 79 2 is_stmt 1 view .LVU12
- 100 0010 2046     		mov	r0, r4
- 101 0012 FFF7FEFF 		bl	uart_print
- 102              	.LVL8:
-  80:Core/Src/main.c **** }
- 103              		.loc 1 80 1 is_stmt 0 view .LVU13
- 104 0016 10BD     		pop	{r4, pc}
- 105              	.L8:
- 106              		.align	2
- 107              	.L7:
- 108 0018 00000000 		.word	uart_buf
- 109 001c 00000000 		.word	.LC0
- 110              		.cfi_endproc
- 111              	.LFE138:
- 113              		.section	.rodata.dump_all_regs.str1.4,"aMS",%progbits,1
- 114              		.align	2
- 115              	.LC1:
- 116 0000 0D0A2D2D 		.ascii	"\015\012--- CAN1 ---\015\012\000"
- 116      2D204341 
- 116      4E31202D 
- 116      2D2D0D0A 
- 116      00
- 117 0011 000000   		.align	2
- 118              	.LC2:
- 119 0014 20204D43 		.ascii	"  MCR\000"
- 119      5200
- 120 001a 0000     		.align	2
- 121              	.LC3:
- 122 001c 20204D53 		.ascii	"  MSR\000"
- 122      5200
- 123 0022 0000     		.align	2
- 124              	.LC4:
- 125 0024 20204553 		.ascii	"  ESR\000"
- 125      5200
- 126 002a 0000     		.align	2
- 127              	.LC5:
- 128 002c 20204254 		.ascii	"  BTR\000"
- 128      5200
- 129 0032 0000     		.align	2
- 130              	.LC6:
- 131 0034 2020464D 		.ascii	"  FMR\000"
- 131      5200
- 132 003a 0000     		.align	2
- 133              	.LC7:
- 134 003c 20205453 		.ascii	"  TSR\000"
- 134      5200
- 135 0042 0000     		.align	2
- 136              	.LC8:
- 137 0044 2D2D2D20 		.ascii	"--- end ---\015\012\000"
- 137      656E6420 
- 137      2D2D2D0D 
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 5
-
-
- 137      0A00
- 138              		.section	.text.dump_all_regs,"ax",%progbits
- 139              		.align	1
- 140              		.global	dump_all_regs
- 141              		.syntax unified
- 142              		.thumb
- 143              		.thumb_func
- 145              	dump_all_regs:
- 146              	.LFB139:
-  81:Core/Src/main.c **** 
-  82:Core/Src/main.c **** /* ---------- 寄存器 dump ---------- */
-  83:Core/Src/main.c **** void dump_all_regs(void)
-  84:Core/Src/main.c **** {
- 147              		.loc 1 84 1 is_stmt 1 view -0
- 148              		.cfi_startproc
- 149              		@ args = 0, pretend = 0, frame = 8
- 150              		@ frame_needed = 0, uses_anonymous_args = 0
- 151 0000 F0B5     		push	{r4, r5, r6, r7, lr}
- 152              	.LCFI2:
- 153              		.cfi_def_cfa_offset 20
- 154              		.cfi_offset 4, -20
- 155              		.cfi_offset 5, -16
- 156              		.cfi_offset 6, -12
- 157              		.cfi_offset 7, -8
- 158              		.cfi_offset 14, -4
- 159 0002 83B0     		sub	sp, sp, #12
- 160              	.LCFI3:
- 161              		.cfi_def_cfa_offset 32
-  85:Core/Src/main.c **** 	uint32_t can_mcr, can_msr, can_esr, can_btr, can_fmr, can_tsr;
- 162              		.loc 1 85 2 view .LVU15
-  86:Core/Src/main.c **** 
-  87:Core/Src/main.c **** 	can_mcr = READ_REG(CAN1->MCR);
- 163              		.loc 1 87 2 view .LVU16
- 164              		.loc 1 87 10 is_stmt 0 view .LVU17
- 165 0004 144B     		ldr	r3, .L11
- 166 0006 1C68     		ldr	r4, [r3]
- 167              	.LVL9:
-  88:Core/Src/main.c **** 	can_msr = READ_REG(CAN1->MSR);
- 168              		.loc 1 88 2 is_stmt 1 view .LVU18
- 169              		.loc 1 88 10 is_stmt 0 view .LVU19
- 170 0008 5D68     		ldr	r5, [r3, #4]
- 171              	.LVL10:
-  89:Core/Src/main.c **** 	can_esr = READ_REG(CAN1->ESR);
- 172              		.loc 1 89 2 is_stmt 1 view .LVU20
- 173              		.loc 1 89 10 is_stmt 0 view .LVU21
- 174 000a 9E69     		ldr	r6, [r3, #24]
- 175              	.LVL11:
-  90:Core/Src/main.c **** 	can_btr = READ_REG(CAN1->BTR);
- 176              		.loc 1 90 2 is_stmt 1 view .LVU22
- 177              		.loc 1 90 10 is_stmt 0 view .LVU23
- 178 000c DF69     		ldr	r7, [r3, #28]
- 179              	.LVL12:
-  91:Core/Src/main.c **** 	can_fmr = READ_REG(CAN1->FMR);
- 180              		.loc 1 91 2 is_stmt 1 view .LVU24
- 181              		.loc 1 91 10 is_stmt 0 view .LVU25
- 182 000e D3F80022 		ldr	r2, [r3, #512]
- 183 0012 0092     		str	r2, [sp]
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 6
-
-
- 184              	.LVL13:
-  92:Core/Src/main.c **** 	can_tsr = READ_REG(CAN1->TSR);
- 185              		.loc 1 92 2 is_stmt 1 view .LVU26
- 186              		.loc 1 92 10 is_stmt 0 view .LVU27
- 187 0014 9B68     		ldr	r3, [r3, #8]
- 188 0016 0193     		str	r3, [sp, #4]
- 189              	.LVL14:
-  93:Core/Src/main.c **** 
-  94:Core/Src/main.c **** 	uart_print("\r\n--- CAN1 ---\r\n");
- 190              		.loc 1 94 2 is_stmt 1 view .LVU28
- 191 0018 1048     		ldr	r0, .L11+4
- 192 001a FFF7FEFF 		bl	uart_print
- 193              	.LVL15:
-  95:Core/Src/main.c **** 	uart_print_hex("  MCR", can_mcr);
- 194              		.loc 1 95 2 view .LVU29
- 195 001e 2146     		mov	r1, r4
- 196 0020 0F48     		ldr	r0, .L11+8
- 197 0022 FFF7FEFF 		bl	uart_print_hex
- 198              	.LVL16:
-  96:Core/Src/main.c **** 	uart_print_hex("  MSR", can_msr);
- 199              		.loc 1 96 2 view .LVU30
- 200 0026 2946     		mov	r1, r5
- 201 0028 0E48     		ldr	r0, .L11+12
- 202 002a FFF7FEFF 		bl	uart_print_hex
- 203              	.LVL17:
-  97:Core/Src/main.c **** 	uart_print_hex("  ESR", can_esr);
- 204              		.loc 1 97 2 view .LVU31
- 205 002e 3146     		mov	r1, r6
- 206 0030 0D48     		ldr	r0, .L11+16
- 207 0032 FFF7FEFF 		bl	uart_print_hex
- 208              	.LVL18:
-  98:Core/Src/main.c **** 	uart_print_hex("  BTR", can_btr);
- 209              		.loc 1 98 2 view .LVU32
- 210 0036 3946     		mov	r1, r7
- 211 0038 0C48     		ldr	r0, .L11+20
- 212 003a FFF7FEFF 		bl	uart_print_hex
- 213              	.LVL19:
-  99:Core/Src/main.c **** 	uart_print_hex("  FMR", can_fmr);
- 214              		.loc 1 99 2 view .LVU33
- 215 003e 0099     		ldr	r1, [sp]
- 216 0040 0B48     		ldr	r0, .L11+24
- 217 0042 FFF7FEFF 		bl	uart_print_hex
- 218              	.LVL20:
- 100:Core/Src/main.c **** 	uart_print_hex("  TSR", can_tsr);
- 219              		.loc 1 100 2 view .LVU34
- 220 0046 0199     		ldr	r1, [sp, #4]
- 221 0048 0A48     		ldr	r0, .L11+28
- 222 004a FFF7FEFF 		bl	uart_print_hex
- 223              	.LVL21:
- 101:Core/Src/main.c **** 	uart_print("--- end ---\r\n");
- 224              		.loc 1 101 2 view .LVU35
- 225 004e 0A48     		ldr	r0, .L11+32
- 226 0050 FFF7FEFF 		bl	uart_print
- 227              	.LVL22:
- 102:Core/Src/main.c **** }
- 228              		.loc 1 102 1 is_stmt 0 view .LVU36
- 229 0054 03B0     		add	sp, sp, #12
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 7
-
-
- 230              	.LCFI4:
- 231              		.cfi_def_cfa_offset 20
- 232              	.LVL23:
- 233              		.loc 1 102 1 view .LVU37
- 234              		@ sp needed
- 235 0056 F0BD     		pop	{r4, r5, r6, r7, pc}
- 236              	.LVL24:
- 237              	.L12:
- 238              		.loc 1 102 1 view .LVU38
- 239              		.align	2
- 240              	.L11:
- 241 0058 00640040 		.word	1073767424
- 242 005c 00000000 		.word	.LC1
- 243 0060 14000000 		.word	.LC2
- 244 0064 1C000000 		.word	.LC3
- 245 0068 24000000 		.word	.LC4
- 246 006c 2C000000 		.word	.LC5
- 247 0070 34000000 		.word	.LC6
- 248 0074 3C000000 		.word	.LC7
- 249 0078 44000000 		.word	.LC8
- 250              		.cfi_endproc
- 251              	.LFE139:
- 253              		.section	.rodata.bsp_can_create.str1.4,"aMS",%progbits,1
- 254              		.align	2
- 255              	.LC9:
- 256 0000 3E3E3E20 		.ascii	">>> bsp_can_create() start\015\012\000"
- 256      6273705F 
- 256      63616E5F 
- 256      63726561 
- 256      74652829 
- 257 001d 000000   		.align	2
- 258              	.LC10:
- 259 0020 20204641 		.ascii	"  FAIL: ConfigFilter\015\012\000"
- 259      494C3A20 
- 259      436F6E66 
- 259      69674669 
- 259      6C746572 
- 260 0037 00       		.align	2
- 261              	.LC11:
- 262 0038 20205449 		.ascii	"  TIMEOUT! INAK still set.\015\012\000"
- 262      4D454F55 
- 262      54212049 
- 262      4E414B20 
- 262      7374696C 
- 263 0055 000000   		.align	2
- 264              	.LC12:
- 265 0058 2020494E 		.ascii	"  INAK cleared, CAN started.\015\012\000"
- 265      414B2063 
- 265      6C656172 
- 265      65642C20 
- 265      43414E20 
- 266 0077 00       		.align	2
- 267              	.LC13:
- 268 0078 3E3E3E20 		.ascii	">>> bsp_can_create() SUCCESS\015\012\015\012\000"
- 268      6273705F 
- 268      63616E5F 
- 268      63726561 
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 8
-
-
- 268      74652829 
- 269              		.section	.text.bsp_can_create,"ax",%progbits
- 270              		.align	1
- 271              		.global	bsp_can_create
- 272              		.syntax unified
- 273              		.thumb
- 274              		.thumb_func
- 276              	bsp_can_create:
- 277              	.LFB140:
- 103:Core/Src/main.c **** 
- 104:Core/Src/main.c **** /* ---------- CAN 初始化 ---------- */
- 105:Core/Src/main.c **** void bsp_can_create(void)
- 106:Core/Src/main.c **** {
- 278              		.loc 1 106 1 is_stmt 1 view -0
- 279              		.cfi_startproc
- 280              		@ args = 0, pretend = 0, frame = 40
- 281              		@ frame_needed = 0, uses_anonymous_args = 0
- 282 0000 10B5     		push	{r4, lr}
- 283              	.LCFI5:
- 284              		.cfi_def_cfa_offset 8
- 285              		.cfi_offset 4, -8
- 286              		.cfi_offset 14, -4
- 287 0002 8AB0     		sub	sp, sp, #40
- 288              	.LCFI6:
- 289              		.cfi_def_cfa_offset 48
- 107:Core/Src/main.c **** 	CAN_FilterTypeDef sFilterConfig;
- 290              		.loc 1 107 2 view .LVU40
- 108:Core/Src/main.c **** 
- 109:Core/Src/main.c **** 	uart_print(">>> bsp_can_create() start\r\n");
- 291              		.loc 1 109 2 view .LVU41
- 292 0004 2448     		ldr	r0, .L22
- 293 0006 FFF7FEFF 		bl	uart_print
- 294              	.LVL25:
- 110:Core/Src/main.c **** 	dump_all_regs();
- 295              		.loc 1 110 2 view .LVU42
- 296 000a FFF7FEFF 		bl	dump_all_regs
- 297              	.LVL26:
- 111:Core/Src/main.c **** 
- 112:Core/Src/main.c **** 	/* 1. 配置滤波器 */
- 113:Core/Src/main.c **** 	sFilterConfig.FilterBank = 0;
- 298              		.loc 1 113 2 view .LVU43
- 299              		.loc 1 113 27 is_stmt 0 view .LVU44
- 300 000e 0023     		movs	r3, #0
- 301 0010 0593     		str	r3, [sp, #20]
- 114:Core/Src/main.c **** 	sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
- 302              		.loc 1 114 2 is_stmt 1 view .LVU45
- 303              		.loc 1 114 27 is_stmt 0 view .LVU46
- 304 0012 0693     		str	r3, [sp, #24]
- 115:Core/Src/main.c **** 	sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
- 305              		.loc 1 115 2 is_stmt 1 view .LVU47
- 306              		.loc 1 115 28 is_stmt 0 view .LVU48
- 307 0014 0122     		movs	r2, #1
- 308 0016 0792     		str	r2, [sp, #28]
- 116:Core/Src/main.c **** 	sFilterConfig.FilterIdHigh = 0x0000;
- 309              		.loc 1 116 2 is_stmt 1 view .LVU49
- 310              		.loc 1 116 29 is_stmt 0 view .LVU50
- 311 0018 0093     		str	r3, [sp]
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 9
-
-
- 117:Core/Src/main.c **** 	sFilterConfig.FilterIdLow = 0x0000;
- 312              		.loc 1 117 2 is_stmt 1 view .LVU51
- 313              		.loc 1 117 28 is_stmt 0 view .LVU52
- 314 001a 0193     		str	r3, [sp, #4]
- 118:Core/Src/main.c **** 	sFilterConfig.FilterMaskIdHigh = 0x0000;
- 315              		.loc 1 118 2 is_stmt 1 view .LVU53
- 316              		.loc 1 118 33 is_stmt 0 view .LVU54
- 317 001c 0293     		str	r3, [sp, #8]
- 119:Core/Src/main.c **** 	sFilterConfig.FilterMaskIdLow = 0x0000;
- 318              		.loc 1 119 2 is_stmt 1 view .LVU55
- 319              		.loc 1 119 32 is_stmt 0 view .LVU56
- 320 001e 0393     		str	r3, [sp, #12]
- 120:Core/Src/main.c **** 	sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
- 321              		.loc 1 120 2 is_stmt 1 view .LVU57
- 322              		.loc 1 120 37 is_stmt 0 view .LVU58
- 323 0020 0493     		str	r3, [sp, #16]
- 121:Core/Src/main.c **** 	sFilterConfig.FilterActivation = ENABLE;
- 324              		.loc 1 121 2 is_stmt 1 view .LVU59
- 325              		.loc 1 121 33 is_stmt 0 view .LVU60
- 326 0022 0892     		str	r2, [sp, #32]
- 122:Core/Src/main.c **** 
- 123:Core/Src/main.c **** 	if (HAL_CAN_ConfigFilter(&hcan1, &sFilterConfig) != HAL_OK)
- 327              		.loc 1 123 2 is_stmt 1 view .LVU61
- 328              		.loc 1 123 6 is_stmt 0 view .LVU62
- 329 0024 6946     		mov	r1, sp
- 330 0026 1D48     		ldr	r0, .L22+4
- 331 0028 FFF7FEFF 		bl	HAL_CAN_ConfigFilter
- 332              	.LVL27:
- 333              		.loc 1 123 5 discriminator 1 view .LVU63
- 334 002c E0B9     		cbnz	r0, .L20
- 124:Core/Src/main.c **** 	{
- 125:Core/Src/main.c **** 		uart_print("  FAIL: ConfigFilter\r\n");
- 126:Core/Src/main.c **** 		return;
- 127:Core/Src/main.c **** 	}
- 128:Core/Src/main.c **** 
- 129:Core/Src/main.c **** 	/* 2. 手动退出初始化 */
- 130:Core/Src/main.c **** 	hcan1.State = HAL_CAN_STATE_LISTENING;
- 335              		.loc 1 130 2 is_stmt 1 view .LVU64
- 336              		.loc 1 130 14 is_stmt 0 view .LVU65
- 337 002e 1B4B     		ldr	r3, .L22+4
- 338 0030 0222     		movs	r2, #2
- 339 0032 83F82020 		strb	r2, [r3, #32]
- 131:Core/Src/main.c **** 	CLEAR_BIT(CAN1->MCR, CAN_MCR_INRQ);
- 340              		.loc 1 131 2 is_stmt 1 view .LVU66
- 341 0036 1A4A     		ldr	r2, .L22+8
- 342 0038 1368     		ldr	r3, [r2]
- 343 003a 23F00103 		bic	r3, r3, #1
- 344 003e 1360     		str	r3, [r2]
- 132:Core/Src/main.c **** 
- 133:Core/Src/main.c **** 	uint32_t tickstart = HAL_GetTick();
- 345              		.loc 1 133 2 view .LVU67
- 346              		.loc 1 133 23 is_stmt 0 view .LVU68
- 347 0040 FFF7FEFF 		bl	HAL_GetTick
- 348              	.LVL28:
- 349 0044 0446     		mov	r4, r0
- 350              	.LVL29:
- 134:Core/Src/main.c **** 	while ((CAN1->MSR & CAN_MSR_INAK) != 0U)
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 10
-
-
- 351              		.loc 1 134 2 is_stmt 1 view .LVU69
- 352              	.L16:
- 353              		.loc 1 134 36 view .LVU70
- 354              		.loc 1 134 14 is_stmt 0 view .LVU71
- 355 0046 164B     		ldr	r3, .L22+8
- 356 0048 5B68     		ldr	r3, [r3, #4]
- 357              		.loc 1 134 36 view .LVU72
- 358 004a 13F0010F 		tst	r3, #1
- 359 004e 10D0     		beq	.L21
- 135:Core/Src/main.c **** 	{
- 136:Core/Src/main.c **** 		if ((HAL_GetTick() - tickstart) > 1000U)
- 360              		.loc 1 136 3 is_stmt 1 view .LVU73
- 361              		.loc 1 136 8 is_stmt 0 view .LVU74
- 362 0050 FFF7FEFF 		bl	HAL_GetTick
- 363              	.LVL30:
- 364              		.loc 1 136 22 discriminator 1 view .LVU75
- 365 0054 001B     		subs	r0, r0, r4
- 366              		.loc 1 136 6 discriminator 1 view .LVU76
- 367 0056 B0F57A7F 		cmp	r0, #1000
- 368 005a F4D9     		bls	.L16
- 137:Core/Src/main.c **** 		{
- 138:Core/Src/main.c **** 			uart_print("  TIMEOUT! INAK still set.\r\n");
- 369              		.loc 1 138 4 is_stmt 1 view .LVU77
- 370 005c 1148     		ldr	r0, .L22+12
- 371 005e FFF7FEFF 		bl	uart_print
- 372              	.LVL31:
- 139:Core/Src/main.c **** 			dump_all_regs();
- 373              		.loc 1 139 4 view .LVU78
- 374 0062 FFF7FEFF 		bl	dump_all_regs
- 375              	.LVL32:
- 140:Core/Src/main.c **** 			return;
- 376              		.loc 1 140 4 view .LVU79
- 377 0066 02E0     		b	.L13
- 378              	.LVL33:
- 379              	.L20:
- 125:Core/Src/main.c **** 		return;
- 380              		.loc 1 125 3 view .LVU80
- 381 0068 0F48     		ldr	r0, .L22+16
- 382 006a FFF7FEFF 		bl	uart_print
- 383              	.LVL34:
- 126:Core/Src/main.c **** 	}
- 384              		.loc 1 126 3 view .LVU81
- 385              	.L13:
- 141:Core/Src/main.c **** 		}
- 142:Core/Src/main.c **** 	}
- 143:Core/Src/main.c **** 
- 144:Core/Src/main.c **** 	uart_print("  INAK cleared, CAN started.\r\n");
- 145:Core/Src/main.c **** 
- 146:Core/Src/main.c **** 	/* 3. 发送帧头 */
- 147:Core/Src/main.c **** 	tx_header.StdId = 0x100;
- 148:Core/Src/main.c **** 	tx_header.ExtId = 0;
- 149:Core/Src/main.c **** 	tx_header.IDE = CAN_ID_STD;
- 150:Core/Src/main.c **** 	tx_header.RTR = CAN_RTR_DATA;
- 151:Core/Src/main.c **** 	tx_header.DLC = 8;
- 152:Core/Src/main.c **** 	tx_header.TransmitGlobalTime = DISABLE;
- 153:Core/Src/main.c **** 
- 154:Core/Src/main.c **** 	uart_print(">>> bsp_can_create() SUCCESS\r\n\r\n");
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 11
-
-
- 155:Core/Src/main.c **** }
- 386              		.loc 1 155 1 is_stmt 0 view .LVU82
- 387 006e 0AB0     		add	sp, sp, #40
- 388              	.LCFI7:
- 389              		.cfi_remember_state
- 390              		.cfi_def_cfa_offset 8
- 391              		@ sp needed
- 392 0070 10BD     		pop	{r4, pc}
- 393              	.LVL35:
- 394              	.L21:
- 395              	.LCFI8:
- 396              		.cfi_restore_state
- 144:Core/Src/main.c **** 
- 397              		.loc 1 144 2 is_stmt 1 view .LVU83
- 398 0072 0E48     		ldr	r0, .L22+20
- 399 0074 FFF7FEFF 		bl	uart_print
- 400              	.LVL36:
- 147:Core/Src/main.c **** 	tx_header.ExtId = 0;
- 401              		.loc 1 147 2 view .LVU84
- 147:Core/Src/main.c **** 	tx_header.ExtId = 0;
- 402              		.loc 1 147 18 is_stmt 0 view .LVU85
- 403 0078 0D4B     		ldr	r3, .L22+24
- 404 007a 4FF48072 		mov	r2, #256
- 405 007e 1A60     		str	r2, [r3]
- 148:Core/Src/main.c **** 	tx_header.IDE = CAN_ID_STD;
- 406              		.loc 1 148 2 is_stmt 1 view .LVU86
- 148:Core/Src/main.c **** 	tx_header.IDE = CAN_ID_STD;
- 407              		.loc 1 148 18 is_stmt 0 view .LVU87
- 408 0080 0022     		movs	r2, #0
- 409 0082 5A60     		str	r2, [r3, #4]
- 149:Core/Src/main.c **** 	tx_header.RTR = CAN_RTR_DATA;
- 410              		.loc 1 149 2 is_stmt 1 view .LVU88
- 149:Core/Src/main.c **** 	tx_header.RTR = CAN_RTR_DATA;
- 411              		.loc 1 149 16 is_stmt 0 view .LVU89
- 412 0084 9A60     		str	r2, [r3, #8]
- 150:Core/Src/main.c **** 	tx_header.DLC = 8;
- 413              		.loc 1 150 2 is_stmt 1 view .LVU90
- 150:Core/Src/main.c **** 	tx_header.DLC = 8;
- 414              		.loc 1 150 16 is_stmt 0 view .LVU91
- 415 0086 DA60     		str	r2, [r3, #12]
- 151:Core/Src/main.c **** 	tx_header.TransmitGlobalTime = DISABLE;
- 416              		.loc 1 151 2 is_stmt 1 view .LVU92
- 151:Core/Src/main.c **** 	tx_header.TransmitGlobalTime = DISABLE;
- 417              		.loc 1 151 16 is_stmt 0 view .LVU93
- 418 0088 0821     		movs	r1, #8
- 419 008a 1961     		str	r1, [r3, #16]
- 152:Core/Src/main.c **** 
- 420              		.loc 1 152 2 is_stmt 1 view .LVU94
- 152:Core/Src/main.c **** 
- 421              		.loc 1 152 31 is_stmt 0 view .LVU95
- 422 008c 1A75     		strb	r2, [r3, #20]
- 154:Core/Src/main.c **** }
- 423              		.loc 1 154 2 is_stmt 1 view .LVU96
- 424 008e 0948     		ldr	r0, .L22+28
- 425 0090 FFF7FEFF 		bl	uart_print
- 426              	.LVL37:
- 427 0094 EBE7     		b	.L13
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 12
-
-
- 428              	.L23:
- 429 0096 00BF     		.align	2
- 430              	.L22:
- 431 0098 00000000 		.word	.LC9
- 432 009c 00000000 		.word	hcan1
- 433 00a0 00640040 		.word	1073767424
- 434 00a4 38000000 		.word	.LC11
- 435 00a8 20000000 		.word	.LC10
- 436 00ac 58000000 		.word	.LC12
- 437 00b0 00000000 		.word	tx_header
- 438 00b4 78000000 		.word	.LC13
- 439              		.cfi_endproc
- 440              	.LFE140:
- 442              		.section	.text.Error_Handler,"ax",%progbits
- 443              		.align	1
- 444              		.global	Error_Handler
- 445              		.syntax unified
- 446              		.thumb
- 447              		.thumb_func
- 449              	Error_Handler:
- 450              	.LFB144:
- 156:Core/Src/main.c **** 
- 157:Core/Src/main.c **** void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *CanHandle)
- 158:Core/Src/main.c **** {
- 159:Core/Src/main.c **** 	/* Get RX message */
- 160:Core/Src/main.c **** 	if (HAL_CAN_GetRxMessage(CanHandle, CAN_RX_FIFO0, &rx_header, rx_data) != HAL_OK)
- 161:Core/Src/main.c **** 	{
- 162:Core/Src/main.c **** 		/* Reception Error */
- 163:Core/Src/main.c **** 		Error_Handler();
- 164:Core/Src/main.c **** 	}
- 165:Core/Src/main.c **** 	flag_recv_data = 1;
- 166:Core/Src/main.c **** }
- 167:Core/Src/main.c **** /* USER CODE END 0 */
- 168:Core/Src/main.c **** 
- 169:Core/Src/main.c **** /**
- 170:Core/Src/main.c ****  * @brief  The application entry point.
- 171:Core/Src/main.c ****  * @retval int
- 172:Core/Src/main.c ****  */
- 173:Core/Src/main.c **** int main(void)
- 174:Core/Src/main.c **** {
- 175:Core/Src/main.c **** 
- 176:Core/Src/main.c **** 	/* USER CODE BEGIN 1 */
- 177:Core/Src/main.c **** 
- 178:Core/Src/main.c **** 	/* USER CODE END 1 */
- 179:Core/Src/main.c **** 
- 180:Core/Src/main.c **** 	/* MCU Configuration--------------------------------------------------------*/
- 181:Core/Src/main.c **** 
- 182:Core/Src/main.c **** 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
- 183:Core/Src/main.c **** 	HAL_Init();
- 184:Core/Src/main.c **** 
- 185:Core/Src/main.c **** 	/* USER CODE BEGIN Init */
- 186:Core/Src/main.c **** 
- 187:Core/Src/main.c **** 	/* USER CODE END Init */
- 188:Core/Src/main.c **** 
- 189:Core/Src/main.c **** 	/* Configure the system clock */
- 190:Core/Src/main.c **** 	SystemClock_Config();
- 191:Core/Src/main.c **** 
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 13
-
-
- 192:Core/Src/main.c **** 	/* USER CODE BEGIN SysInit */
- 193:Core/Src/main.c **** 
- 194:Core/Src/main.c **** 	/* USER CODE END SysInit */
- 195:Core/Src/main.c **** 
- 196:Core/Src/main.c **** 	/* Initialize all configured peripherals */
- 197:Core/Src/main.c **** 	MX_GPIO_Init();
- 198:Core/Src/main.c **** 	MX_CAN1_Init();
- 199:Core/Src/main.c **** 	MX_TIM2_Init();
- 200:Core/Src/main.c **** 	MX_USART2_UART_Init();
- 201:Core/Src/main.c **** 	/* USER CODE BEGIN 2 */
- 202:Core/Src/main.c **** 	bsp_can_create();
- 203:Core/Src/main.c **** 	uint8_t can_test_data[8] = {0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37};
- 204:Core/Src/main.c **** 	/* USER CODE END 2 */
- 205:Core/Src/main.c **** 
- 206:Core/Src/main.c **** 	/* Infinite loop */
- 207:Core/Src/main.c **** 	/* USER CODE BEGIN WHILE */
- 208:Core/Src/main.c **** 	// uint32_t loop_cnt = 0;
- 209:Core/Src/main.c **** 	while (1)
- 210:Core/Src/main.c **** 	{
- 211:Core/Src/main.c **** 		// uint32_t msr = READ_REG(CAN1->MSR);
- 212:Core/Src/main.c **** 		// uint32_t esr = READ_REG(CAN1->ESR);
- 213:Core/Src/main.c **** 		// uint32_t tec = (esr & CAN_ESR_TEC) >> CAN_ESR_TEC_Pos;
- 214:Core/Src/main.c **** 		// uint32_t rec = (esr & CAN_ESR_REC) >> CAN_ESR_REC_Pos;
- 215:Core/Src/main.c **** 
- 216:Core/Src/main.c **** 		// /* 检查是否意外回到 init 模式 */
- 217:Core/Src/main.c **** 		// if ((msr & CAN_MSR_INAK) != 0U) {
- 218:Core/Src/main.c **** 		// 	sprintf(uart_buf, "[%lu] INAK=1! ESR=0x%08lX\r\n", loop_cnt, esr);
- 219:Core/Src/main.c **** 		// 	uart_print(uart_buf);
- 220:Core/Src/main.c **** 		// 	HAL_Delay(1000);
- 221:Core/Src/main.c **** 		// 	loop_cnt++;
- 222:Core/Src/main.c **** 		// 	continue;
- 223:Core/Src/main.c **** 		// }
- 224:Core/Src/main.c **** 
- 225:Core/Src/main.c **** 		/* 发送 CAN 帧 */
- 226:Core/Src/main.c **** 		HAL_StatusTypeDef ret = HAL_CAN_AddTxMessage(&hcan1, &tx_header, can_test_data, &tx_mailbox);
- 227:Core/Src/main.c **** 
- 228:Core/Src/main.c **** 		/* 发完后重新读取 ESR (TEC 可能已变化) */
- 229:Core/Src/main.c **** 		// esr = READ_REG(CAN1->ESR);
- 230:Core/Src/main.c **** 		// tec = (esr & CAN_ESR_TEC) >> CAN_ESR_TEC_Pos;
- 231:Core/Src/main.c **** 		// rec = (esr & CAN_ESR_REC) >> CAN_ESR_REC_Pos;
- 232:Core/Src/main.c **** 
- 233:Core/Src/main.c **** 		// sprintf(uart_buf, "[%lu] TX:ret=%d TEC=%lu REC=%lu ESR=0x%08lX\r\n",
- 234:Core/Src/main.c **** 		//         loop_cnt, ret, tec, rec, esr);
- 235:Core/Src/main.c **** 		// uart_print(uart_buf);
- 236:Core/Src/main.c **** 
- 237:Core/Src/main.c **** 		// HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_0);
- 238:Core/Src/main.c **** 		HAL_Delay(1000);
- 239:Core/Src/main.c **** 		// loop_cnt++;
- 240:Core/Src/main.c **** 
- 241:Core/Src/main.c **** 		if (flag_recv_data == 1)
- 242:Core/Src/main.c **** 		{
- 243:Core/Src/main.c **** 			HAL_UART_Transmit(&huart2, rx_data, 16, 100);
- 244:Core/Src/main.c **** 			flag_recv_data = 0;
- 245:Core/Src/main.c **** 		}
- 246:Core/Src/main.c **** 
- 247:Core/Src/main.c **** 		/* USER CODE END WHILE */
- 248:Core/Src/main.c **** 
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 14
-
-
- 249:Core/Src/main.c **** 		/* USER CODE BEGIN 3 */
- 250:Core/Src/main.c **** 	}
- 251:Core/Src/main.c **** 	/* USER CODE END 3 */
- 252:Core/Src/main.c **** }
- 253:Core/Src/main.c **** 
- 254:Core/Src/main.c **** /**
- 255:Core/Src/main.c ****  * @brief System Clock Configuration
- 256:Core/Src/main.c ****  * @retval None
- 257:Core/Src/main.c ****  */
- 258:Core/Src/main.c **** void SystemClock_Config(void)
- 259:Core/Src/main.c **** {
- 260:Core/Src/main.c **** 	RCC_OscInitTypeDef RCC_OscInitStruct = {0};
- 261:Core/Src/main.c **** 	RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
- 262:Core/Src/main.c **** 
- 263:Core/Src/main.c **** 	/** Configure the main internal regulator output voltage
- 264:Core/Src/main.c **** 	 */
- 265:Core/Src/main.c **** 	__HAL_RCC_PWR_CLK_ENABLE();
- 266:Core/Src/main.c **** 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
- 267:Core/Src/main.c **** 
- 268:Core/Src/main.c **** 	/** Initializes the RCC Oscillators according to the specified parameters
- 269:Core/Src/main.c **** 	 * in the RCC_OscInitTypeDef structure.
- 270:Core/Src/main.c **** 	 */
- 271:Core/Src/main.c **** 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
- 272:Core/Src/main.c **** 	RCC_OscInitStruct.HSEState = RCC_HSE_ON;
- 273:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
- 274:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
- 275:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLM = 4;
- 276:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLN = 168;
- 277:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
- 278:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLQ = 4;
- 279:Core/Src/main.c **** 	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
- 280:Core/Src/main.c **** 	{
- 281:Core/Src/main.c **** 		Error_Handler();
- 282:Core/Src/main.c **** 	}
- 283:Core/Src/main.c **** 
- 284:Core/Src/main.c **** 	/** Initializes the CPU, AHB and APB buses clocks
- 285:Core/Src/main.c **** 	 */
- 286:Core/Src/main.c **** 	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RC
- 287:Core/Src/main.c **** 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
- 288:Core/Src/main.c **** 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
- 289:Core/Src/main.c **** 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
- 290:Core/Src/main.c **** 	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
- 291:Core/Src/main.c **** 
- 292:Core/Src/main.c **** 	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
- 293:Core/Src/main.c **** 	{
- 294:Core/Src/main.c **** 		Error_Handler();
- 295:Core/Src/main.c **** 	}
- 296:Core/Src/main.c **** }
- 297:Core/Src/main.c **** 
- 298:Core/Src/main.c **** /* USER CODE BEGIN 4 */
- 299:Core/Src/main.c **** 
- 300:Core/Src/main.c **** /* USER CODE END 4 */
- 301:Core/Src/main.c **** 
- 302:Core/Src/main.c **** /**
- 303:Core/Src/main.c ****  * @brief  This function is executed in case of error occurrence.
- 304:Core/Src/main.c ****  * @retval None
- 305:Core/Src/main.c ****  */
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 15
-
-
- 306:Core/Src/main.c **** void Error_Handler(void)
- 307:Core/Src/main.c **** {
- 451              		.loc 1 307 1 view -0
- 452              		.cfi_startproc
- 453              		@ Volatile: function does not return.
- 454              		@ args = 0, pretend = 0, frame = 0
- 455              		@ frame_needed = 0, uses_anonymous_args = 0
- 456              		@ link register save eliminated.
- 308:Core/Src/main.c **** 	/* USER CODE BEGIN Error_Handler_Debug */
- 309:Core/Src/main.c **** 	/* User can add his own implementation to report the HAL error return state */
- 310:Core/Src/main.c **** 	__disable_irq();
- 457              		.loc 1 310 2 view .LVU98
- 458              	.LBB4:
- 459              	.LBI4:
- 460              		.file 2 "Drivers/CMSIS/Include/cmsis_gcc.h"
+  34              		@ link register save eliminated.
+ 184:Core/Src/main.c **** 	/* USER CODE BEGIN Error_Handler_Debug */
+ 185:Core/Src/main.c **** 	/* User can add his own implementation to report the HAL error return state */
+ 186:Core/Src/main.c **** 	__disable_irq();
+  35              		.loc 1 186 2 view .LVU1
+  36              	.LBB4:
+  37              	.LBI4:
+  38              		.file 2 "Drivers/CMSIS/Include/cmsis_gcc.h"
    1:Drivers/CMSIS/Include/cmsis_gcc.h **** /**************************************************************************//**
    2:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @file     cmsis_gcc.h
    3:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
    4:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @version  V5.4.1
    5:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @date     27. May 2021
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 5
+
+
    6:Drivers/CMSIS/Include/cmsis_gcc.h ****  ******************************************************************************/
    7:Drivers/CMSIS/Include/cmsis_gcc.h **** /*
    8:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Copyright (c) 2009-2021 Arm Limited. All rights reserved.
@@ -898,9 +278,6 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
   40:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ASM
   41:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __ASM                                  __asm
   42:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 16
-
-
   43:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __INLINE
   44:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __INLINE                               inline
   45:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
@@ -921,6 +298,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
   60:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
   61:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED
   62:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 6
+
+
   63:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
   64:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
   65:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
@@ -958,9 +338,6 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
   97:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
   98:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
   99:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 17
-
-
  100:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
  101:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
  102:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
@@ -981,6 +358,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  117:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __COMPILER_BARRIER()                   __ASM volatile("":::"memory")
  118:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
  119:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 7
+
+
  120:Drivers/CMSIS/Include/cmsis_gcc.h **** /* #########################  Startup and Lowlevel Init  ######################## */
  121:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  122:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __PROGRAM_START
@@ -1018,9 +398,6 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  154:Drivers/CMSIS/Include/cmsis_gcc.h ****     }
  155:Drivers/CMSIS/Include/cmsis_gcc.h ****   }
  156:Drivers/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 18
-
-
  157:Drivers/CMSIS/Include/cmsis_gcc.h ****   for (__zero_table_t const* pTable = &__zero_table_start__; pTable < &__zero_table_end__; ++pTable
  158:Drivers/CMSIS/Include/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
  159:Drivers/CMSIS/Include/cmsis_gcc.h ****       pTable->dest[i] = 0u;
@@ -1041,6 +418,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  174:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __STACK_LIMIT             __StackLimit
  175:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
  176:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 8
+
+
  177:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __VECTOR_TABLE
  178:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __VECTOR_TABLE            __Vectors
  179:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
@@ -1078,9 +458,6 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  211:Drivers/CMSIS/Include/cmsis_gcc.h **** /* Define macros for porting to both thumb1 and thumb2.
  212:Drivers/CMSIS/Include/cmsis_gcc.h ****  * For thumb1, use low register (r0-r7), specified by constraint "l"
  213:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Otherwise, use general registers, specified by constraint "r" */
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 19
-
-
  214:Drivers/CMSIS/Include/cmsis_gcc.h **** #if defined (__thumb__) && !defined (__thumb2__)
  215:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_OUT_REG(r) "=l" (r)
  216:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_RW_REG(r) "+l" (r)
@@ -1101,6 +478,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  231:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Wait For Interrupt
  232:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Wait For Interrupt is a hint instruction that suspends execution until one of a number o
  233:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 9
+
+
  234:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __WFI()                             __ASM volatile ("wfi":::"memory")
  235:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  236:Drivers/CMSIS/Include/cmsis_gcc.h **** 
@@ -1138,9 +518,6 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  268:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  269:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __DSB(void)
  270:Drivers/CMSIS/Include/cmsis_gcc.h **** {
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 20
-
-
  271:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("dsb 0xF":::"memory");
  272:Drivers/CMSIS/Include/cmsis_gcc.h **** }
  273:Drivers/CMSIS/Include/cmsis_gcc.h **** 
@@ -1161,6 +538,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  288:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Reverses the byte order in unsigned integer value. For example, 0x12345678 becomes 0x785
  289:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    value  Value to reverse
  290:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               Reversed value
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 10
+
+
  291:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  292:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __REV(uint32_t value)
  293:Drivers/CMSIS/Include/cmsis_gcc.h **** {
@@ -1198,9 +578,6 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  325:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  326:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE int16_t __REVSH(int16_t value)
  327:Drivers/CMSIS/Include/cmsis_gcc.h **** {
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 21
-
-
  328:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
  329:Drivers/CMSIS/Include/cmsis_gcc.h ****   return (int16_t)__builtin_bswap16(value);
  330:Drivers/CMSIS/Include/cmsis_gcc.h **** #else
@@ -1221,6 +598,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  345:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  346:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __ROR(uint32_t op1, uint32_t op2)
  347:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 11
+
+
  348:Drivers/CMSIS/Include/cmsis_gcc.h ****   op2 %= 32U;
  349:Drivers/CMSIS/Include/cmsis_gcc.h ****   if (op2 == 0U)
  350:Drivers/CMSIS/Include/cmsis_gcc.h ****   {
@@ -1258,9 +638,6 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  382:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t s = (4U /*sizeof(v)*/ * 8U) - 1U; /* extra shift needed at end */
  383:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  384:Drivers/CMSIS/Include/cmsis_gcc.h ****   result = value;                      /* r will be reversed bits of v; first get LSB of v */
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 22
-
-
  385:Drivers/CMSIS/Include/cmsis_gcc.h ****   for (value >>= 1U; value != 0U; value >>= 1U)
  386:Drivers/CMSIS/Include/cmsis_gcc.h ****   {
  387:Drivers/CMSIS/Include/cmsis_gcc.h ****     result <<= 1U;
@@ -1281,6 +658,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  402:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  403:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint8_t __CLZ(uint32_t value)
  404:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 12
+
+
  405:Drivers/CMSIS/Include/cmsis_gcc.h ****   /* Even though __builtin_clz produces a CLZ instruction on ARM, formally
  406:Drivers/CMSIS/Include/cmsis_gcc.h ****      __builtin_clz(0) is undefined behaviour, so handle this case specially.
  407:Drivers/CMSIS/Include/cmsis_gcc.h ****      This guarantees ARM-compatible results if happening to compile on a non-ARM
@@ -1318,9 +698,6 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  439:Drivers/CMSIS/Include/cmsis_gcc.h ****     /* Prior to GCC 4.8, "Q" will be expanded to [rx, #0] which is not
  440:Drivers/CMSIS/Include/cmsis_gcc.h ****        accepted by assembler. So has to use following less efficient pattern.
  441:Drivers/CMSIS/Include/cmsis_gcc.h ****     */
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 23
-
-
  442:Drivers/CMSIS/Include/cmsis_gcc.h ****    __ASM volatile ("ldrexb %0, [%1]" : "=r" (result) : "r" (addr) : "memory" );
  443:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
  444:Drivers/CMSIS/Include/cmsis_gcc.h ****    return ((uint8_t) result);    /* Add explicit type cast here */
@@ -1341,6 +718,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  459:Drivers/CMSIS/Include/cmsis_gcc.h ****    __ASM volatile ("ldrexh %0, %1" : "=r" (result) : "Q" (*addr) );
  460:Drivers/CMSIS/Include/cmsis_gcc.h **** #else
  461:Drivers/CMSIS/Include/cmsis_gcc.h ****     /* Prior to GCC 4.8, "Q" will be expanded to [rx, #0] which is not
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 13
+
+
  462:Drivers/CMSIS/Include/cmsis_gcc.h ****        accepted by assembler. So has to use following less efficient pattern.
  463:Drivers/CMSIS/Include/cmsis_gcc.h ****     */
  464:Drivers/CMSIS/Include/cmsis_gcc.h ****    __ASM volatile ("ldrexh %0, [%1]" : "=r" (result) : "r" (addr) : "memory" );
@@ -1378,9 +758,6 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  496:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  497:Drivers/CMSIS/Include/cmsis_gcc.h ****    __ASM volatile ("strexb %0, %2, %1" : "=&r" (result), "=Q" (*addr) : "r" ((uint32_t)value) );
  498:Drivers/CMSIS/Include/cmsis_gcc.h ****    return(result);
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 24
-
-
  499:Drivers/CMSIS/Include/cmsis_gcc.h **** }
  500:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  501:Drivers/CMSIS/Include/cmsis_gcc.h **** 
@@ -1401,6 +778,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  516:Drivers/CMSIS/Include/cmsis_gcc.h **** }
  517:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  518:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 14
+
+
  519:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
  520:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   STR Exclusive (32 bit)
  521:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Executes a exclusive STR instruction for 32 bit values.
@@ -1438,9 +818,6 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  553:Drivers/CMSIS/Include/cmsis_gcc.h ****      (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    )
  554:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
  555:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Signed Saturate
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 25
-
-
  556:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Saturates a signed value.
  557:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]  ARG1  Value to be saturated
  558:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]  ARG2  Bit position to saturate to (1..32)
@@ -1461,6 +838,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  573:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]  ARG1  Value to be saturated
  574:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]  ARG2  Bit position to saturate to (0..31)
  575:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return             Saturated value
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 15
+
+
  576:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  577:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __USAT(ARG1, ARG2) \
  578:Drivers/CMSIS/Include/cmsis_gcc.h **** __extension__ \
@@ -1498,9 +878,6 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  610:Drivers/CMSIS/Include/cmsis_gcc.h ****     uint32_t result;
  611:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  612:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 26
-
-
  613:Drivers/CMSIS/Include/cmsis_gcc.h ****    __ASM volatile ("ldrbt %0, %1" : "=r" (result) : "Q" (*ptr) );
  614:Drivers/CMSIS/Include/cmsis_gcc.h **** #else
  615:Drivers/CMSIS/Include/cmsis_gcc.h ****     /* Prior to GCC 4.8, "Q" will be expanded to [rx, #0] which is not
@@ -1521,6 +898,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  630:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint16_t __LDRHT(volatile uint16_t *ptr)
  631:Drivers/CMSIS/Include/cmsis_gcc.h **** {
  632:Drivers/CMSIS/Include/cmsis_gcc.h ****     uint32_t result;
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 16
+
+
  633:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  634:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
  635:Drivers/CMSIS/Include/cmsis_gcc.h ****    __ASM volatile ("ldrht %0, %1" : "=r" (result) : "Q" (*ptr) );
@@ -1558,9 +938,6 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  667:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __STRBT(uint8_t value, volatile uint8_t *ptr)
  668:Drivers/CMSIS/Include/cmsis_gcc.h **** {
  669:Drivers/CMSIS/Include/cmsis_gcc.h ****    __ASM volatile ("strbt %1, %0" : "=Q" (*ptr) : "r" ((uint32_t)value) );
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 27
-
-
  670:Drivers/CMSIS/Include/cmsis_gcc.h **** }
  671:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  672:Drivers/CMSIS/Include/cmsis_gcc.h **** 
@@ -1581,6 +958,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  687:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Executes a Unprivileged STRT instruction for 32 bit values.
  688:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]  value  Value to store
  689:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to location
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 17
+
+
  690:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  691:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __STRT(uint32_t value, volatile uint32_t *ptr)
  692:Drivers/CMSIS/Include/cmsis_gcc.h **** {
@@ -1618,9 +998,6 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  724:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  725:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
  726:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Unsigned Saturate
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 28
-
-
  727:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Saturates an unsigned value.
  728:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]  value  Value to be saturated
  729:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    sat  Bit position to saturate to (0..31)
@@ -1641,6 +1018,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  744:Drivers/CMSIS/Include/cmsis_gcc.h ****     }
  745:Drivers/CMSIS/Include/cmsis_gcc.h ****   }
  746:Drivers/CMSIS/Include/cmsis_gcc.h ****   return (uint32_t)val;
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 18
+
+
  747:Drivers/CMSIS/Include/cmsis_gcc.h **** }
  748:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  749:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif /* ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
@@ -1678,9 +1058,6 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  781:Drivers/CMSIS/Include/cmsis_gcc.h ****    __ASM volatile ("ldah %0, %1" : "=r" (result) : "Q" (*ptr) : "memory" );
  782:Drivers/CMSIS/Include/cmsis_gcc.h ****    return ((uint16_t) result);
  783:Drivers/CMSIS/Include/cmsis_gcc.h **** }
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 29
-
-
  784:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  785:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  786:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
@@ -1701,6 +1078,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  801:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
  802:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Store-Release (8 bit)
  803:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Executes a STLB instruction for 8 bit values.
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 19
+
+
  804:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]  value  Value to store
  805:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to location
  806:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
@@ -1738,9 +1118,6 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  838:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Load-Acquire Exclusive (8 bit)
  839:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Executes a LDAB exclusive instruction for 8 bit value.
  840:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to data
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 30
-
-
  841:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return             value of type uint8_t at (*ptr)
  842:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  843:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint8_t __LDAEXB(volatile uint8_t *ptr)
@@ -1761,6 +1138,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  858:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint16_t __LDAEXH(volatile uint16_t *ptr)
  859:Drivers/CMSIS/Include/cmsis_gcc.h **** {
  860:Drivers/CMSIS/Include/cmsis_gcc.h ****     uint32_t result;
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 20
+
+
  861:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  862:Drivers/CMSIS/Include/cmsis_gcc.h ****    __ASM volatile ("ldaexh %0, %1" : "=r" (result) : "Q" (*ptr) : "memory" );
  863:Drivers/CMSIS/Include/cmsis_gcc.h ****    return ((uint16_t) result);
@@ -1798,9 +1178,6 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  895:Drivers/CMSIS/Include/cmsis_gcc.h ****    return(result);
  896:Drivers/CMSIS/Include/cmsis_gcc.h **** }
  897:Drivers/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 31
-
-
  898:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  899:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
  900:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Store-Release Exclusive (16 bit)
@@ -1821,6 +1198,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  915:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  916:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
  917:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Store-Release Exclusive (32 bit)
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 21
+
+
  918:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Executes a STL exclusive instruction for 32 bit values.
  919:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]  value  Value to store
  920:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to location
@@ -1858,578 +1238,505 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 1
  952:Drivers/CMSIS/Include/cmsis_gcc.h **** }
  953:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  954:Drivers/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 32
-
-
  955:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
  956:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
  957:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Disables IRQ interrupts by setting special-purpose register PRIMASK.
  958:Drivers/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
  959:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  960:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_irq(void)
- 461              		.loc 2 960 27 view .LVU99
- 462              	.LBB5:
+  39              		.loc 2 960 27 view .LVU2
+  40              	.LBB5:
  961:Drivers/CMSIS/Include/cmsis_gcc.h **** {
  962:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsid i" : : : "memory");
- 463              		.loc 2 962 3 view .LVU100
- 464              		.syntax unified
- 465              	@ 962 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
- 466 0000 72B6     		cpsid i
- 467              	@ 0 "" 2
- 468              		.thumb
- 469              		.syntax unified
- 470              	.L25:
- 471              	.LBE5:
- 472              	.LBE4:
- 311:Core/Src/main.c **** 	while (1)
- 473              		.loc 1 311 2 view .LVU101
- 312:Core/Src/main.c **** 	{
- 313:Core/Src/main.c **** 	}
- 474              		.loc 1 313 2 view .LVU102
- 311:Core/Src/main.c **** 	while (1)
- 475              		.loc 1 311 8 view .LVU103
- 476 0002 FEE7     		b	.L25
- 477              		.cfi_endproc
- 478              	.LFE144:
- 480              		.section	.text.HAL_CAN_RxFifo0MsgPendingCallback,"ax",%progbits
- 481              		.align	1
- 482              		.global	HAL_CAN_RxFifo0MsgPendingCallback
- 483              		.syntax unified
- 484              		.thumb
- 485              		.thumb_func
- 487              	HAL_CAN_RxFifo0MsgPendingCallback:
- 488              	.LVL38:
- 489              	.LFB141:
- 158:Core/Src/main.c **** 	/* Get RX message */
- 490              		.loc 1 158 1 view -0
- 491              		.cfi_startproc
- 492              		@ args = 0, pretend = 0, frame = 0
- 493              		@ frame_needed = 0, uses_anonymous_args = 0
- 158:Core/Src/main.c **** 	/* Get RX message */
- 494              		.loc 1 158 1 is_stmt 0 view .LVU105
- 495 0000 08B5     		push	{r3, lr}
- 496              	.LCFI9:
- 497              		.cfi_def_cfa_offset 8
- 498              		.cfi_offset 3, -8
- 499              		.cfi_offset 14, -4
- 160:Core/Src/main.c **** 	{
- 500              		.loc 1 160 2 is_stmt 1 view .LVU106
- 160:Core/Src/main.c **** 	{
- 501              		.loc 1 160 6 is_stmt 0 view .LVU107
- 502 0002 064B     		ldr	r3, .L30
- 503 0004 064A     		ldr	r2, .L30+4
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 33
+  41              		.loc 2 962 3 view .LVU3
+  42              		.syntax unified
+  43              	@ 962 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+  44 0000 72B6     		cpsid i
+  45              	@ 0 "" 2
+  46              		.thumb
+  47              		.syntax unified
+  48              	.L2:
+  49              	.LBE5:
+  50              	.LBE4:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 22
 
 
- 504 0006 0021     		movs	r1, #0
- 505 0008 FFF7FEFF 		bl	HAL_CAN_GetRxMessage
- 506              	.LVL39:
- 160:Core/Src/main.c **** 	{
- 507              		.loc 1 160 5 discriminator 1 view .LVU108
- 508 000c 18B9     		cbnz	r0, .L29
- 165:Core/Src/main.c **** }
- 509              		.loc 1 165 2 is_stmt 1 view .LVU109
- 165:Core/Src/main.c **** }
- 510              		.loc 1 165 17 is_stmt 0 view .LVU110
- 511 000e 054B     		ldr	r3, .L30+8
- 512 0010 0122     		movs	r2, #1
- 513 0012 1A70     		strb	r2, [r3]
- 166:Core/Src/main.c **** /* USER CODE END 0 */
- 514              		.loc 1 166 1 view .LVU111
- 515 0014 08BD     		pop	{r3, pc}
- 516              	.L29:
- 163:Core/Src/main.c **** 	}
- 517              		.loc 1 163 3 is_stmt 1 view .LVU112
- 518 0016 FFF7FEFF 		bl	Error_Handler
- 519              	.LVL40:
- 520              	.L31:
- 521 001a 00BF     		.align	2
- 522              	.L30:
- 523 001c 00000000 		.word	rx_data
- 524 0020 00000000 		.word	rx_header
- 525 0024 00000000 		.word	flag_recv_data
- 526              		.cfi_endproc
- 527              	.LFE141:
- 529              		.section	.text.SystemClock_Config,"ax",%progbits
- 530              		.align	1
- 531              		.global	SystemClock_Config
- 532              		.syntax unified
- 533              		.thumb
- 534              		.thumb_func
- 536              	SystemClock_Config:
- 537              	.LFB143:
- 259:Core/Src/main.c **** 	RCC_OscInitTypeDef RCC_OscInitStruct = {0};
- 538              		.loc 1 259 1 view -0
- 539              		.cfi_startproc
- 540              		@ args = 0, pretend = 0, frame = 80
- 541              		@ frame_needed = 0, uses_anonymous_args = 0
- 542 0000 10B5     		push	{r4, lr}
- 543              	.LCFI10:
- 544              		.cfi_def_cfa_offset 8
- 545              		.cfi_offset 4, -8
- 546              		.cfi_offset 14, -4
- 547 0002 94B0     		sub	sp, sp, #80
- 548              	.LCFI11:
- 549              		.cfi_def_cfa_offset 88
- 260:Core/Src/main.c **** 	RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
- 550              		.loc 1 260 2 view .LVU114
- 260:Core/Src/main.c **** 	RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
- 551              		.loc 1 260 21 is_stmt 0 view .LVU115
- 552 0004 08AC     		add	r4, sp, #32
- 553 0006 3022     		movs	r2, #48
- 554 0008 0021     		movs	r1, #0
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 34
+ 187:Core/Src/main.c **** 	while (1)
+  51              		.loc 1 187 2 view .LVU4
+ 188:Core/Src/main.c **** 	{
+ 189:Core/Src/main.c **** 	}
+  52              		.loc 1 189 2 view .LVU5
+ 187:Core/Src/main.c **** 	while (1)
+  53              		.loc 1 187 8 view .LVU6
+  54 0002 FEE7     		b	.L2
+  55              		.cfi_endproc
+  56              	.LFE139:
+  58              		.section	.text.SystemClock_Config,"ax",%progbits
+  59              		.align	1
+  60              		.global	SystemClock_Config
+  61              		.syntax unified
+  62              		.thumb
+  63              		.thumb_func
+  65              	SystemClock_Config:
+  66              	.LFB138:
+ 135:Core/Src/main.c **** 	RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  67              		.loc 1 135 1 view -0
+  68              		.cfi_startproc
+  69              		@ args = 0, pretend = 0, frame = 80
+  70              		@ frame_needed = 0, uses_anonymous_args = 0
+  71 0000 10B5     		push	{r4, lr}
+  72              	.LCFI0:
+  73              		.cfi_def_cfa_offset 8
+  74              		.cfi_offset 4, -8
+  75              		.cfi_offset 14, -4
+  76 0002 94B0     		sub	sp, sp, #80
+  77              	.LCFI1:
+  78              		.cfi_def_cfa_offset 88
+ 136:Core/Src/main.c **** 	RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  79              		.loc 1 136 2 view .LVU8
+ 136:Core/Src/main.c **** 	RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  80              		.loc 1 136 21 is_stmt 0 view .LVU9
+  81 0004 08AC     		add	r4, sp, #32
+  82 0006 3022     		movs	r2, #48
+  83 0008 0021     		movs	r1, #0
+  84 000a 2046     		mov	r0, r4
+  85 000c FFF7FEFF 		bl	memset
+  86              	.LVL0:
+ 137:Core/Src/main.c **** 
+  87              		.loc 1 137 2 is_stmt 1 view .LVU10
+ 137:Core/Src/main.c **** 
+  88              		.loc 1 137 21 is_stmt 0 view .LVU11
+  89 0010 0023     		movs	r3, #0
+  90 0012 0393     		str	r3, [sp, #12]
+  91 0014 0493     		str	r3, [sp, #16]
+  92 0016 0593     		str	r3, [sp, #20]
+  93 0018 0693     		str	r3, [sp, #24]
+  94 001a 0793     		str	r3, [sp, #28]
+ 141:Core/Src/main.c **** 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+  95              		.loc 1 141 2 is_stmt 1 view .LVU12
+  96              	.LBB6:
+ 141:Core/Src/main.c **** 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+  97              		.loc 1 141 2 view .LVU13
+  98 001c 0193     		str	r3, [sp, #4]
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 23
 
 
- 555 000a 2046     		mov	r0, r4
- 556 000c FFF7FEFF 		bl	memset
- 557              	.LVL41:
- 261:Core/Src/main.c **** 
- 558              		.loc 1 261 2 is_stmt 1 view .LVU116
- 261:Core/Src/main.c **** 
- 559              		.loc 1 261 21 is_stmt 0 view .LVU117
- 560 0010 0023     		movs	r3, #0
- 561 0012 0393     		str	r3, [sp, #12]
- 562 0014 0493     		str	r3, [sp, #16]
- 563 0016 0593     		str	r3, [sp, #20]
- 564 0018 0693     		str	r3, [sp, #24]
- 565 001a 0793     		str	r3, [sp, #28]
- 265:Core/Src/main.c **** 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
- 566              		.loc 1 265 2 is_stmt 1 view .LVU118
- 567              	.LBB6:
- 265:Core/Src/main.c **** 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
- 568              		.loc 1 265 2 view .LVU119
- 569 001c 0193     		str	r3, [sp, #4]
- 265:Core/Src/main.c **** 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
- 570              		.loc 1 265 2 view .LVU120
- 571 001e 1F4A     		ldr	r2, .L38
- 572 0020 116C     		ldr	r1, [r2, #64]
- 573 0022 41F08051 		orr	r1, r1, #268435456
- 574 0026 1164     		str	r1, [r2, #64]
- 265:Core/Src/main.c **** 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
- 575              		.loc 1 265 2 view .LVU121
- 576 0028 126C     		ldr	r2, [r2, #64]
- 577 002a 02F08052 		and	r2, r2, #268435456
- 578 002e 0192     		str	r2, [sp, #4]
- 265:Core/Src/main.c **** 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
- 579              		.loc 1 265 2 view .LVU122
- 580 0030 019A     		ldr	r2, [sp, #4]
- 581              	.LBE6:
- 265:Core/Src/main.c **** 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
- 582              		.loc 1 265 2 view .LVU123
- 266:Core/Src/main.c **** 
- 583              		.loc 1 266 2 view .LVU124
- 584              	.LBB7:
- 266:Core/Src/main.c **** 
- 585              		.loc 1 266 2 view .LVU125
- 586 0032 0293     		str	r3, [sp, #8]
- 266:Core/Src/main.c **** 
- 587              		.loc 1 266 2 view .LVU126
- 588 0034 1A4B     		ldr	r3, .L38+4
- 589 0036 1A68     		ldr	r2, [r3]
- 590 0038 42F48042 		orr	r2, r2, #16384
- 591 003c 1A60     		str	r2, [r3]
- 266:Core/Src/main.c **** 
- 592              		.loc 1 266 2 view .LVU127
- 593 003e 1B68     		ldr	r3, [r3]
- 594 0040 03F48043 		and	r3, r3, #16384
- 595 0044 0293     		str	r3, [sp, #8]
- 266:Core/Src/main.c **** 
- 596              		.loc 1 266 2 view .LVU128
- 597 0046 029B     		ldr	r3, [sp, #8]
- 598              	.LBE7:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 35
+ 141:Core/Src/main.c **** 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+  99              		.loc 1 141 2 view .LVU14
+ 100 001e 1F4A     		ldr	r2, .L9
+ 101 0020 116C     		ldr	r1, [r2, #64]
+ 102 0022 41F08051 		orr	r1, r1, #268435456
+ 103 0026 1164     		str	r1, [r2, #64]
+ 141:Core/Src/main.c **** 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+ 104              		.loc 1 141 2 view .LVU15
+ 105 0028 126C     		ldr	r2, [r2, #64]
+ 106 002a 02F08052 		and	r2, r2, #268435456
+ 107 002e 0192     		str	r2, [sp, #4]
+ 141:Core/Src/main.c **** 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+ 108              		.loc 1 141 2 view .LVU16
+ 109 0030 019A     		ldr	r2, [sp, #4]
+ 110              	.LBE6:
+ 141:Core/Src/main.c **** 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+ 111              		.loc 1 141 2 view .LVU17
+ 142:Core/Src/main.c **** 
+ 112              		.loc 1 142 2 view .LVU18
+ 113              	.LBB7:
+ 142:Core/Src/main.c **** 
+ 114              		.loc 1 142 2 view .LVU19
+ 115 0032 0293     		str	r3, [sp, #8]
+ 142:Core/Src/main.c **** 
+ 116              		.loc 1 142 2 view .LVU20
+ 117 0034 1A4B     		ldr	r3, .L9+4
+ 118 0036 1A68     		ldr	r2, [r3]
+ 119 0038 42F48042 		orr	r2, r2, #16384
+ 120 003c 1A60     		str	r2, [r3]
+ 142:Core/Src/main.c **** 
+ 121              		.loc 1 142 2 view .LVU21
+ 122 003e 1B68     		ldr	r3, [r3]
+ 123 0040 03F48043 		and	r3, r3, #16384
+ 124 0044 0293     		str	r3, [sp, #8]
+ 142:Core/Src/main.c **** 
+ 125              		.loc 1 142 2 view .LVU22
+ 126 0046 029B     		ldr	r3, [sp, #8]
+ 127              	.LBE7:
+ 142:Core/Src/main.c **** 
+ 128              		.loc 1 142 2 view .LVU23
+ 147:Core/Src/main.c **** 	RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+ 129              		.loc 1 147 2 view .LVU24
+ 147:Core/Src/main.c **** 	RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+ 130              		.loc 1 147 35 is_stmt 0 view .LVU25
+ 131 0048 0123     		movs	r3, #1
+ 132 004a 0893     		str	r3, [sp, #32]
+ 148:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+ 133              		.loc 1 148 2 is_stmt 1 view .LVU26
+ 148:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+ 134              		.loc 1 148 29 is_stmt 0 view .LVU27
+ 135 004c 4FF48033 		mov	r3, #65536
+ 136 0050 0993     		str	r3, [sp, #36]
+ 149:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+ 137              		.loc 1 149 2 is_stmt 1 view .LVU28
+ 149:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+ 138              		.loc 1 149 33 is_stmt 0 view .LVU29
+ 139 0052 0222     		movs	r2, #2
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 24
 
 
- 266:Core/Src/main.c **** 
- 599              		.loc 1 266 2 view .LVU129
- 271:Core/Src/main.c **** 	RCC_OscInitStruct.HSEState = RCC_HSE_ON;
- 600              		.loc 1 271 2 view .LVU130
- 271:Core/Src/main.c **** 	RCC_OscInitStruct.HSEState = RCC_HSE_ON;
- 601              		.loc 1 271 35 is_stmt 0 view .LVU131
- 602 0048 0123     		movs	r3, #1
- 603 004a 0893     		str	r3, [sp, #32]
- 272:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
- 604              		.loc 1 272 2 is_stmt 1 view .LVU132
- 272:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
- 605              		.loc 1 272 29 is_stmt 0 view .LVU133
- 606 004c 4FF48033 		mov	r3, #65536
- 607 0050 0993     		str	r3, [sp, #36]
- 273:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
- 608              		.loc 1 273 2 is_stmt 1 view .LVU134
- 273:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
- 609              		.loc 1 273 33 is_stmt 0 view .LVU135
- 610 0052 0222     		movs	r2, #2
- 611 0054 0E92     		str	r2, [sp, #56]
- 274:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLM = 4;
- 612              		.loc 1 274 2 is_stmt 1 view .LVU136
- 274:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLM = 4;
- 613              		.loc 1 274 34 is_stmt 0 view .LVU137
- 614 0056 4FF48003 		mov	r3, #4194304
- 615 005a 0F93     		str	r3, [sp, #60]
- 275:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLN = 168;
- 616              		.loc 1 275 2 is_stmt 1 view .LVU138
- 275:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLN = 168;
- 617              		.loc 1 275 29 is_stmt 0 view .LVU139
- 618 005c 0423     		movs	r3, #4
- 619 005e 1093     		str	r3, [sp, #64]
- 276:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
- 620              		.loc 1 276 2 is_stmt 1 view .LVU140
- 276:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
- 621              		.loc 1 276 29 is_stmt 0 view .LVU141
- 622 0060 A821     		movs	r1, #168
- 623 0062 1191     		str	r1, [sp, #68]
- 277:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLQ = 4;
- 624              		.loc 1 277 2 is_stmt 1 view .LVU142
- 277:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLQ = 4;
- 625              		.loc 1 277 29 is_stmt 0 view .LVU143
- 626 0064 1292     		str	r2, [sp, #72]
- 278:Core/Src/main.c **** 	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
- 627              		.loc 1 278 2 is_stmt 1 view .LVU144
- 278:Core/Src/main.c **** 	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
- 628              		.loc 1 278 29 is_stmt 0 view .LVU145
- 629 0066 1393     		str	r3, [sp, #76]
- 279:Core/Src/main.c **** 	{
- 630              		.loc 1 279 2 is_stmt 1 view .LVU146
- 279:Core/Src/main.c **** 	{
- 631              		.loc 1 279 6 is_stmt 0 view .LVU147
- 632 0068 2046     		mov	r0, r4
- 633 006a FFF7FEFF 		bl	HAL_RCC_OscConfig
- 634              	.LVL42:
- 279:Core/Src/main.c **** 	{
- 635              		.loc 1 279 5 discriminator 1 view .LVU148
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 36
+ 140 0054 0E92     		str	r2, [sp, #56]
+ 150:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLM = 4;
+ 141              		.loc 1 150 2 is_stmt 1 view .LVU30
+ 150:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLM = 4;
+ 142              		.loc 1 150 34 is_stmt 0 view .LVU31
+ 143 0056 4FF48003 		mov	r3, #4194304
+ 144 005a 0F93     		str	r3, [sp, #60]
+ 151:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLN = 168;
+ 145              		.loc 1 151 2 is_stmt 1 view .LVU32
+ 151:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLN = 168;
+ 146              		.loc 1 151 29 is_stmt 0 view .LVU33
+ 147 005c 0423     		movs	r3, #4
+ 148 005e 1093     		str	r3, [sp, #64]
+ 152:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+ 149              		.loc 1 152 2 is_stmt 1 view .LVU34
+ 152:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+ 150              		.loc 1 152 29 is_stmt 0 view .LVU35
+ 151 0060 A821     		movs	r1, #168
+ 152 0062 1191     		str	r1, [sp, #68]
+ 153:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLQ = 4;
+ 153              		.loc 1 153 2 is_stmt 1 view .LVU36
+ 153:Core/Src/main.c **** 	RCC_OscInitStruct.PLL.PLLQ = 4;
+ 154              		.loc 1 153 29 is_stmt 0 view .LVU37
+ 155 0064 1292     		str	r2, [sp, #72]
+ 154:Core/Src/main.c **** 	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+ 156              		.loc 1 154 2 is_stmt 1 view .LVU38
+ 154:Core/Src/main.c **** 	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+ 157              		.loc 1 154 29 is_stmt 0 view .LVU39
+ 158 0066 1393     		str	r3, [sp, #76]
+ 155:Core/Src/main.c **** 	{
+ 159              		.loc 1 155 2 is_stmt 1 view .LVU40
+ 155:Core/Src/main.c **** 	{
+ 160              		.loc 1 155 6 is_stmt 0 view .LVU41
+ 161 0068 2046     		mov	r0, r4
+ 162 006a FFF7FEFF 		bl	HAL_RCC_OscConfig
+ 163              	.LVL1:
+ 155:Core/Src/main.c **** 	{
+ 164              		.loc 1 155 5 discriminator 1 view .LVU42
+ 165 006e 88B9     		cbnz	r0, .L7
+ 162:Core/Src/main.c **** 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+ 166              		.loc 1 162 2 is_stmt 1 view .LVU43
+ 162:Core/Src/main.c **** 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+ 167              		.loc 1 162 30 is_stmt 0 view .LVU44
+ 168 0070 0F23     		movs	r3, #15
+ 169 0072 0393     		str	r3, [sp, #12]
+ 163:Core/Src/main.c **** 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+ 170              		.loc 1 163 2 is_stmt 1 view .LVU45
+ 163:Core/Src/main.c **** 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+ 171              		.loc 1 163 33 is_stmt 0 view .LVU46
+ 172 0074 0223     		movs	r3, #2
+ 173 0076 0493     		str	r3, [sp, #16]
+ 164:Core/Src/main.c **** 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+ 174              		.loc 1 164 2 is_stmt 1 view .LVU47
+ 164:Core/Src/main.c **** 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+ 175              		.loc 1 164 34 is_stmt 0 view .LVU48
+ 176 0078 0590     		str	r0, [sp, #20]
+ 165:Core/Src/main.c **** 	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 25
 
 
- 636 006e 88B9     		cbnz	r0, .L36
- 286:Core/Src/main.c **** 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
- 637              		.loc 1 286 2 is_stmt 1 view .LVU149
- 286:Core/Src/main.c **** 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
- 638              		.loc 1 286 30 is_stmt 0 view .LVU150
- 639 0070 0F23     		movs	r3, #15
- 640 0072 0393     		str	r3, [sp, #12]
- 287:Core/Src/main.c **** 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
- 641              		.loc 1 287 2 is_stmt 1 view .LVU151
- 287:Core/Src/main.c **** 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
- 642              		.loc 1 287 33 is_stmt 0 view .LVU152
- 643 0074 0223     		movs	r3, #2
- 644 0076 0493     		str	r3, [sp, #16]
- 288:Core/Src/main.c **** 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
- 645              		.loc 1 288 2 is_stmt 1 view .LVU153
- 288:Core/Src/main.c **** 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
- 646              		.loc 1 288 34 is_stmt 0 view .LVU154
- 647 0078 0590     		str	r0, [sp, #20]
- 289:Core/Src/main.c **** 	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
- 648              		.loc 1 289 2 is_stmt 1 view .LVU155
- 289:Core/Src/main.c **** 	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
- 649              		.loc 1 289 35 is_stmt 0 view .LVU156
- 650 007a 4FF4A053 		mov	r3, #5120
- 651 007e 0693     		str	r3, [sp, #24]
- 290:Core/Src/main.c **** 
- 652              		.loc 1 290 2 is_stmt 1 view .LVU157
- 290:Core/Src/main.c **** 
- 653              		.loc 1 290 35 is_stmt 0 view .LVU158
- 654 0080 4FF48053 		mov	r3, #4096
- 655 0084 0793     		str	r3, [sp, #28]
- 292:Core/Src/main.c **** 	{
- 656              		.loc 1 292 2 is_stmt 1 view .LVU159
- 292:Core/Src/main.c **** 	{
- 657              		.loc 1 292 6 is_stmt 0 view .LVU160
- 658 0086 0521     		movs	r1, #5
- 659 0088 03A8     		add	r0, sp, #12
- 660 008a FFF7FEFF 		bl	HAL_RCC_ClockConfig
- 661              	.LVL43:
- 292:Core/Src/main.c **** 	{
- 662              		.loc 1 292 5 discriminator 1 view .LVU161
- 663 008e 18B9     		cbnz	r0, .L37
- 296:Core/Src/main.c **** 
- 664              		.loc 1 296 1 view .LVU162
- 665 0090 14B0     		add	sp, sp, #80
- 666              	.LCFI12:
- 667              		.cfi_remember_state
- 668              		.cfi_def_cfa_offset 8
- 669              		@ sp needed
- 670 0092 10BD     		pop	{r4, pc}
- 671              	.L36:
- 672              	.LCFI13:
- 673              		.cfi_restore_state
- 281:Core/Src/main.c **** 	}
- 674              		.loc 1 281 3 is_stmt 1 view .LVU163
- 675 0094 FFF7FEFF 		bl	Error_Handler
- 676              	.LVL44:
- 677              	.L37:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 37
+ 177              		.loc 1 165 2 is_stmt 1 view .LVU49
+ 165:Core/Src/main.c **** 	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+ 178              		.loc 1 165 35 is_stmt 0 view .LVU50
+ 179 007a 4FF4A053 		mov	r3, #5120
+ 180 007e 0693     		str	r3, [sp, #24]
+ 166:Core/Src/main.c **** 
+ 181              		.loc 1 166 2 is_stmt 1 view .LVU51
+ 166:Core/Src/main.c **** 
+ 182              		.loc 1 166 35 is_stmt 0 view .LVU52
+ 183 0080 4FF48053 		mov	r3, #4096
+ 184 0084 0793     		str	r3, [sp, #28]
+ 168:Core/Src/main.c **** 	{
+ 185              		.loc 1 168 2 is_stmt 1 view .LVU53
+ 168:Core/Src/main.c **** 	{
+ 186              		.loc 1 168 6 is_stmt 0 view .LVU54
+ 187 0086 0521     		movs	r1, #5
+ 188 0088 03A8     		add	r0, sp, #12
+ 189 008a FFF7FEFF 		bl	HAL_RCC_ClockConfig
+ 190              	.LVL2:
+ 168:Core/Src/main.c **** 	{
+ 191              		.loc 1 168 5 discriminator 1 view .LVU55
+ 192 008e 18B9     		cbnz	r0, .L8
+ 172:Core/Src/main.c **** 
+ 193              		.loc 1 172 1 view .LVU56
+ 194 0090 14B0     		add	sp, sp, #80
+ 195              	.LCFI2:
+ 196              		.cfi_remember_state
+ 197              		.cfi_def_cfa_offset 8
+ 198              		@ sp needed
+ 199 0092 10BD     		pop	{r4, pc}
+ 200              	.L7:
+ 201              	.LCFI3:
+ 202              		.cfi_restore_state
+ 157:Core/Src/main.c **** 	}
+ 203              		.loc 1 157 3 is_stmt 1 view .LVU57
+ 204 0094 FFF7FEFF 		bl	Error_Handler
+ 205              	.LVL3:
+ 206              	.L8:
+ 170:Core/Src/main.c **** 	}
+ 207              		.loc 1 170 3 view .LVU58
+ 208 0098 FFF7FEFF 		bl	Error_Handler
+ 209              	.LVL4:
+ 210              	.L10:
+ 211              		.align	2
+ 212              	.L9:
+ 213 009c 00380240 		.word	1073887232
+ 214 00a0 00700040 		.word	1073770496
+ 215              		.cfi_endproc
+ 216              	.LFE138:
+ 218              		.section	.rodata.main.str1.4,"aMS",%progbits,1
+ 219              		.align	2
+ 220              	.LC1:
+ 221 0000 43414E20 		.ascii	"CAN test start\015\012\000"
+ 221      74657374 
+ 221      20737461 
+ 221      72740D0A 
+ 221      00
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 26
 
 
- 294:Core/Src/main.c **** 	}
- 678              		.loc 1 294 3 view .LVU164
- 679 0098 FFF7FEFF 		bl	Error_Handler
- 680              	.LVL45:
- 681              	.L39:
- 682              		.align	2
- 683              	.L38:
- 684 009c 00380240 		.word	1073887232
- 685 00a0 00700040 		.word	1073770496
- 686              		.cfi_endproc
- 687              	.LFE143:
- 689              		.section	.rodata.main.str1.4,"aMS",%progbits,1
- 690              		.align	2
- 691              	.LC14:
- 692 0000 30313233 		.ascii	"01234567\000"
- 692      34353637 
- 692      00
- 693              		.section	.text.main,"ax",%progbits
- 694              		.align	1
- 695              		.global	main
- 696              		.syntax unified
- 697              		.thumb
- 698              		.thumb_func
- 700              	main:
- 701              	.LFB142:
- 174:Core/Src/main.c **** 
- 702              		.loc 1 174 1 view -0
- 703              		.cfi_startproc
- 704              		@ args = 0, pretend = 0, frame = 8
- 705              		@ frame_needed = 0, uses_anonymous_args = 0
- 706 0000 00B5     		push	{lr}
- 707              	.LCFI14:
- 708              		.cfi_def_cfa_offset 4
- 709              		.cfi_offset 14, -4
- 710 0002 83B0     		sub	sp, sp, #12
- 711              	.LCFI15:
- 712              		.cfi_def_cfa_offset 16
- 183:Core/Src/main.c **** 
- 713              		.loc 1 183 2 view .LVU166
- 714 0004 FFF7FEFF 		bl	HAL_Init
- 715              	.LVL46:
- 190:Core/Src/main.c **** 
- 716              		.loc 1 190 2 view .LVU167
- 717 0008 FFF7FEFF 		bl	SystemClock_Config
- 718              	.LVL47:
- 197:Core/Src/main.c **** 	MX_CAN1_Init();
- 719              		.loc 1 197 2 view .LVU168
- 720 000c FFF7FEFF 		bl	MX_GPIO_Init
- 721              	.LVL48:
- 198:Core/Src/main.c **** 	MX_TIM2_Init();
- 722              		.loc 1 198 2 view .LVU169
- 723 0010 FFF7FEFF 		bl	MX_CAN1_Init
- 724              	.LVL49:
- 199:Core/Src/main.c **** 	MX_USART2_UART_Init();
- 725              		.loc 1 199 2 view .LVU170
- 726 0014 FFF7FEFF 		bl	MX_TIM2_Init
- 727              	.LVL50:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 38
+ 222 0011 000000   		.align	2
+ 223              	.LC2:
+ 224 0014 52656365 		.ascii	"Received CAN data: \000"
+ 224      69766564 
+ 224      2043414E 
+ 224      20646174 
+ 224      613A2000 
+ 225              		.align	2
+ 226              	.LC3:
+ 227 0028 25303258 		.ascii	"%02X \000"
+ 227      2000
+ 228 002e 0000     		.align	2
+ 229              	.LC4:
+ 230 0030 0D0A00   		.ascii	"\015\012\000"
+ 231 0033 00       		.align	2
+ 232              	.LC0:
+ 233 0034 30313233 		.ascii	"01234567\000"
+ 233      34353637 
+ 233      00
+ 234              		.section	.text.main,"ax",%progbits
+ 235              		.align	1
+ 236              		.global	main
+ 237              		.syntax unified
+ 238              		.thumb
+ 239              		.thumb_func
+ 241              	main:
+ 242              	.LFB137:
+  70:Core/Src/main.c **** 
+ 243              		.loc 1 70 1 view -0
+ 244              		.cfi_startproc
+ 245              		@ args = 0, pretend = 0, frame = 24
+ 246              		@ frame_needed = 0, uses_anonymous_args = 0
+ 247 0000 10B5     		push	{r4, lr}
+ 248              	.LCFI4:
+ 249              		.cfi_def_cfa_offset 8
+ 250              		.cfi_offset 4, -8
+ 251              		.cfi_offset 14, -4
+ 252 0002 86B0     		sub	sp, sp, #24
+ 253              	.LCFI5:
+ 254              		.cfi_def_cfa_offset 32
+  79:Core/Src/main.c **** 
+ 255              		.loc 1 79 2 view .LVU60
+ 256 0004 FFF7FEFF 		bl	HAL_Init
+ 257              	.LVL5:
+  86:Core/Src/main.c **** 
+ 258              		.loc 1 86 2 view .LVU61
+ 259 0008 FFF7FEFF 		bl	SystemClock_Config
+ 260              	.LVL6:
+  93:Core/Src/main.c **** 	MX_CAN1_Init();
+ 261              		.loc 1 93 2 view .LVU62
+ 262 000c FFF7FEFF 		bl	MX_GPIO_Init
+ 263              	.LVL7:
+  94:Core/Src/main.c **** 	MX_TIM2_Init();
+ 264              		.loc 1 94 2 view .LVU63
+ 265 0010 FFF7FEFF 		bl	MX_CAN1_Init
+ 266              	.LVL8:
+  95:Core/Src/main.c **** 	MX_USART2_UART_Init();
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 27
 
 
- 200:Core/Src/main.c **** 	/* USER CODE BEGIN 2 */
- 728              		.loc 1 200 2 view .LVU171
- 729 0018 FFF7FEFF 		bl	MX_USART2_UART_Init
- 730              	.LVL51:
- 202:Core/Src/main.c **** 	uint8_t can_test_data[8] = {0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37};
- 731              		.loc 1 202 2 view .LVU172
- 732 001c FFF7FEFF 		bl	bsp_can_create
- 733              	.LVL52:
- 203:Core/Src/main.c **** 	/* USER CODE END 2 */
- 734              		.loc 1 203 2 view .LVU173
- 203:Core/Src/main.c **** 	/* USER CODE END 2 */
- 735              		.loc 1 203 10 is_stmt 0 view .LVU174
- 736 0020 0E4B     		ldr	r3, .L44
- 737 0022 93E80300 		ldm	r3, {r0, r1}
- 738 0026 02AB     		add	r3, sp, #8
- 739 0028 03E90300 		stmdb	r3, {r0, r1}
- 740              	.L41:
- 209:Core/Src/main.c **** 	{
- 741              		.loc 1 209 2 is_stmt 1 view .LVU175
- 742              	.LBB8:
- 226:Core/Src/main.c **** 
- 743              		.loc 1 226 3 view .LVU176
- 226:Core/Src/main.c **** 
- 744              		.loc 1 226 27 is_stmt 0 view .LVU177
- 745 002c 0C4B     		ldr	r3, .L44+4
- 746 002e 6A46     		mov	r2, sp
- 747 0030 0C49     		ldr	r1, .L44+8
- 748 0032 0D48     		ldr	r0, .L44+12
- 749 0034 FFF7FEFF 		bl	HAL_CAN_AddTxMessage
- 750              	.LVL53:
- 238:Core/Src/main.c **** 		// loop_cnt++;
- 751              		.loc 1 238 3 is_stmt 1 view .LVU178
- 752 0038 4FF47A70 		mov	r0, #1000
- 753 003c FFF7FEFF 		bl	HAL_Delay
- 754              	.LVL54:
- 241:Core/Src/main.c **** 		{
- 755              		.loc 1 241 3 view .LVU179
- 241:Core/Src/main.c **** 		{
- 756              		.loc 1 241 22 is_stmt 0 view .LVU180
- 757 0040 0A4B     		ldr	r3, .L44+16
- 758 0042 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 241:Core/Src/main.c **** 		{
- 759              		.loc 1 241 6 view .LVU181
- 760 0044 012B     		cmp	r3, #1
- 761 0046 F1D1     		bne	.L41
- 243:Core/Src/main.c **** 			flag_recv_data = 0;
- 762              		.loc 1 243 4 is_stmt 1 view .LVU182
- 763 0048 6423     		movs	r3, #100
- 764 004a 1022     		movs	r2, #16
- 765 004c 0849     		ldr	r1, .L44+20
- 766 004e 0948     		ldr	r0, .L44+24
- 767 0050 FFF7FEFF 		bl	HAL_UART_Transmit
- 768              	.LVL55:
- 244:Core/Src/main.c **** 		}
- 769              		.loc 1 244 4 view .LVU183
- 244:Core/Src/main.c **** 		}
- 770              		.loc 1 244 19 is_stmt 0 view .LVU184
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 39
+ 267              		.loc 1 95 2 view .LVU64
+ 268 0014 FFF7FEFF 		bl	MX_TIM2_Init
+ 269              	.LVL9:
+  96:Core/Src/main.c **** 	/* USER CODE BEGIN 2 */
+ 270              		.loc 1 96 2 view .LVU65
+ 271 0018 FFF7FEFF 		bl	MX_USART2_UART_Init
+ 272              	.LVL10:
+  98:Core/Src/main.c **** 	uint8_t can_test_data[8] = {0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37};
+ 273              		.loc 1 98 2 view .LVU66
+ 274 001c FFF7FEFF 		bl	bsp_can_create
+ 275              	.LVL11:
+  99:Core/Src/main.c **** 	uint8_t can_recv_data[8] = {0};
+ 276              		.loc 1 99 2 view .LVU67
+  99:Core/Src/main.c **** 	uint8_t can_recv_data[8] = {0};
+ 277              		.loc 1 99 10 is_stmt 0 view .LVU68
+ 278 0020 1A4B     		ldr	r3, .L17
+ 279 0022 93E80300 		ldm	r3, {r0, r1}
+ 280 0026 06AB     		add	r3, sp, #24
+ 281 0028 03E90300 		stmdb	r3, {r0, r1}
+ 100:Core/Src/main.c **** 	uint8_t can_recv_len = 0;
+ 282              		.loc 1 100 2 is_stmt 1 view .LVU69
+ 100:Core/Src/main.c **** 	uint8_t can_recv_len = 0;
+ 283              		.loc 1 100 10 is_stmt 0 view .LVU70
+ 284 002c 0023     		movs	r3, #0
+ 285 002e 0293     		str	r3, [sp, #8]
+ 286 0030 0393     		str	r3, [sp, #12]
+ 101:Core/Src/main.c **** 	app_log("CAN test start\r\n");
+ 287              		.loc 1 101 2 is_stmt 1 view .LVU71
+ 101:Core/Src/main.c **** 	app_log("CAN test start\r\n");
+ 288              		.loc 1 101 10 is_stmt 0 view .LVU72
+ 289 0032 8DF80730 		strb	r3, [sp, #7]
+ 102:Core/Src/main.c **** 	/* USER CODE END 2 */
+ 290              		.loc 1 102 2 is_stmt 1 view .LVU73
+ 291 0036 1648     		ldr	r0, .L17+4
+ 292 0038 FFF7FEFF 		bl	app_log
+ 293              	.LVL12:
+ 294              	.L12:
+ 108:Core/Src/main.c **** 	{
+ 295              		.loc 1 108 2 view .LVU74
+ 111:Core/Src/main.c **** 		HAL_Delay(1000);
+ 296              		.loc 1 111 3 view .LVU75
+ 297 003c 0821     		movs	r1, #8
+ 298 003e 04A8     		add	r0, sp, #16
+ 299 0040 FFF7FEFF 		bl	bsp_can_send
+ 300              	.LVL13:
+ 112:Core/Src/main.c **** 		bsp_can_receive(can_recv_data, &can_recv_len);
+ 301              		.loc 1 112 3 view .LVU76
+ 302 0044 4FF47A70 		mov	r0, #1000
+ 303 0048 FFF7FEFF 		bl	HAL_Delay
+ 304              	.LVL14:
+ 113:Core/Src/main.c **** 		if (can_recv_len != 0)
+ 305              		.loc 1 113 3 view .LVU77
+ 306 004c 0DF10701 		add	r1, sp, #7
+ 307 0050 02A8     		add	r0, sp, #8
+ 308 0052 FFF7FEFF 		bl	bsp_can_receive
+ 309              	.LVL15:
+ 114:Core/Src/main.c **** 		{
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 28
 
 
- 771 0054 054B     		ldr	r3, .L44+16
- 772 0056 0022     		movs	r2, #0
- 773 0058 1A70     		strb	r2, [r3]
- 774 005a E7E7     		b	.L41
- 775              	.L45:
- 776              		.align	2
- 777              	.L44:
- 778 005c 00000000 		.word	.LC14
- 779 0060 00000000 		.word	tx_mailbox
- 780 0064 00000000 		.word	tx_header
- 781 0068 00000000 		.word	hcan1
- 782 006c 00000000 		.word	flag_recv_data
- 783 0070 00000000 		.word	rx_data
- 784 0074 00000000 		.word	huart2
- 785              	.LBE8:
- 786              		.cfi_endproc
- 787              	.LFE142:
- 789              		.global	uart_buf
- 790              		.section	.bss.uart_buf,"aw",%nobits
- 791              		.align	2
- 794              	uart_buf:
- 795 0000 00000000 		.space	128
- 795      00000000 
- 795      00000000 
- 795      00000000 
- 795      00000000 
- 796              		.global	flag_recv_data
- 797              		.section	.bss.flag_recv_data,"aw",%nobits
- 800              	flag_recv_data:
- 801 0000 00       		.space	1
- 802              		.global	rx_data
- 803              		.section	.bss.rx_data,"aw",%nobits
- 804              		.align	2
- 807              	rx_data:
- 808 0000 00000000 		.space	16
- 808      00000000 
- 808      00000000 
- 808      00000000 
- 809              		.global	tx_mailbox
- 810              		.section	.bss.tx_mailbox,"aw",%nobits
- 811              		.align	2
- 814              	tx_mailbox:
- 815 0000 00000000 		.space	4
- 816              		.global	rx_header
- 817              		.section	.bss.rx_header,"aw",%nobits
- 818              		.align	2
- 821              	rx_header:
- 822 0000 00000000 		.space	28
- 822      00000000 
- 822      00000000 
- 822      00000000 
- 822      00000000 
- 823              		.global	tx_header
- 824              		.section	.bss.tx_header,"aw",%nobits
- 825              		.align	2
- 828              	tx_header:
- 829 0000 00000000 		.space	24
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 40
+ 310              		.loc 1 114 3 view .LVU78
+ 114:Core/Src/main.c **** 		{
+ 311              		.loc 1 114 20 is_stmt 0 view .LVU79
+ 312 0056 9DF80730 		ldrb	r3, [sp, #7]	@ zero_extendqisi2
+ 114:Core/Src/main.c **** 		{
+ 313              		.loc 1 114 6 view .LVU80
+ 314 005a 002B     		cmp	r3, #0
+ 315 005c EED0     		beq	.L12
+ 116:Core/Src/main.c **** 			for (uint8_t i = 0; i < can_recv_len; i++)
+ 316              		.loc 1 116 4 is_stmt 1 view .LVU81
+ 317 005e 0D48     		ldr	r0, .L17+8
+ 318 0060 FFF7FEFF 		bl	app_log
+ 319              	.LVL16:
+ 117:Core/Src/main.c **** 			{
+ 320              		.loc 1 117 4 view .LVU82
+ 321              	.LBB8:
+ 117:Core/Src/main.c **** 			{
+ 322              		.loc 1 117 9 view .LVU83
+ 117:Core/Src/main.c **** 			{
+ 323              		.loc 1 117 17 is_stmt 0 view .LVU84
+ 324 0064 0024     		movs	r4, #0
+ 325              	.LVL17:
+ 326              	.L13:
+ 117:Core/Src/main.c **** 			{
+ 327              		.loc 1 117 26 is_stmt 1 discriminator 1 view .LVU85
+ 328 0066 9DF80730 		ldrb	r3, [sp, #7]	@ zero_extendqisi2
+ 329 006a A342     		cmp	r3, r4
+ 330 006c 03D8     		bhi	.L14
+ 331              	.LBE8:
+ 121:Core/Src/main.c **** 		}	
+ 332              		.loc 1 121 4 view .LVU86
+ 333 006e 0A48     		ldr	r0, .L17+12
+ 334 0070 FFF7FEFF 		bl	app_log
+ 335              	.LVL18:
+ 336 0074 E2E7     		b	.L12
+ 337              	.L14:
+ 338              	.LBB9:
+ 119:Core/Src/main.c **** 			}
+ 339              		.loc 1 119 5 view .LVU87
+ 119:Core/Src/main.c **** 			}
+ 340              		.loc 1 119 35 is_stmt 0 view .LVU88
+ 341 0076 04F11803 		add	r3, r4, #24
+ 342 007a 6B44     		add	r3, sp, r3
+ 119:Core/Src/main.c **** 			}
+ 343              		.loc 1 119 5 view .LVU89
+ 344 007c 13F8101C 		ldrb	r1, [r3, #-16]	@ zero_extendqisi2
+ 345 0080 0648     		ldr	r0, .L17+16
+ 346 0082 FFF7FEFF 		bl	app_log
+ 347              	.LVL19:
+ 117:Core/Src/main.c **** 			{
+ 348              		.loc 1 117 43 is_stmt 1 discriminator 3 view .LVU90
+ 349 0086 0134     		adds	r4, r4, #1
+ 350              	.LVL20:
+ 117:Core/Src/main.c **** 			{
+ 351              		.loc 1 117 43 is_stmt 0 discriminator 3 view .LVU91
+ 352 0088 E4B2     		uxtb	r4, r4
+ 353              	.LVL21:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 29
 
 
- 829      00000000 
- 829      00000000 
- 829      00000000 
- 829      00000000 
- 830              		.text
- 831              	.Letext0:
- 832              		.file 3 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
- 833              		.file 4 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
- 834              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h"
- 835              		.file 6 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
- 836              		.file 7 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/lib/gcc/arm-none-eab
- 837              		.file 8 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
- 838              		.file 9 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h"
- 839              		.file 10 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h"
- 840              		.file 11 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
- 841              		.file 12 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h"
- 842              		.file 13 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h"
- 843              		.file 14 "Core/Inc/can.h"
- 844              		.file 15 "Core/Inc/usart.h"
- 845              		.file 16 "Core/Inc/tim.h"
- 846              		.file 17 "Core/Inc/gpio.h"
- 847              		.file 18 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
- 848              		.file 19 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/inclu
- 849              		.file 20 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/inclu
- 850              		.file 21 "<built-in>"
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 41
+ 117:Core/Src/main.c **** 			{
+ 354              		.loc 1 117 43 discriminator 3 view .LVU92
+ 355 008a ECE7     		b	.L13
+ 356              	.L18:
+ 357              		.align	2
+ 358              	.L17:
+ 359 008c 34000000 		.word	.LC0
+ 360 0090 00000000 		.word	.LC1
+ 361 0094 14000000 		.word	.LC2
+ 362 0098 30000000 		.word	.LC4
+ 363 009c 28000000 		.word	.LC3
+ 364              	.LBE9:
+ 365              		.cfi_endproc
+ 366              	.LFE137:
+ 368              		.text
+ 369              	.Letext0:
+ 370              		.file 3 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 371              		.file 4 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 372              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h"
+ 373              		.file 6 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 374              		.file 7 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h"
+ 375              		.file 8 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h"
+ 376              		.file 9 "Bsp/bsp_can.h"
+ 377              		.file 10 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ 378              		.file 11 "KTimeSlice/app_log.h"
+ 379              		.file 12 "Core/Inc/usart.h"
+ 380              		.file 13 "Core/Inc/tim.h"
+ 381              		.file 14 "Core/Inc/can.h"
+ 382              		.file 15 "Core/Inc/gpio.h"
+ 383              		.file 16 "<built-in>"
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s 			page 30
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:21     .text.uart_print:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:27     .text.uart_print:00000000 uart_print
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:59     .text.uart_print:00000018 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:64     .rodata.uart_print_hex.str1.4:00000000 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:68     .text.uart_print_hex:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:74     .text.uart_print_hex:00000000 uart_print_hex
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:108    .text.uart_print_hex:00000018 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:794    .bss.uart_buf:00000000 uart_buf
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:114    .rodata.dump_all_regs.str1.4:00000000 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:139    .text.dump_all_regs:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:145    .text.dump_all_regs:00000000 dump_all_regs
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:241    .text.dump_all_regs:00000058 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:254    .rodata.bsp_can_create.str1.4:00000000 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:270    .text.bsp_can_create:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:276    .text.bsp_can_create:00000000 bsp_can_create
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:431    .text.bsp_can_create:00000098 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:828    .bss.tx_header:00000000 tx_header
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:443    .text.Error_Handler:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:449    .text.Error_Handler:00000000 Error_Handler
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:481    .text.HAL_CAN_RxFifo0MsgPendingCallback:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:487    .text.HAL_CAN_RxFifo0MsgPendingCallback:00000000 HAL_CAN_RxFifo0MsgPendingCallback
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:523    .text.HAL_CAN_RxFifo0MsgPendingCallback:0000001c $d
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:807    .bss.rx_data:00000000 rx_data
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:821    .bss.rx_header:00000000 rx_header
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:800    .bss.flag_recv_data:00000000 flag_recv_data
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:530    .text.SystemClock_Config:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:536    .text.SystemClock_Config:00000000 SystemClock_Config
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:684    .text.SystemClock_Config:0000009c $d
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:690    .rodata.main.str1.4:00000000 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:694    .text.main:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:700    .text.main:00000000 main
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:778    .text.main:0000005c $d
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:814    .bss.tx_mailbox:00000000 tx_mailbox
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:791    .bss.uart_buf:00000000 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:801    .bss.flag_recv_data:00000000 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:804    .bss.rx_data:00000000 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:811    .bss.tx_mailbox:00000000 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:818    .bss.rx_header:00000000 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s:825    .bss.tx_header:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s:21     .text.Error_Handler:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s:27     .text.Error_Handler:00000000 Error_Handler
+C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s:59     .text.SystemClock_Config:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s:65     .text.SystemClock_Config:00000000 SystemClock_Config
+C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s:213    .text.SystemClock_Config:0000009c $d
+C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s:219    .rodata.main.str1.4:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s:235    .text.main:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s:241    .text.main:00000000 main
+C:\Users\Toubidou\AppData\Local\Temp\ccdiisNS.s:359    .text.main:0000008c $d
 
 UNDEFINED SYMBOLS
-strlen
-HAL_UART_Transmit
-huart2
-sprintf
-HAL_CAN_ConfigFilter
-HAL_GetTick
-hcan1
-HAL_CAN_GetRxMessage
 memset
 HAL_RCC_OscConfig
 HAL_RCC_ClockConfig
 HAL_Init
 MX_GPIO_Init
 MX_CAN1_Init
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccxzNCtJ.s 			page 42
-
-
 MX_TIM2_Init
 MX_USART2_UART_Init
-HAL_CAN_AddTxMessage
+bsp_can_create
+app_log
+bsp_can_send
 HAL_Delay
+bsp_can_receive

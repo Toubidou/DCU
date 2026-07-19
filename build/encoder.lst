@@ -1,0 +1,286 @@
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccuCiVYo.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"encoder.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "KTimeSlice/encoder.c"
+  20              		.section	.text.encoder_get_dir,"ax",%progbits
+  21              		.align	1
+  22              		.global	encoder_get_dir
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	encoder_get_dir:
+  28              	.LVL0:
+  29              	.LFB137:
+   1:KTimeSlice/encoder.c **** #include "encoder.h"
+   2:KTimeSlice/encoder.c **** #include "ktime_slice.h"
+   3:KTimeSlice/encoder.c **** 
+   4:KTimeSlice/encoder.c **** uint16_t (*get_counter)(void) = NULL;
+   5:KTimeSlice/encoder.c **** static uint16_t prev_cnt = 0;
+   6:KTimeSlice/encoder.c **** 
+   7:KTimeSlice/encoder.c **** void encoder_get_dir(void *parm)
+   8:KTimeSlice/encoder.c **** {
+  30              		.loc 1 8 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 8 1 is_stmt 0 view .LVU1
+  35 0000 10B5     		push	{r4, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 4, -8
+  39              		.cfi_offset 14, -4
+   9:KTimeSlice/encoder.c ****     uint16_t cur_cnt;
+  40              		.loc 1 9 5 is_stmt 1 view .LVU2
+  10:KTimeSlice/encoder.c ****     int32_t diff;
+  41              		.loc 1 10 5 view .LVU3
+  11:KTimeSlice/encoder.c **** 
+  12:KTimeSlice/encoder.c ****     cur_cnt = get_counter();
+  42              		.loc 1 12 5 view .LVU4
+  43              		.loc 1 12 15 is_stmt 0 view .LVU5
+  44 0002 104B     		ldr	r3, .L8
+  45 0004 1B68     		ldr	r3, [r3]
+  46 0006 9847     		blx	r3
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccuCiVYo.s 			page 2
+
+
+  47              	.LVL1:
+  48              		.loc 1 12 15 view .LVU6
+  49 0008 0446     		mov	r4, r0
+  50              	.LVL2:
+  13:KTimeSlice/encoder.c ****     diff = (int32_t)(cur_cnt - prev_cnt);
+  51              		.loc 1 13 5 is_stmt 1 view .LVU7
+  52              		.loc 1 13 12 is_stmt 0 view .LVU8
+  53 000a 0F4B     		ldr	r3, .L8+4
+  54 000c 1B88     		ldrh	r3, [r3]
+  55              		.loc 1 13 10 view .LVU9
+  56 000e C31A     		subs	r3, r0, r3
+  57              	.LVL3:
+  14:KTimeSlice/encoder.c **** 
+  15:KTimeSlice/encoder.c ****     // 处理16位计数器回绕 (0 ↔ 65535)
+  16:KTimeSlice/encoder.c ****     if (diff > 32767)
+  58              		.loc 1 16 5 is_stmt 1 view .LVU10
+  59              		.loc 1 16 8 is_stmt 0 view .LVU11
+  60 0010 B3F5004F 		cmp	r3, #32768
+  61 0014 06DB     		blt	.L2
+  17:KTimeSlice/encoder.c ****     {
+  18:KTimeSlice/encoder.c ****         diff -= 65536;       // 向下计数回绕: 0→65535 实际是往下走
+  62              		.loc 1 18 9 is_stmt 1 view .LVU12
+  63              		.loc 1 18 14 is_stmt 0 view .LVU13
+  64 0016 A3F58033 		sub	r3, r3, #65536
+  65              	.LVL4:
+  19:KTimeSlice/encoder.c ****     } 
+  20:KTimeSlice/encoder.c ****     else if (diff < -32768)
+  21:KTimeSlice/encoder.c ****     {
+  22:KTimeSlice/encoder.c ****         diff += 65536;       // 向上计数回绕: 65535→0 实际是往上走
+  23:KTimeSlice/encoder.c ****     }
+  24:KTimeSlice/encoder.c **** 
+  25:KTimeSlice/encoder.c ****     if (diff > 0) 
+  66              		.loc 1 25 5 is_stmt 1 view .LVU14
+  67              	.L3:
+  26:KTimeSlice/encoder.c ****     {
+  27:KTimeSlice/encoder.c ****         asy_evt_emit(ENCODER_SIG_NUM_CW);
+  28:KTimeSlice/encoder.c ****     }
+  29:KTimeSlice/encoder.c ****     else if (diff < 0) 
+  68              		.loc 1 29 10 view .LVU15
+  69              		.loc 1 29 13 is_stmt 0 view .LVU16
+  70 001a 002B     		cmp	r3, #0
+  71 001c 0DDB     		blt	.L7
+  72              	.LVL5:
+  73              	.L5:
+  30:KTimeSlice/encoder.c ****     {
+  31:KTimeSlice/encoder.c ****         asy_evt_emit(ENCODER_SIG_NUM_CCW);
+  32:KTimeSlice/encoder.c ****     }
+  33:KTimeSlice/encoder.c ****     prev_cnt = cur_cnt;
+  74              		.loc 1 33 5 is_stmt 1 view .LVU17
+  75              		.loc 1 33 14 is_stmt 0 view .LVU18
+  76 001e 0A4B     		ldr	r3, .L8+4
+  77 0020 1C80     		strh	r4, [r3]	@ movhi
+  34:KTimeSlice/encoder.c **** }
+  78              		.loc 1 34 1 view .LVU19
+  79 0022 10BD     		pop	{r4, pc}
+  80              	.LVL6:
+  81              	.L2:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccuCiVYo.s 			page 3
+
+
+  20:KTimeSlice/encoder.c ****     {
+  82              		.loc 1 20 10 is_stmt 1 view .LVU20
+  20:KTimeSlice/encoder.c ****     {
+  83              		.loc 1 20 13 is_stmt 0 view .LVU21
+  84 0024 13F5004F 		cmn	r3, #32768
+  85 0028 01DA     		bge	.L4
+  22:KTimeSlice/encoder.c ****     }
+  86              		.loc 1 22 9 is_stmt 1 view .LVU22
+  22:KTimeSlice/encoder.c ****     }
+  87              		.loc 1 22 14 is_stmt 0 view .LVU23
+  88 002a 03F58033 		add	r3, r3, #65536
+  89              	.LVL7:
+  90              	.L4:
+  25:KTimeSlice/encoder.c ****     {
+  91              		.loc 1 25 5 is_stmt 1 view .LVU24
+  25:KTimeSlice/encoder.c ****     {
+  92              		.loc 1 25 8 is_stmt 0 view .LVU25
+  93 002e 002B     		cmp	r3, #0
+  94 0030 F3DD     		ble	.L3
+  27:KTimeSlice/encoder.c ****     }
+  95              		.loc 1 27 9 is_stmt 1 view .LVU26
+  96 0032 0020     		movs	r0, #0
+  97              	.LVL8:
+  27:KTimeSlice/encoder.c ****     }
+  98              		.loc 1 27 9 is_stmt 0 view .LVU27
+  99 0034 FFF7FEFF 		bl	asy_evt_emit
+ 100              	.LVL9:
+  27:KTimeSlice/encoder.c ****     }
+ 101              		.loc 1 27 9 view .LVU28
+ 102 0038 F1E7     		b	.L5
+ 103              	.LVL10:
+ 104              	.L7:
+  31:KTimeSlice/encoder.c ****     }
+ 105              		.loc 1 31 9 is_stmt 1 view .LVU29
+ 106 003a 0120     		movs	r0, #1
+ 107              	.LVL11:
+  31:KTimeSlice/encoder.c ****     }
+ 108              		.loc 1 31 9 is_stmt 0 view .LVU30
+ 109 003c FFF7FEFF 		bl	asy_evt_emit
+ 110              	.LVL12:
+  31:KTimeSlice/encoder.c ****     }
+ 111              		.loc 1 31 9 view .LVU31
+ 112 0040 EDE7     		b	.L5
+ 113              	.L9:
+ 114 0042 00BF     		.align	2
+ 115              	.L8:
+ 116 0044 00000000 		.word	get_counter
+ 117 0048 00000000 		.word	prev_cnt
+ 118              		.cfi_endproc
+ 119              	.LFE137:
+ 121              		.section	.text.encoder_create,"ax",%progbits
+ 122              		.align	1
+ 123              		.global	encoder_create
+ 124              		.syntax unified
+ 125              		.thumb
+ 126              		.thumb_func
+ 128              	encoder_create:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccuCiVYo.s 			page 4
+
+
+ 129              	.LVL13:
+ 130              	.LFB138:
+  35:KTimeSlice/encoder.c **** 
+  36:KTimeSlice/encoder.c **** void encoder_create(uint16_t (*enc_get_counter)(void), void (*cw_cb)(void), void (*ccw_cb)(void))
+  37:KTimeSlice/encoder.c **** {
+ 131              		.loc 1 37 1 is_stmt 1 view -0
+ 132              		.cfi_startproc
+ 133              		@ args = 0, pretend = 0, frame = 0
+ 134              		@ frame_needed = 0, uses_anonymous_args = 0
+ 135              		.loc 1 37 1 is_stmt 0 view .LVU33
+ 136 0000 38B5     		push	{r3, r4, r5, lr}
+ 137              	.LCFI1:
+ 138              		.cfi_def_cfa_offset 16
+ 139              		.cfi_offset 3, -16
+ 140              		.cfi_offset 4, -12
+ 141              		.cfi_offset 5, -8
+ 142              		.cfi_offset 14, -4
+ 143 0002 0D46     		mov	r5, r1
+ 144 0004 1446     		mov	r4, r2
+  38:KTimeSlice/encoder.c ****     get_counter = enc_get_counter;
+ 145              		.loc 1 38 5 is_stmt 1 view .LVU34
+ 146              		.loc 1 38 17 is_stmt 0 view .LVU35
+ 147 0006 0A4B     		ldr	r3, .L12
+ 148 0008 1860     		str	r0, [r3]
+  39:KTimeSlice/encoder.c ****     prev_cnt = get_counter();
+ 149              		.loc 1 39 5 is_stmt 1 view .LVU36
+ 150              		.loc 1 39 16 is_stmt 0 view .LVU37
+ 151 000a 8047     		blx	r0
+ 152              	.LVL14:
+ 153              		.loc 1 39 14 discriminator 1 view .LVU38
+ 154 000c 094B     		ldr	r3, .L12+4
+ 155 000e 1880     		strh	r0, [r3]	@ movhi
+  40:KTimeSlice/encoder.c ****     asy_evt_register(ENCODER_SIG_NUM_CW, cw_cb);
+ 156              		.loc 1 40 5 is_stmt 1 view .LVU39
+ 157 0010 2946     		mov	r1, r5
+ 158 0012 0020     		movs	r0, #0
+ 159 0014 FFF7FEFF 		bl	asy_evt_register
+ 160              	.LVL15:
+  41:KTimeSlice/encoder.c ****     asy_evt_register(ENCODER_SIG_NUM_CCW, ccw_cb);
+ 161              		.loc 1 41 5 view .LVU40
+ 162 0018 2146     		mov	r1, r4
+ 163 001a 0120     		movs	r0, #1
+ 164 001c FFF7FEFF 		bl	asy_evt_register
+ 165              	.LVL16:
+  42:KTimeSlice/encoder.c ****     ktask_create(encoder_get_dir, NULL, 100, 0);
+ 166              		.loc 1 42 5 view .LVU41
+ 167 0020 0023     		movs	r3, #0
+ 168 0022 6422     		movs	r2, #100
+ 169 0024 1946     		mov	r1, r3
+ 170 0026 0448     		ldr	r0, .L12+8
+ 171 0028 FFF7FEFF 		bl	ktask_create
+ 172              	.LVL17:
+  43:KTimeSlice/encoder.c **** }
+ 173              		.loc 1 43 1 is_stmt 0 view .LVU42
+ 174 002c 38BD     		pop	{r3, r4, r5, pc}
+ 175              	.LVL18:
+ 176              	.L13:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccuCiVYo.s 			page 5
+
+
+ 177              		.loc 1 43 1 view .LVU43
+ 178 002e 00BF     		.align	2
+ 179              	.L12:
+ 180 0030 00000000 		.word	get_counter
+ 181 0034 00000000 		.word	prev_cnt
+ 182 0038 00000000 		.word	encoder_get_dir
+ 183              		.cfi_endproc
+ 184              	.LFE138:
+ 186              		.section	.bss.prev_cnt,"aw",%nobits
+ 187              		.align	1
+ 190              	prev_cnt:
+ 191 0000 0000     		.space	2
+ 192              		.global	get_counter
+ 193              		.section	.bss.get_counter,"aw",%nobits
+ 194              		.align	2
+ 197              	get_counter:
+ 198 0000 00000000 		.space	4
+ 199              		.text
+ 200              	.Letext0:
+ 201              		.file 2 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 202              		.file 3 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 203              		.file 4 "KTimeSlice/ktime_slice.h"
+ 204              		.file 5 "KTimeSlice/async_event.h"
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccuCiVYo.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 encoder.c
+C:\Users\Toubidou\AppData\Local\Temp\ccuCiVYo.s:21     .text.encoder_get_dir:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccuCiVYo.s:27     .text.encoder_get_dir:00000000 encoder_get_dir
+C:\Users\Toubidou\AppData\Local\Temp\ccuCiVYo.s:116    .text.encoder_get_dir:00000044 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccuCiVYo.s:197    .bss.get_counter:00000000 get_counter
+C:\Users\Toubidou\AppData\Local\Temp\ccuCiVYo.s:190    .bss.prev_cnt:00000000 prev_cnt
+C:\Users\Toubidou\AppData\Local\Temp\ccuCiVYo.s:122    .text.encoder_create:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccuCiVYo.s:128    .text.encoder_create:00000000 encoder_create
+C:\Users\Toubidou\AppData\Local\Temp\ccuCiVYo.s:180    .text.encoder_create:00000030 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccuCiVYo.s:187    .bss.prev_cnt:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccuCiVYo.s:194    .bss.get_counter:00000000 $d
+
+UNDEFINED SYMBOLS
+asy_evt_emit
+asy_evt_register
+ktask_create

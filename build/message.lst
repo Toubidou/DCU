@@ -1,0 +1,623 @@
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"message.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "KTimeSlice/message.c"
+  20              		.section	.text.message_create,"ax",%progbits
+  21              		.align	1
+  22              		.global	message_create
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	message_create:
+  28              	.LVL0:
+  29              	.LFB134:
+   1:KTimeSlice/message.c **** #include "message.h"
+   2:KTimeSlice/message.c **** 
+   3:KTimeSlice/message.c **** #if 1
+   4:KTimeSlice/message.c **** MessageHandle *message_create(const char *name,
+   5:KTimeSlice/message.c **** 							uint16_t msg_size,
+   6:KTimeSlice/message.c **** 							uint32_t msgs_num_max)
+   7:KTimeSlice/message.c **** {
+  30              		.loc 1 7 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 7 1 is_stmt 0 view .LVU1
+  35 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 24
+  38              		.cfi_offset 4, -24
+  39              		.cfi_offset 5, -20
+  40              		.cfi_offset 6, -16
+  41              		.cfi_offset 7, -12
+  42              		.cfi_offset 8, -8
+  43              		.cfi_offset 14, -4
+  44 0004 8046     		mov	r8, r0
+  45 0006 0F46     		mov	r7, r1
+  46 0008 1646     		mov	r6, r2
+   8:KTimeSlice/message.c **** 	MessageHandle *mq = (MessageHandle *)malloc(sizeof(MessageHandle));
+  47              		.loc 1 8 2 is_stmt 1 view .LVU2
+  48              		.loc 1 8 39 is_stmt 0 view .LVU3
+  49 000a 2020     		movs	r0, #32
+  50              	.LVL1:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s 			page 2
+
+
+  51              		.loc 1 8 39 view .LVU4
+  52 000c FFF7FEFF 		bl	malloc
+  53              	.LVL2:
+   9:KTimeSlice/message.c **** 	MessageNode *head;
+  54              		.loc 1 9 2 is_stmt 1 view .LVU5
+  10:KTimeSlice/message.c **** 	if (mq == NULL)
+  55              		.loc 1 10 2 view .LVU6
+  56              		.loc 1 10 5 is_stmt 0 view .LVU7
+  57 0010 0446     		mov	r4, r0
+  58 0012 18B3     		cbz	r0, .L1
+  11:KTimeSlice/message.c **** 	{
+  12:KTimeSlice/message.c **** 		return mq;
+  13:KTimeSlice/message.c **** 	}
+  14:KTimeSlice/message.c **** 
+  15:KTimeSlice/message.c **** 	mq->msg_pool = malloc((msg_size + sizeof(MessageNode)) * msgs_num_max);
+  59              		.loc 1 15 2 is_stmt 1 view .LVU8
+  60              		.loc 1 15 34 is_stmt 0 view .LVU9
+  61 0014 381D     		adds	r0, r7, #4
+  62              	.LVL3:
+  63              		.loc 1 15 17 view .LVU10
+  64 0016 06FB00F0 		mul	r0, r6, r0
+  65 001a FFF7FEFF 		bl	malloc
+  66              	.LVL4:
+  67 001e 0546     		mov	r5, r0
+  68              		.loc 1 15 15 discriminator 1 view .LVU11
+  69 0020 6060     		str	r0, [r4, #4]
+  16:KTimeSlice/message.c **** 	if (mq->msg_pool == NULL)
+  70              		.loc 1 16 2 is_stmt 1 view .LVU12
+  71              		.loc 1 16 5 is_stmt 0 view .LVU13
+  72 0022 48B1     		cbz	r0, .L7
+  17:KTimeSlice/message.c **** 	{
+  18:KTimeSlice/message.c **** 		free(mq);
+  19:KTimeSlice/message.c **** 		return NULL;
+  20:KTimeSlice/message.c **** 	}
+  21:KTimeSlice/message.c **** 	mq->head = NULL;
+  73              		.loc 1 21 2 is_stmt 1 view .LVU14
+  74              		.loc 1 21 11 is_stmt 0 view .LVU15
+  75 0024 0022     		movs	r2, #0
+  76 0026 2261     		str	r2, [r4, #16]
+  22:KTimeSlice/message.c **** 	mq->tail = NULL;
+  77              		.loc 1 22 2 is_stmt 1 view .LVU16
+  78              		.loc 1 22 11 is_stmt 0 view .LVU17
+  79 0028 6261     		str	r2, [r4, #20]
+  23:KTimeSlice/message.c **** 	mq->queue_free = NULL;
+  80              		.loc 1 23 2 is_stmt 1 view .LVU18
+  81              		.loc 1 23 17 is_stmt 0 view .LVU19
+  82 002a A261     		str	r2, [r4, #24]
+  24:KTimeSlice/message.c **** 	mq->msg_size = msg_size;
+  83              		.loc 1 24 2 is_stmt 1 view .LVU20
+  84              		.loc 1 24 15 is_stmt 0 view .LVU21
+  85 002c 2781     		strh	r7, [r4, #8]	@ movhi
+  25:KTimeSlice/message.c **** 	mq->msgs_num_max = msgs_num_max;
+  86              		.loc 1 25 2 is_stmt 1 view .LVU22
+  87              		.loc 1 25 19 is_stmt 0 view .LVU23
+  88 002e E660     		str	r6, [r4, #12]
+  26:KTimeSlice/message.c **** 	mq->name = name;
+  89              		.loc 1 26 2 is_stmt 1 view .LVU24
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s 			page 3
+
+
+  90              		.loc 1 26 11 is_stmt 0 view .LVU25
+  91 0030 C4F80080 		str	r8, [r4]
+  27:KTimeSlice/message.c **** 	mq->entry = 0;
+  92              		.loc 1 27 2 is_stmt 1 view .LVU26
+  93              		.loc 1 27 12 is_stmt 0 view .LVU27
+  94 0034 E261     		str	r2, [r4, #28]
+  28:KTimeSlice/message.c **** 	/* initialize message empty list */
+  29:KTimeSlice/message.c **** 	for (uint32_t i = 0; i < mq->msgs_num_max; i++)
+  95              		.loc 1 29 2 is_stmt 1 view .LVU28
+  96              	.LBB2:
+  97              		.loc 1 29 7 view .LVU29
+  98              	.LVL5:
+  99              		.loc 1 29 2 is_stmt 0 view .LVU30
+ 100 0036 0EE0     		b	.L4
+ 101              	.LVL6:
+ 102              	.L7:
+ 103              		.loc 1 29 2 view .LVU31
+ 104              	.LBE2:
+  18:KTimeSlice/message.c **** 		return NULL;
+ 105              		.loc 1 18 3 is_stmt 1 view .LVU32
+ 106 0038 2046     		mov	r0, r4
+ 107 003a FFF7FEFF 		bl	free
+ 108              	.LVL7:
+  19:KTimeSlice/message.c **** 	}
+ 109              		.loc 1 19 3 view .LVU33
+  19:KTimeSlice/message.c **** 	}
+ 110              		.loc 1 19 10 is_stmt 0 view .LVU34
+ 111 003e 2C46     		mov	r4, r5
+ 112              	.LVL8:
+  19:KTimeSlice/message.c **** 	}
+ 113              		.loc 1 19 10 view .LVU35
+ 114 0040 0CE0     		b	.L1
+ 115              	.LVL9:
+ 116              	.L5:
+ 117              	.LBB3:
+  30:KTimeSlice/message.c **** 	{
+  31:KTimeSlice/message.c **** 		head = (MessageNode *)((uint8_t *)mq->msg_pool +
+ 118              		.loc 1 31 3 is_stmt 1 view .LVU36
+ 119              		.loc 1 31 39 is_stmt 0 view .LVU37
+ 120 0042 6168     		ldr	r1, [r4, #4]
+  32:KTimeSlice/message.c ****                                         i * (mq->msg_size + sizeof(MessageNode)));
+ 121              		.loc 1 32 48 view .LVU38
+ 122 0044 2389     		ldrh	r3, [r4, #8]
+ 123              		.loc 1 32 59 view .LVU39
+ 124 0046 0433     		adds	r3, r3, #4
+ 125              		.loc 1 32 43 view .LVU40
+ 126 0048 02FB03F3 		mul	r3, r2, r3
+  31:KTimeSlice/message.c ****                                         i * (mq->msg_size + sizeof(MessageNode)));
+ 127              		.loc 1 31 8 view .LVU41
+ 128 004c C818     		adds	r0, r1, r3
+ 129              	.LVL10:
+  33:KTimeSlice/message.c ****         head->next = (MessageNode *)mq->queue_free;
+ 130              		.loc 1 33 9 is_stmt 1 view .LVU42
+ 131              		.loc 1 33 20 is_stmt 0 view .LVU43
+ 132 004e A569     		ldr	r5, [r4, #24]
+ 133 0050 CD50     		str	r5, [r1, r3]
+  34:KTimeSlice/message.c ****         mq->queue_free = head;
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s 			page 4
+
+
+ 134              		.loc 1 34 9 is_stmt 1 view .LVU44
+ 135              		.loc 1 34 24 is_stmt 0 view .LVU45
+ 136 0052 A061     		str	r0, [r4, #24]
+  29:KTimeSlice/message.c **** 	{
+ 137              		.loc 1 29 46 is_stmt 1 discriminator 3 view .LVU46
+ 138 0054 0132     		adds	r2, r2, #1
+ 139              	.LVL11:
+ 140              	.L4:
+  29:KTimeSlice/message.c **** 	{
+ 141              		.loc 1 29 25 discriminator 1 view .LVU47
+  29:KTimeSlice/message.c **** 	{
+ 142              		.loc 1 29 29 is_stmt 0 discriminator 1 view .LVU48
+ 143 0056 E368     		ldr	r3, [r4, #12]
+  29:KTimeSlice/message.c **** 	{
+ 144              		.loc 1 29 25 discriminator 1 view .LVU49
+ 145 0058 9342     		cmp	r3, r2
+ 146 005a F2D8     		bhi	.L5
+ 147              	.LVL12:
+ 148              	.L1:
+  29:KTimeSlice/message.c **** 	{
+ 149              		.loc 1 29 25 discriminator 1 view .LVU50
+ 150              	.LBE3:
+  35:KTimeSlice/message.c **** 	}
+  36:KTimeSlice/message.c **** 	
+  37:KTimeSlice/message.c **** 	return mq;
+  38:KTimeSlice/message.c **** }
+ 151              		.loc 1 38 1 view .LVU51
+ 152 005c 2046     		mov	r0, r4
+ 153 005e BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 154              		.loc 1 38 1 view .LVU52
+ 155              		.cfi_endproc
+ 156              	.LFE134:
+ 158              		.section	.text.message_send,"ax",%progbits
+ 159              		.align	1
+ 160              		.global	message_send
+ 161              		.syntax unified
+ 162              		.thumb
+ 163              		.thumb_func
+ 165              	message_send:
+ 166              	.LVL13:
+ 167              	.LFB135:
+  39:KTimeSlice/message.c **** 
+  40:KTimeSlice/message.c **** int message_send(MessageHandle *mq, const void *buffer, uint16_t size)
+  41:KTimeSlice/message.c **** {
+ 168              		.loc 1 41 1 is_stmt 1 view -0
+ 169              		.cfi_startproc
+ 170              		@ args = 0, pretend = 0, frame = 0
+ 171              		@ frame_needed = 0, uses_anonymous_args = 0
+  42:KTimeSlice/message.c **** 	if ((mq == NULL) || (buffer == NULL))
+ 172              		.loc 1 42 2 view .LVU54
+ 173              		.loc 1 42 5 is_stmt 0 view .LVU55
+ 174 0000 F0B1     		cbz	r0, .L12
+  41:KTimeSlice/message.c **** 	if ((mq == NULL) || (buffer == NULL))
+ 175              		.loc 1 41 1 view .LVU56
+ 176 0002 38B5     		push	{r3, r4, r5, lr}
+ 177              	.LCFI1:
+ 178              		.cfi_def_cfa_offset 16
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s 			page 5
+
+
+ 179              		.cfi_offset 3, -16
+ 180              		.cfi_offset 4, -12
+ 181              		.cfi_offset 5, -8
+ 182              		.cfi_offset 14, -4
+ 183 0004 0446     		mov	r4, r0
+ 184              		.loc 1 42 19 discriminator 1 view .LVU57
+ 185 0006 F1B1     		cbz	r1, .L13
+  43:KTimeSlice/message.c **** 	{
+  44:KTimeSlice/message.c **** 		return -1;
+  45:KTimeSlice/message.c **** 	}
+  46:KTimeSlice/message.c **** 	if (size > mq->msg_size)
+ 186              		.loc 1 46 2 is_stmt 1 view .LVU58
+ 187              		.loc 1 46 15 is_stmt 0 view .LVU59
+ 188 0008 0389     		ldrh	r3, [r0, #8]
+ 189              		.loc 1 46 5 view .LVU60
+ 190 000a 9342     		cmp	r3, r2
+ 191 000c 1ED3     		bcc	.L14
+  47:KTimeSlice/message.c **** 	{
+  48:KTimeSlice/message.c **** 		return -2;
+  49:KTimeSlice/message.c **** 	}
+  50:KTimeSlice/message.c **** 	//检测消息队列是否已满
+  51:KTimeSlice/message.c **** 	if(mq->queue_free == NULL)
+ 192              		.loc 1 51 2 is_stmt 1 view .LVU61
+ 193              		.loc 1 51 7 is_stmt 0 view .LVU62
+ 194 000e 8569     		ldr	r5, [r0, #24]
+ 195              		.loc 1 51 4 view .LVU63
+ 196 0010 FDB1     		cbz	r5, .L15
+  52:KTimeSlice/message.c **** 	{
+  53:KTimeSlice/message.c **** 		return -3;
+  54:KTimeSlice/message.c **** 	}
+  55:KTimeSlice/message.c **** 	MessageNode *msg = (MessageNode *)mq->queue_free;
+ 197              		.loc 1 55 2 is_stmt 1 view .LVU64
+ 198              	.LVL14:
+  56:KTimeSlice/message.c **** 	mq->queue_free = msg->next;
+ 199              		.loc 1 56 2 view .LVU65
+ 200              		.loc 1 56 22 is_stmt 0 view .LVU66
+ 201 0012 2B68     		ldr	r3, [r5]
+ 202              		.loc 1 56 17 view .LVU67
+ 203 0014 8361     		str	r3, [r0, #24]
+  57:KTimeSlice/message.c **** 	/* the msg is the new tailer of list, the next shall be NULL */
+  58:KTimeSlice/message.c **** 	msg->next = NULL;
+ 204              		.loc 1 58 2 is_stmt 1 view .LVU68
+ 205              		.loc 1 58 12 is_stmt 0 view .LVU69
+ 206 0016 2846     		mov	r0, r5
+ 207              	.LVL15:
+ 208              		.loc 1 58 12 view .LVU70
+ 209 0018 0023     		movs	r3, #0
+ 210 001a 40F8043B 		str	r3, [r0], #4
+  59:KTimeSlice/message.c **** 	//消息块头部为指针，从数据部分开始复制
+  60:KTimeSlice/message.c **** 	memcpy(msg + 1, buffer, size);
+ 211              		.loc 1 60 2 is_stmt 1 view .LVU71
+ 212 001e FFF7FEFF 		bl	memcpy
+ 213              	.LVL16:
+  61:KTimeSlice/message.c **** 	if (mq->tail != NULL)
+ 214              		.loc 1 61 2 view .LVU72
+ 215              		.loc 1 61 8 is_stmt 0 view .LVU73
+ 216 0022 6369     		ldr	r3, [r4, #20]
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s 			page 6
+
+
+ 217              		.loc 1 61 5 view .LVU74
+ 218 0024 03B1     		cbz	r3, .L10
+  62:KTimeSlice/message.c **** 	{
+  63:KTimeSlice/message.c **** 		((MessageNode *)mq->tail)->next = msg;
+ 219              		.loc 1 63 3 is_stmt 1 view .LVU75
+ 220              		.loc 1 63 35 is_stmt 0 view .LVU76
+ 221 0026 1D60     		str	r5, [r3]
+ 222              	.L10:
+  64:KTimeSlice/message.c **** 	}
+  65:KTimeSlice/message.c **** 	/* set new tail */
+  66:KTimeSlice/message.c ****     mq->tail = msg;
+ 223              		.loc 1 66 5 is_stmt 1 view .LVU77
+ 224              		.loc 1 66 14 is_stmt 0 view .LVU78
+ 225 0028 6561     		str	r5, [r4, #20]
+  67:KTimeSlice/message.c **** 	if (mq->head == NULL)
+ 226              		.loc 1 67 2 is_stmt 1 view .LVU79
+ 227              		.loc 1 67 8 is_stmt 0 view .LVU80
+ 228 002a 2369     		ldr	r3, [r4, #16]
+ 229              		.loc 1 67 5 view .LVU81
+ 230 002c 33B1     		cbz	r3, .L21
+ 231              	.L11:
+  68:KTimeSlice/message.c ****         mq->head = msg;
+  69:KTimeSlice/message.c **** 	if (mq->entry < MSG_NUM_MAX)
+ 232              		.loc 1 69 2 is_stmt 1 view .LVU82
+ 233              		.loc 1 69 8 is_stmt 0 view .LVU83
+ 234 002e E369     		ldr	r3, [r4, #28]
+ 235              		.loc 1 69 5 view .LVU84
+ 236 0030 FF2B     		cmp	r3, #255
+ 237 0032 11D8     		bhi	.L16
+  70:KTimeSlice/message.c **** 	{
+  71:KTimeSlice/message.c **** 		mq->entry++;
+ 238              		.loc 1 71 3 is_stmt 1 view .LVU85
+ 239              		.loc 1 71 12 is_stmt 0 view .LVU86
+ 240 0034 0133     		adds	r3, r3, #1
+ 241 0036 E361     		str	r3, [r4, #28]
+  72:KTimeSlice/message.c **** 	}
+  73:KTimeSlice/message.c **** 	
+  74:KTimeSlice/message.c **** 	return 0;
+ 242              		.loc 1 74 9 view .LVU87
+ 243 0038 0020     		movs	r0, #0
+ 244              	.LVL17:
+ 245              	.L8:
+  75:KTimeSlice/message.c **** }
+ 246              		.loc 1 75 1 view .LVU88
+ 247 003a 38BD     		pop	{r3, r4, r5, pc}
+ 248              	.LVL18:
+ 249              	.L21:
+  68:KTimeSlice/message.c **** 	if (mq->entry < MSG_NUM_MAX)
+ 250              		.loc 1 68 9 is_stmt 1 view .LVU89
+  68:KTimeSlice/message.c **** 	if (mq->entry < MSG_NUM_MAX)
+ 251              		.loc 1 68 18 is_stmt 0 view .LVU90
+ 252 003c 2561     		str	r5, [r4, #16]
+ 253 003e F6E7     		b	.L11
+ 254              	.LVL19:
+ 255              	.L12:
+ 256              	.LCFI2:
+ 257              		.cfi_def_cfa_offset 0
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s 			page 7
+
+
+ 258              		.cfi_restore 3
+ 259              		.cfi_restore 4
+ 260              		.cfi_restore 5
+ 261              		.cfi_restore 14
+  44:KTimeSlice/message.c **** 	}
+ 262              		.loc 1 44 10 view .LVU91
+ 263 0040 4FF0FF30 		mov	r0, #-1
+ 264              	.LVL20:
+ 265              		.loc 1 75 1 view .LVU92
+ 266 0044 7047     		bx	lr
+ 267              	.LVL21:
+ 268              	.L13:
+ 269              	.LCFI3:
+ 270              		.cfi_def_cfa_offset 16
+ 271              		.cfi_offset 3, -16
+ 272              		.cfi_offset 4, -12
+ 273              		.cfi_offset 5, -8
+ 274              		.cfi_offset 14, -4
+  44:KTimeSlice/message.c **** 	}
+ 275              		.loc 1 44 10 view .LVU93
+ 276 0046 4FF0FF30 		mov	r0, #-1
+ 277              	.LVL22:
+  44:KTimeSlice/message.c **** 	}
+ 278              		.loc 1 44 10 view .LVU94
+ 279 004a F6E7     		b	.L8
+ 280              	.LVL23:
+ 281              	.L14:
+  48:KTimeSlice/message.c **** 	}
+ 282              		.loc 1 48 10 view .LVU95
+ 283 004c 6FF00100 		mvn	r0, #1
+ 284              	.LVL24:
+  48:KTimeSlice/message.c **** 	}
+ 285              		.loc 1 48 10 view .LVU96
+ 286 0050 F3E7     		b	.L8
+ 287              	.LVL25:
+ 288              	.L15:
+  53:KTimeSlice/message.c **** 	}
+ 289              		.loc 1 53 10 view .LVU97
+ 290 0052 6FF00200 		mvn	r0, #2
+ 291              	.LVL26:
+  53:KTimeSlice/message.c **** 	}
+ 292              		.loc 1 53 10 view .LVU98
+ 293 0056 F0E7     		b	.L8
+ 294              	.LVL27:
+ 295              	.L16:
+  74:KTimeSlice/message.c **** }
+ 296              		.loc 1 74 9 view .LVU99
+ 297 0058 0020     		movs	r0, #0
+ 298 005a EEE7     		b	.L8
+ 299              		.cfi_endproc
+ 300              	.LFE135:
+ 302              		.section	.text.message_receive,"ax",%progbits
+ 303              		.align	1
+ 304              		.global	message_receive
+ 305              		.syntax unified
+ 306              		.thumb
+ 307              		.thumb_func
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s 			page 8
+
+
+ 309              	message_receive:
+ 310              	.LVL28:
+ 311              	.LFB136:
+  76:KTimeSlice/message.c **** 
+  77:KTimeSlice/message.c **** int message_receive(MessageHandle *mq, void *buffer, uint16_t size)
+  78:KTimeSlice/message.c **** {
+ 312              		.loc 1 78 1 is_stmt 1 view -0
+ 313              		.cfi_startproc
+ 314              		@ args = 0, pretend = 0, frame = 0
+ 315              		@ frame_needed = 0, uses_anonymous_args = 0
+ 316              		.loc 1 78 1 is_stmt 0 view .LVU101
+ 317 0000 38B5     		push	{r3, r4, r5, lr}
+ 318              	.LCFI4:
+ 319              		.cfi_def_cfa_offset 16
+ 320              		.cfi_offset 3, -16
+ 321              		.cfi_offset 4, -12
+ 322              		.cfi_offset 5, -8
+ 323              		.cfi_offset 14, -4
+ 324 0002 0346     		mov	r3, r0
+  79:KTimeSlice/message.c **** 	if ((mq == NULL) || (buffer == NULL))
+ 325              		.loc 1 79 2 is_stmt 1 view .LVU102
+ 326              		.loc 1 79 5 is_stmt 0 view .LVU103
+ 327 0004 E0B1     		cbz	r0, .L25
+ 328 0006 0846     		mov	r0, r1
+ 329              	.LVL29:
+ 330              		.loc 1 79 5 view .LVU104
+ 331 0008 1C46     		mov	r4, r3
+ 332              		.loc 1 79 19 discriminator 1 view .LVU105
+ 333 000a E1B1     		cbz	r1, .L26
+  80:KTimeSlice/message.c **** 	{
+  81:KTimeSlice/message.c **** 		return -1;
+  82:KTimeSlice/message.c **** 	}
+  83:KTimeSlice/message.c **** 	if (size > mq->msg_size)
+ 334              		.loc 1 83 2 is_stmt 1 view .LVU106
+ 335              		.loc 1 83 15 is_stmt 0 view .LVU107
+ 336 000c 1B89     		ldrh	r3, [r3, #8]
+ 337              	.LVL30:
+ 338              		.loc 1 83 5 view .LVU108
+ 339 000e 9342     		cmp	r3, r2
+ 340 0010 1CD3     		bcc	.L27
+  84:KTimeSlice/message.c **** 	{
+  85:KTimeSlice/message.c **** 		return -2;
+  86:KTimeSlice/message.c **** 	}
+  87:KTimeSlice/message.c **** 	//检测消息队列是否为空
+  88:KTimeSlice/message.c **** 	if(mq->entry == 0)
+ 341              		.loc 1 88 2 is_stmt 1 view .LVU109
+ 342              		.loc 1 88 7 is_stmt 0 view .LVU110
+ 343 0012 E369     		ldr	r3, [r4, #28]
+ 344              		.loc 1 88 4 view .LVU111
+ 345 0014 EBB1     		cbz	r3, .L28
+  89:KTimeSlice/message.c **** 	{
+  90:KTimeSlice/message.c **** 		return -3;
+  91:KTimeSlice/message.c **** 	}
+  92:KTimeSlice/message.c **** 	MessageNode *msg = (MessageNode *)mq->head;
+ 346              		.loc 1 92 2 is_stmt 1 view .LVU112
+ 347              		.loc 1 92 15 is_stmt 0 view .LVU113
+ 348 0016 2569     		ldr	r5, [r4, #16]
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s 			page 9
+
+
+ 349              	.LVL31:
+  93:KTimeSlice/message.c **** 	mq->head = msg->next;
+ 350              		.loc 1 93 2 is_stmt 1 view .LVU114
+ 351              		.loc 1 93 16 is_stmt 0 view .LVU115
+ 352 0018 2B68     		ldr	r3, [r5]
+ 353              		.loc 1 93 11 view .LVU116
+ 354 001a 2361     		str	r3, [r4, #16]
+  94:KTimeSlice/message.c **** 	if (mq->tail == msg)
+ 355              		.loc 1 94 2 is_stmt 1 view .LVU117
+ 356              		.loc 1 94 8 is_stmt 0 view .LVU118
+ 357 001c 6369     		ldr	r3, [r4, #20]
+ 358              		.loc 1 94 5 view .LVU119
+ 359 001e AB42     		cmp	r3, r5
+ 360 0020 0BD0     		beq	.L31
+ 361              	.L24:
+  95:KTimeSlice/message.c ****         mq->tail = NULL;
+  96:KTimeSlice/message.c **** 
+  97:KTimeSlice/message.c **** 	//消息块头部为指针，从数据部分开始复制
+  98:KTimeSlice/message.c **** 	memcpy(buffer, msg + 1, size);
+ 362              		.loc 1 98 2 is_stmt 1 view .LVU120
+ 363 0022 291D     		adds	r1, r5, #4
+ 364              	.LVL32:
+ 365              		.loc 1 98 2 is_stmt 0 view .LVU121
+ 366 0024 FFF7FEFF 		bl	memcpy
+ 367              	.LVL33:
+  99:KTimeSlice/message.c **** 	/* put message to free list */
+ 100:KTimeSlice/message.c ****     msg->next = (MessageNode *)mq->queue_free;
+ 368              		.loc 1 100 5 is_stmt 1 view .LVU122
+ 369              		.loc 1 100 34 is_stmt 0 view .LVU123
+ 370 0028 A369     		ldr	r3, [r4, #24]
+ 371              		.loc 1 100 15 view .LVU124
+ 372 002a 2B60     		str	r3, [r5]
+ 101:KTimeSlice/message.c ****     mq->queue_free = msg;
+ 373              		.loc 1 101 5 is_stmt 1 view .LVU125
+ 374              		.loc 1 101 20 is_stmt 0 view .LVU126
+ 375 002c A561     		str	r5, [r4, #24]
+ 102:KTimeSlice/message.c **** 	if (mq->entry > 0)
+ 376              		.loc 1 102 2 is_stmt 1 view .LVU127
+ 377              		.loc 1 102 8 is_stmt 0 view .LVU128
+ 378 002e E369     		ldr	r3, [r4, #28]
+ 379              		.loc 1 102 5 view .LVU129
+ 380 0030 93B1     		cbz	r3, .L29
+ 103:KTimeSlice/message.c **** 	{
+ 104:KTimeSlice/message.c **** 		mq->entry--;
+ 381              		.loc 1 104 3 is_stmt 1 view .LVU130
+ 382              		.loc 1 104 12 is_stmt 0 view .LVU131
+ 383 0032 013B     		subs	r3, r3, #1
+ 384 0034 E361     		str	r3, [r4, #28]
+ 105:KTimeSlice/message.c **** 	}
+ 106:KTimeSlice/message.c **** 	return 0;
+ 385              		.loc 1 106 9 view .LVU132
+ 386 0036 0020     		movs	r0, #0
+ 387              	.LVL34:
+ 388              	.L22:
+ 107:KTimeSlice/message.c **** }
+ 389              		.loc 1 107 1 view .LVU133
+ 390 0038 38BD     		pop	{r3, r4, r5, pc}
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s 			page 10
+
+
+ 391              	.LVL35:
+ 392              	.L31:
+  95:KTimeSlice/message.c **** 
+ 393              		.loc 1 95 9 is_stmt 1 view .LVU134
+  95:KTimeSlice/message.c **** 
+ 394              		.loc 1 95 18 is_stmt 0 view .LVU135
+ 395 003a 0023     		movs	r3, #0
+ 396 003c 6361     		str	r3, [r4, #20]
+ 397 003e F0E7     		b	.L24
+ 398              	.LVL36:
+ 399              	.L25:
+  81:KTimeSlice/message.c **** 	}
+ 400              		.loc 1 81 10 view .LVU136
+ 401 0040 4FF0FF30 		mov	r0, #-1
+ 402              	.LVL37:
+  81:KTimeSlice/message.c **** 	}
+ 403              		.loc 1 81 10 view .LVU137
+ 404 0044 F8E7     		b	.L22
+ 405              	.LVL38:
+ 406              	.L26:
+  81:KTimeSlice/message.c **** 	}
+ 407              		.loc 1 81 10 view .LVU138
+ 408 0046 4FF0FF30 		mov	r0, #-1
+ 409              	.LVL39:
+  81:KTimeSlice/message.c **** 	}
+ 410              		.loc 1 81 10 view .LVU139
+ 411 004a F5E7     		b	.L22
+ 412              	.LVL40:
+ 413              	.L27:
+  85:KTimeSlice/message.c **** 	}
+ 414              		.loc 1 85 10 view .LVU140
+ 415 004c 6FF00100 		mvn	r0, #1
+ 416              	.LVL41:
+  85:KTimeSlice/message.c **** 	}
+ 417              		.loc 1 85 10 view .LVU141
+ 418 0050 F2E7     		b	.L22
+ 419              	.LVL42:
+ 420              	.L28:
+  90:KTimeSlice/message.c **** 	}
+ 421              		.loc 1 90 10 view .LVU142
+ 422 0052 6FF00200 		mvn	r0, #2
+ 423              	.LVL43:
+  90:KTimeSlice/message.c **** 	}
+ 424              		.loc 1 90 10 view .LVU143
+ 425 0056 EFE7     		b	.L22
+ 426              	.LVL44:
+ 427              	.L29:
+ 106:KTimeSlice/message.c **** }
+ 428              		.loc 1 106 9 view .LVU144
+ 429 0058 1846     		mov	r0, r3
+ 430 005a EDE7     		b	.L22
+ 431              		.cfi_endproc
+ 432              	.LFE136:
+ 434              		.text
+ 435              	.Letext0:
+ 436              		.file 2 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 437              		.file 3 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s 			page 11
+
+
+ 438              		.file 4 "KTimeSlice/message.h"
+ 439              		.file 5 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 440              		.file 6 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 441              		.file 7 "<built-in>"
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 message.c
+C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s:21     .text.message_create:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s:27     .text.message_create:00000000 message_create
+C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s:159    .text.message_send:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s:165    .text.message_send:00000000 message_send
+C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s:303    .text.message_receive:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccQlIbjI.s:309    .text.message_receive:00000000 message_receive
+
+UNDEFINED SYMBOLS
+malloc
+free
+memcpy

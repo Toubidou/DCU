@@ -64,6 +64,15 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c \
 Core/Src/usart.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c
 
+#find function
+rwildcard = $(foreach dir, $(wildcard $1), $(call rwildcard, $(dir)/*, $2) $(filter $2, $(dir)))
+App_C_SOURCES := $(call rwildcard, App/src, %.c)
+C_SOURCES += $(App_C_SOURCES)
+KTS_C_SOURCES := $(call rwildcard, KTimeSlice, %.c)
+C_SOURCES += $(KTS_C_SOURCES)
+BSP_C_SOURCES := $(call rwildcard, Bsp, %.c)
+C_SOURCES += $(BSP_C_SOURCES)
+
 # ASM sources
 ASM_SOURCES =  \
 startup_stm32f407xx.s
@@ -127,7 +136,10 @@ C_INCLUDES =  \
 -IDrivers/STM32F4xx_HAL_Driver/Inc \
 -IDrivers/STM32F4xx_HAL_Driver/Inc/Legacy \
 -IDrivers/CMSIS/Device/ST/STM32F4xx/Include \
--IDrivers/CMSIS/Include
+-IDrivers/CMSIS/Include \
+-IApp/inc \
+-IKTimeSlice \
+-IBsp
 
 
 # compile gcc flags
