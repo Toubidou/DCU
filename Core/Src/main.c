@@ -18,7 +18,10 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "adc.h"
 #include "can.h"
+#include "dma.h"
+#include "i2c.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -28,6 +31,8 @@
 #include "ktime_slice.h"
 #include "app_log.h"
 #include "bsp_can.h"
+#include "dev_motor.h"
+#include "dev_imu.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -91,35 +96,43 @@ int main(void)
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
+	MX_DMA_Init();
 	MX_CAN1_Init();
 	MX_TIM2_Init();
 	MX_USART2_UART_Init();
+	MX_TIM1_Init();
+	MX_TIM3_Init();
+	MX_TIM8_Init();
+	MX_USART3_UART_Init();
+	MX_ADC3_Init();
+	MX_I2C1_Init();
 	/* USER CODE BEGIN 2 */
 	bsp_can_create();
 	uint8_t can_test_data[8] = {0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37};
 	uint8_t can_recv_data[8] = {0};
 	uint8_t can_recv_len = 0;
 	app_log("CAN test start\r\n");
+
+	dev_motor_init();
+
+	HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
+	HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
+
+	dev_imu_init();
+	AccelData accData;
+	GyroData gyroData;
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
-	
+
 	while (1)
 	{
-		/* 发送 CAN 帧 */
-		bsp_can_send(can_test_data, 8);
+		dev_imu_read_acc(&accData);
+		dev_imu_read_gyro(&gyroData);
+		app_log("acc: x=%d, y=%d, z=%d\r\n", accData.x, accData.y, accData.z);
+		app_log("gyro: x=%d, y=%d, z=%d\r\n", gyroData.x, gyroData.y, gyroData.z);
 		HAL_Delay(1000);
-		bsp_can_receive(can_recv_data, &can_recv_len);
-		if (can_recv_len != 0)
-		{
-			app_log("Received CAN data: ");
-			for (uint8_t i = 0; i < can_recv_len; i++)
-			{
-				app_log("%02X ", can_recv_data[i]);
-			}
-			app_log("\r\n");
-		}	
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */

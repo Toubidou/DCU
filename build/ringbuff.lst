@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -28,7 +28,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
   25              		.thumb_func
   27              	ringbuffer_create:
   28              	.LVL0:
-  29              	.LFB134:
+  29              	.LFB239:
    1:KTimeSlice/ringbuff.c **** #include "ringbuff.h"
    2:KTimeSlice/ringbuff.c **** 
    3:KTimeSlice/ringbuff.c **** RingBuff *ringbuffer_create(uint32_t length)
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
   50              	.LVL2:
    7:KTimeSlice/ringbuff.c ****     if (rb == NULL)
   51              		.loc 1 7 5 is_stmt 1 view .LVU5
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 2
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s 			page 2
 
 
   52              		.loc 1 7 8 is_stmt 0 view .LVU6
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
   91              		.loc 1 13 9 view .LVU22
   14:KTimeSlice/ringbuff.c ****     }
   92              		.loc 1 14 9 view .LVU23
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 3
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s 			page 3
 
 
   14:KTimeSlice/ringbuff.c ****     }
@@ -126,7 +126,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
   94 002e 2C46     		mov	r4, r5
   95 0030 F8E7     		b	.L1
   96              		.cfi_endproc
-  97              	.LFE134:
+  97              	.LFE239:
   99              		.section	.text.ringbuffer_get_stored_length,"ax",%progbits
  100              		.align	1
  101              		.global	ringbuffer_get_stored_length
@@ -135,7 +135,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  104              		.thumb_func
  106              	ringbuffer_get_stored_length:
  107              	.LVL9:
- 108              	.LFB135:
+ 108              	.LFB240:
   21:KTimeSlice/ringbuff.c **** uint32_t ringbuffer_get_stored_length(RingBuff *rb)
   22:KTimeSlice/ringbuff.c **** {
  109              		.loc 1 22 1 is_stmt 1 view -0
@@ -178,10 +178,10 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  137              		.loc 1 31 1 view .LVU36
  138 0012 7047     		bx	lr
  139              		.cfi_endproc
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 4
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s 			page 4
 
 
- 140              	.LFE135:
+ 140              	.LFE240:
  142              		.section	.text.ringbuffer_is_empty,"ax",%progbits
  143              		.align	1
  144              		.global	ringbuffer_is_empty
@@ -190,7 +190,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  147              		.thumb_func
  149              	ringbuffer_is_empty:
  150              	.LVL13:
- 151              	.LFB136:
+ 151              	.LFB241:
   32:KTimeSlice/ringbuff.c **** 
   33:KTimeSlice/ringbuff.c **** bool ringbuffer_is_empty(RingBuff *rb)
   34:KTimeSlice/ringbuff.c **** {
@@ -225,7 +225,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  174              		.loc 1 40 1 view .LVU44
  175 0010 7047     		bx	lr
  176              		.cfi_endproc
- 177              	.LFE136:
+ 177              	.LFE241:
  179              		.section	.text.ringbuffer_is_full,"ax",%progbits
  180              		.align	1
  181              		.global	ringbuffer_is_full
@@ -234,11 +234,11 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  184              		.thumb_func
  186              	ringbuffer_is_full:
  187              	.LVL16:
- 188              	.LFB137:
+ 188              	.LFB242:
   41:KTimeSlice/ringbuff.c **** bool ringbuffer_is_full(RingBuff *rb)
   42:KTimeSlice/ringbuff.c **** {
  189              		.loc 1 42 1 is_stmt 1 view -0
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 5
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s 			page 5
 
 
  190              		.cfi_startproc
@@ -278,7 +278,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  218              		.loc 1 48 1 view .LVU55
  219 001c 7047     		bx	lr
  220              		.cfi_endproc
- 221              	.LFE137:
+ 221              	.LFE242:
  223              		.section	.text.ringbuffer_put,"ax",%progbits
  224              		.align	1
  225              		.global	ringbuffer_put
@@ -287,7 +287,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  228              		.thumb_func
  230              	ringbuffer_put:
  231              	.LVL19:
- 232              	.LFB138:
+ 232              	.LFB243:
   49:KTimeSlice/ringbuff.c **** 
   50:KTimeSlice/ringbuff.c **** int ringbuffer_put(RingBuff *rb, uint8_t *src_data, uint32_t num)
   51:KTimeSlice/ringbuff.c **** {
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  237              		.loc 1 51 1 is_stmt 0 view .LVU57
  238 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
  239              	.LCFI1:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 6
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s 			page 6
 
 
  240              		.cfi_def_cfa_offset 24
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
   63:KTimeSlice/ringbuff.c ****     {
   64:KTimeSlice/ringbuff.c ****         num = space_size;
   65:KTimeSlice/ringbuff.c ****         status = -3;
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 7
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s 			page 7
 
 
   66:KTimeSlice/ringbuff.c ****     }
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  325 0058 6360     		str	r3, [r4, #4]
   77:KTimeSlice/ringbuff.c ****     return status;
  326              		.loc 1 77 5 is_stmt 1 view .LVU89
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 8
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s 			page 8
 
 
  327              		.loc 1 77 12 is_stmt 0 view .LVU90
@@ -478,10 +478,10 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  368 0080 6FF00100 		mvn	r0, #1
  369 0084 EAE7     		b	.L15
  370              		.cfi_endproc
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 9
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s 			page 9
 
 
- 371              	.LFE138:
+ 371              	.LFE243:
  373              		.section	.text.ringbuffer_get,"ax",%progbits
  374              		.align	1
  375              		.global	ringbuffer_get
@@ -490,7 +490,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  378              		.thumb_func
  380              	ringbuffer_get:
  381              	.LVL34:
- 382              	.LFB139:
+ 382              	.LFB244:
   79:KTimeSlice/ringbuff.c **** int ringbuffer_get(RingBuff *rb, uint8_t *dst_data, uint32_t num)
   80:KTimeSlice/ringbuff.c **** {
  383              		.loc 1 80 1 is_stmt 1 view -0
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  415              	.LVL37:
   91:KTimeSlice/ringbuff.c ****     /* less data */
   92:KTimeSlice/ringbuff.c ****     if (stored_length < num)
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 10
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s 			page 10
 
 
  416              		.loc 1 92 5 is_stmt 1 view .LVU113
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  103:KTimeSlice/ringbuff.c ****     rb->head = num - (rb->length - rb->head);
  460              		.loc 1 103 5 is_stmt 1 view .LVU130
  461              		.loc 1 103 38 is_stmt 0 view .LVU131
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 11
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s 			page 11
 
 
  462 0048 2368     		ldr	r3, [r4]
@@ -658,14 +658,14 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  504 0070 F0E7     		b	.L24
  505              	.L29:
   87:KTimeSlice/ringbuff.c ****     }
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 12
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s 			page 12
 
 
  506              		.loc 1 87 16 view .LVU148
  507 0072 6FF00100 		mvn	r0, #1
  508 0076 EDE7     		b	.L24
  509              		.cfi_endproc
- 510              	.LFE139:
+ 510              	.LFE244:
  512              		.section	.text.ringbuffer_getchar,"ax",%progbits
  513              		.align	1
  514              		.global	ringbuffer_getchar
@@ -674,7 +674,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  517              		.thumb_func
  519              	ringbuffer_getchar:
  520              	.LVL47:
- 521              	.LFB140:
+ 521              	.LFB245:
  106:KTimeSlice/ringbuff.c **** uint8_t ringbuffer_getchar(RingBuff *rb)
  107:KTimeSlice/ringbuff.c **** {
  522              		.loc 1 107 1 is_stmt 1 view -0
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  548              		.loc 1 118 7 view .LVU160
  549 0010 D05C     		ldrb	r0, [r2, r3]	@ zero_extendqisi2
  550              	.LVL49:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 13
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s 			page 13
 
 
  119:KTimeSlice/ringbuff.c ****     rb->head = (rb->head + 1) % rb->length;
@@ -754,7 +754,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  577              		.loc 1 121 1 view .LVU169
  578 0026 7047     		bx	lr
  579              		.cfi_endproc
- 580              	.LFE140:
+ 580              	.LFE245:
  582              		.text
  583              	.Letext0:
  584              		.file 2 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
@@ -763,25 +763,25 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 1
  587              		.file 5 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
  588              		.file 6 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
  589              		.file 7 "<built-in>"
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s 			page 14
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s 			page 14
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 ringbuff.c
-C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:21     .text.ringbuffer_create:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:27     .text.ringbuffer_create:00000000 ringbuffer_create
-C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:100    .text.ringbuffer_get_stored_length:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:106    .text.ringbuffer_get_stored_length:00000000 ringbuffer_get_stored_length
-C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:143    .text.ringbuffer_is_empty:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:149    .text.ringbuffer_is_empty:00000000 ringbuffer_is_empty
-C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:180    .text.ringbuffer_is_full:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:186    .text.ringbuffer_is_full:00000000 ringbuffer_is_full
-C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:224    .text.ringbuffer_put:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:230    .text.ringbuffer_put:00000000 ringbuffer_put
-C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:374    .text.ringbuffer_get:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:380    .text.ringbuffer_get:00000000 ringbuffer_get
-C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:513    .text.ringbuffer_getchar:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccQjgIzM.s:519    .text.ringbuffer_getchar:00000000 ringbuffer_getchar
+C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s:21     .text.ringbuffer_create:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s:27     .text.ringbuffer_create:00000000 ringbuffer_create
+C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s:100    .text.ringbuffer_get_stored_length:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s:106    .text.ringbuffer_get_stored_length:00000000 ringbuffer_get_stored_length
+C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s:143    .text.ringbuffer_is_empty:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s:149    .text.ringbuffer_is_empty:00000000 ringbuffer_is_empty
+C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s:180    .text.ringbuffer_is_full:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s:186    .text.ringbuffer_is_full:00000000 ringbuffer_is_full
+C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s:224    .text.ringbuffer_put:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s:230    .text.ringbuffer_put:00000000 ringbuffer_put
+C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s:374    .text.ringbuffer_get:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s:380    .text.ringbuffer_get:00000000 ringbuffer_get
+C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s:513    .text.ringbuffer_getchar:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccqQumbt.s:519    .text.ringbuffer_getchar:00000000 ringbuffer_getchar
 
 UNDEFINED SYMBOLS
 malloc

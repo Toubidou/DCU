@@ -1,0 +1,409 @@
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"dev_imu.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Dev/dev_imu.c"
+  20              		.section	.text.MPU6050_WriteReg,"ax",%progbits
+  21              		.align	1
+  22              		.global	MPU6050_WriteReg
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	MPU6050_WriteReg:
+  28              	.LVL0:
+  29              	.LFB239:
+   1:Dev/dev_imu.c **** #include "dev_imu.h"
+   2:Dev/dev_imu.c **** 
+   3:Dev/dev_imu.c **** void MPU6050_WriteReg(uint8_t reg_addr,uint8_t reg_data)
+   4:Dev/dev_imu.c **** {
+  30              		.loc 1 4 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 8
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 4 1 is_stmt 0 view .LVU1
+  35 0000 00B5     		push	{lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 4
+  38              		.cfi_offset 14, -4
+  39 0002 87B0     		sub	sp, sp, #28
+  40              	.LCFI1:
+  41              		.cfi_def_cfa_offset 32
+  42 0004 0246     		mov	r2, r0
+  43 0006 8DF81710 		strb	r1, [sp, #23]
+   5:Dev/dev_imu.c ****     HAL_I2C_Mem_Write(&hi2c1, MPU6050_SLAVE_ADDRESS, reg_addr, 1, &reg_data, 1, 100);
+  44              		.loc 1 5 5 is_stmt 1 view .LVU2
+  45 000a 6423     		movs	r3, #100
+  46 000c 0293     		str	r3, [sp, #8]
+  47 000e 0123     		movs	r3, #1
+  48 0010 0193     		str	r3, [sp, #4]
+  49 0012 0DF11701 		add	r1, sp, #23
+  50              	.LVL1:
+  51              		.loc 1 5 5 is_stmt 0 view .LVU3
+  52 0016 0091     		str	r1, [sp]
+  53 0018 D021     		movs	r1, #208
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s 			page 2
+
+
+  54              	.LVL2:
+  55              		.loc 1 5 5 view .LVU4
+  56 001a 0248     		ldr	r0, .L3
+  57              	.LVL3:
+  58              		.loc 1 5 5 view .LVU5
+  59 001c FFF7FEFF 		bl	HAL_I2C_Mem_Write
+  60              	.LVL4:
+   6:Dev/dev_imu.c **** }
+  61              		.loc 1 6 1 view .LVU6
+  62 0020 07B0     		add	sp, sp, #28
+  63              	.LCFI2:
+  64              		.cfi_def_cfa_offset 4
+  65              		@ sp needed
+  66 0022 00BD     		pop	{pc}
+  67              	.L4:
+  68              		.align	2
+  69              	.L3:
+  70 0024 00000000 		.word	hi2c1
+  71              		.cfi_endproc
+  72              	.LFE239:
+  74              		.section	.text.MPU6050_ReadData,"ax",%progbits
+  75              		.align	1
+  76              		.global	MPU6050_ReadData
+  77              		.syntax unified
+  78              		.thumb
+  79              		.thumb_func
+  81              	MPU6050_ReadData:
+  82              	.LVL5:
+  83              	.LFB240:
+   7:Dev/dev_imu.c **** void MPU6050_ReadData(uint8_t reg_add, unsigned char *data, uint8_t num)
+   8:Dev/dev_imu.c **** {
+  84              		.loc 1 8 1 is_stmt 1 view -0
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 0
+  87              		@ frame_needed = 0, uses_anonymous_args = 0
+  88              		.loc 1 8 1 is_stmt 0 view .LVU8
+  89 0000 00B5     		push	{lr}
+  90              	.LCFI3:
+  91              		.cfi_def_cfa_offset 4
+  92              		.cfi_offset 14, -4
+  93 0002 85B0     		sub	sp, sp, #20
+  94              	.LCFI4:
+  95              		.cfi_def_cfa_offset 24
+   9:Dev/dev_imu.c ****     HAL_I2C_Mem_Read(&hi2c1, MPU6050_SLAVE_ADDRESS, reg_add, 1, data, num, 100);
+  96              		.loc 1 9 5 is_stmt 1 view .LVU9
+  97 0004 6423     		movs	r3, #100
+  98 0006 0293     		str	r3, [sp, #8]
+  99 0008 0192     		str	r2, [sp, #4]
+ 100 000a 0091     		str	r1, [sp]
+ 101 000c 0123     		movs	r3, #1
+ 102 000e 0246     		mov	r2, r0
+ 103              	.LVL6:
+ 104              		.loc 1 9 5 is_stmt 0 view .LVU10
+ 105 0010 D021     		movs	r1, #208
+ 106              	.LVL7:
+ 107              		.loc 1 9 5 view .LVU11
+ 108 0012 0248     		ldr	r0, .L7
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s 			page 3
+
+
+ 109              	.LVL8:
+ 110              		.loc 1 9 5 view .LVU12
+ 111 0014 FFF7FEFF 		bl	HAL_I2C_Mem_Read
+ 112              	.LVL9:
+  10:Dev/dev_imu.c **** }
+ 113              		.loc 1 10 1 view .LVU13
+ 114 0018 05B0     		add	sp, sp, #20
+ 115              	.LCFI5:
+ 116              		.cfi_def_cfa_offset 4
+ 117              		@ sp needed
+ 118 001a 00BD     		pop	{pc}
+ 119              	.L8:
+ 120              		.align	2
+ 121              	.L7:
+ 122 001c 00000000 		.word	hi2c1
+ 123              		.cfi_endproc
+ 124              	.LFE240:
+ 126              		.section	.text.dev_imu_init,"ax",%progbits
+ 127              		.align	1
+ 128              		.global	dev_imu_init
+ 129              		.syntax unified
+ 130              		.thumb
+ 131              		.thumb_func
+ 133              	dev_imu_init:
+ 134              	.LFB241:
+  11:Dev/dev_imu.c **** void dev_imu_init(void)
+  12:Dev/dev_imu.c **** {
+ 135              		.loc 1 12 1 is_stmt 1 view -0
+ 136              		.cfi_startproc
+ 137              		@ args = 0, pretend = 0, frame = 0
+ 138              		@ frame_needed = 0, uses_anonymous_args = 0
+ 139 0000 08B5     		push	{r3, lr}
+ 140              	.LCFI6:
+ 141              		.cfi_def_cfa_offset 8
+ 142              		.cfi_offset 3, -8
+ 143              		.cfi_offset 14, -4
+  13:Dev/dev_imu.c ****     HAL_Delay(20);
+ 144              		.loc 1 13 5 view .LVU15
+ 145 0002 1420     		movs	r0, #20
+ 146 0004 FFF7FEFF 		bl	HAL_Delay
+ 147              	.LVL10:
+  14:Dev/dev_imu.c **** 	MPU6050_WriteReg(MPU6050_RA_PWR_MGMT_1, 0x00);	     //解除休眠状态
+ 148              		.loc 1 14 2 view .LVU16
+ 149 0008 0021     		movs	r1, #0
+ 150 000a 6B20     		movs	r0, #107
+ 151 000c FFF7FEFF 		bl	MPU6050_WriteReg
+ 152              	.LVL11:
+  15:Dev/dev_imu.c **** 	MPU6050_WriteReg(MPU6050_RA_SMPLRT_DIV , 0x07);	    //陀螺仪采样率
+ 153              		.loc 1 15 2 view .LVU17
+ 154 0010 0721     		movs	r1, #7
+ 155 0012 1920     		movs	r0, #25
+ 156 0014 FFF7FEFF 		bl	MPU6050_WriteReg
+ 157              	.LVL12:
+  16:Dev/dev_imu.c **** 	MPU6050_WriteReg(MPU6050_RA_CONFIG , 0x06);	
+ 158              		.loc 1 16 2 view .LVU18
+ 159 0018 0621     		movs	r1, #6
+ 160 001a 1A20     		movs	r0, #26
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s 			page 4
+
+
+ 161 001c FFF7FEFF 		bl	MPU6050_WriteReg
+ 162              	.LVL13:
+  17:Dev/dev_imu.c **** 	MPU6050_WriteReg(MPU6050_RA_ACCEL_CONFIG , 0x01);	  //配置加速度传感器工作在2G模式
+ 163              		.loc 1 17 2 view .LVU19
+ 164 0020 0121     		movs	r1, #1
+ 165 0022 1C20     		movs	r0, #28
+ 166 0024 FFF7FEFF 		bl	MPU6050_WriteReg
+ 167              	.LVL14:
+  18:Dev/dev_imu.c **** 	MPU6050_WriteReg(MPU6050_RA_GYRO_CONFIG, 0x18);     //陀螺仪自检及测量范围，典型值�
+ 168              		.loc 1 18 2 view .LVU20
+ 169 0028 1821     		movs	r1, #24
+ 170 002a 1B20     		movs	r0, #27
+ 171 002c FFF7FEFF 		bl	MPU6050_WriteReg
+ 172              	.LVL15:
+  19:Dev/dev_imu.c **** }
+ 173              		.loc 1 19 1 is_stmt 0 view .LVU21
+ 174 0030 08BD     		pop	{r3, pc}
+ 175              		.cfi_endproc
+ 176              	.LFE241:
+ 178              		.section	.text.dev_imu_read_acc,"ax",%progbits
+ 179              		.align	1
+ 180              		.global	dev_imu_read_acc
+ 181              		.syntax unified
+ 182              		.thumb
+ 183              		.thumb_func
+ 185              	dev_imu_read_acc:
+ 186              	.LVL16:
+ 187              	.LFB242:
+  20:Dev/dev_imu.c **** 
+  21:Dev/dev_imu.c **** /**
+  22:Dev/dev_imu.c ****   * @brief   读取MPU6050的加速度数据
+  23:Dev/dev_imu.c ****   * @param   
+  24:Dev/dev_imu.c ****   * @retval  
+  25:Dev/dev_imu.c ****   */
+  26:Dev/dev_imu.c **** void dev_imu_read_acc(AccelData *accData)
+  27:Dev/dev_imu.c **** {
+ 188              		.loc 1 27 1 is_stmt 1 view -0
+ 189              		.cfi_startproc
+ 190              		@ args = 0, pretend = 0, frame = 8
+ 191              		@ frame_needed = 0, uses_anonymous_args = 0
+ 192              		.loc 1 27 1 is_stmt 0 view .LVU23
+ 193 0000 10B5     		push	{r4, lr}
+ 194              	.LCFI7:
+ 195              		.cfi_def_cfa_offset 8
+ 196              		.cfi_offset 4, -8
+ 197              		.cfi_offset 14, -4
+ 198 0002 82B0     		sub	sp, sp, #8
+ 199              	.LCFI8:
+ 200              		.cfi_def_cfa_offset 16
+ 201 0004 0446     		mov	r4, r0
+  28:Dev/dev_imu.c ****     uint8_t buf[6];
+ 202              		.loc 1 28 5 is_stmt 1 view .LVU24
+  29:Dev/dev_imu.c ****     MPU6050_ReadData(MPU6050_ACC_OUT, buf, 6);
+ 203              		.loc 1 29 5 view .LVU25
+ 204 0006 0622     		movs	r2, #6
+ 205 0008 6946     		mov	r1, sp
+ 206 000a 3B20     		movs	r0, #59
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s 			page 5
+
+
+ 207              	.LVL17:
+ 208              		.loc 1 29 5 is_stmt 0 view .LVU26
+ 209 000c FFF7FEFF 		bl	MPU6050_ReadData
+ 210              	.LVL18:
+  30:Dev/dev_imu.c ****     accData->x = (buf[0] << 8) | buf[1];
+ 211              		.loc 1 30 5 is_stmt 1 view .LVU27
+ 212              		.loc 1 30 22 is_stmt 0 view .LVU28
+ 213 0010 9DF80020 		ldrb	r2, [sp]	@ zero_extendqisi2
+ 214              		.loc 1 30 37 view .LVU29
+ 215 0014 9DF80130 		ldrb	r3, [sp, #1]	@ zero_extendqisi2
+ 216              		.loc 1 30 32 view .LVU30
+ 217 0018 43EA0223 		orr	r3, r3, r2, lsl #8
+ 218              		.loc 1 30 16 view .LVU31
+ 219 001c 2380     		strh	r3, [r4]	@ movhi
+  31:Dev/dev_imu.c ****     accData->y = (buf[2] << 8) | buf[3];
+ 220              		.loc 1 31 5 is_stmt 1 view .LVU32
+ 221              		.loc 1 31 22 is_stmt 0 view .LVU33
+ 222 001e 9DF80220 		ldrb	r2, [sp, #2]	@ zero_extendqisi2
+ 223              		.loc 1 31 37 view .LVU34
+ 224 0022 9DF80330 		ldrb	r3, [sp, #3]	@ zero_extendqisi2
+ 225              		.loc 1 31 32 view .LVU35
+ 226 0026 43EA0223 		orr	r3, r3, r2, lsl #8
+ 227              		.loc 1 31 16 view .LVU36
+ 228 002a 6380     		strh	r3, [r4, #2]	@ movhi
+  32:Dev/dev_imu.c ****     accData->z = (buf[4] << 8) | buf[5];
+ 229              		.loc 1 32 5 is_stmt 1 view .LVU37
+ 230              		.loc 1 32 22 is_stmt 0 view .LVU38
+ 231 002c 9DF80420 		ldrb	r2, [sp, #4]	@ zero_extendqisi2
+ 232              		.loc 1 32 37 view .LVU39
+ 233 0030 9DF80530 		ldrb	r3, [sp, #5]	@ zero_extendqisi2
+ 234              		.loc 1 32 32 view .LVU40
+ 235 0034 43EA0223 		orr	r3, r3, r2, lsl #8
+ 236              		.loc 1 32 16 view .LVU41
+ 237 0038 A380     		strh	r3, [r4, #4]	@ movhi
+  33:Dev/dev_imu.c **** }
+ 238              		.loc 1 33 1 view .LVU42
+ 239 003a 02B0     		add	sp, sp, #8
+ 240              	.LCFI9:
+ 241              		.cfi_def_cfa_offset 8
+ 242              		@ sp needed
+ 243 003c 10BD     		pop	{r4, pc}
+ 244              		.loc 1 33 1 view .LVU43
+ 245              		.cfi_endproc
+ 246              	.LFE242:
+ 248              		.section	.text.dev_imu_read_gyro,"ax",%progbits
+ 249              		.align	1
+ 250              		.global	dev_imu_read_gyro
+ 251              		.syntax unified
+ 252              		.thumb
+ 253              		.thumb_func
+ 255              	dev_imu_read_gyro:
+ 256              	.LVL19:
+ 257              	.LFB243:
+  34:Dev/dev_imu.c **** 
+  35:Dev/dev_imu.c **** /**
+  36:Dev/dev_imu.c ****   * @brief   读取MPU6050的角加速度数据
+  37:Dev/dev_imu.c ****   * @param   
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s 			page 6
+
+
+  38:Dev/dev_imu.c ****   * @retval  
+  39:Dev/dev_imu.c ****   */
+  40:Dev/dev_imu.c **** void dev_imu_read_gyro(GyroData *gyroData)
+  41:Dev/dev_imu.c **** {
+ 258              		.loc 1 41 1 is_stmt 1 view -0
+ 259              		.cfi_startproc
+ 260              		@ args = 0, pretend = 0, frame = 8
+ 261              		@ frame_needed = 0, uses_anonymous_args = 0
+ 262              		.loc 1 41 1 is_stmt 0 view .LVU45
+ 263 0000 10B5     		push	{r4, lr}
+ 264              	.LCFI10:
+ 265              		.cfi_def_cfa_offset 8
+ 266              		.cfi_offset 4, -8
+ 267              		.cfi_offset 14, -4
+ 268 0002 82B0     		sub	sp, sp, #8
+ 269              	.LCFI11:
+ 270              		.cfi_def_cfa_offset 16
+ 271 0004 0446     		mov	r4, r0
+  42:Dev/dev_imu.c ****     uint8_t buf[6];
+ 272              		.loc 1 42 5 is_stmt 1 view .LVU46
+  43:Dev/dev_imu.c ****     MPU6050_ReadData(MPU6050_GYRO_OUT,buf,6);
+ 273              		.loc 1 43 5 view .LVU47
+ 274 0006 0622     		movs	r2, #6
+ 275 0008 6946     		mov	r1, sp
+ 276 000a 4320     		movs	r0, #67
+ 277              	.LVL20:
+ 278              		.loc 1 43 5 is_stmt 0 view .LVU48
+ 279 000c FFF7FEFF 		bl	MPU6050_ReadData
+ 280              	.LVL21:
+  44:Dev/dev_imu.c ****     gyroData->x = (buf[0] << 8) | buf[1];
+ 281              		.loc 1 44 5 is_stmt 1 view .LVU49
+ 282              		.loc 1 44 23 is_stmt 0 view .LVU50
+ 283 0010 9DF80020 		ldrb	r2, [sp]	@ zero_extendqisi2
+ 284              		.loc 1 44 38 view .LVU51
+ 285 0014 9DF80130 		ldrb	r3, [sp, #1]	@ zero_extendqisi2
+ 286              		.loc 1 44 33 view .LVU52
+ 287 0018 43EA0223 		orr	r3, r3, r2, lsl #8
+ 288              		.loc 1 44 17 view .LVU53
+ 289 001c 2380     		strh	r3, [r4]	@ movhi
+  45:Dev/dev_imu.c ****     gyroData->y = (buf[2] << 8) | buf[3];
+ 290              		.loc 1 45 5 is_stmt 1 view .LVU54
+ 291              		.loc 1 45 23 is_stmt 0 view .LVU55
+ 292 001e 9DF80220 		ldrb	r2, [sp, #2]	@ zero_extendqisi2
+ 293              		.loc 1 45 38 view .LVU56
+ 294 0022 9DF80330 		ldrb	r3, [sp, #3]	@ zero_extendqisi2
+ 295              		.loc 1 45 33 view .LVU57
+ 296 0026 43EA0223 		orr	r3, r3, r2, lsl #8
+ 297              		.loc 1 45 17 view .LVU58
+ 298 002a 6380     		strh	r3, [r4, #2]	@ movhi
+  46:Dev/dev_imu.c ****     gyroData->z = (buf[4] << 8) | buf[5];
+ 299              		.loc 1 46 5 is_stmt 1 view .LVU59
+ 300              		.loc 1 46 23 is_stmt 0 view .LVU60
+ 301 002c 9DF80420 		ldrb	r2, [sp, #4]	@ zero_extendqisi2
+ 302              		.loc 1 46 38 view .LVU61
+ 303 0030 9DF80530 		ldrb	r3, [sp, #5]	@ zero_extendqisi2
+ 304              		.loc 1 46 33 view .LVU62
+ 305 0034 43EA0223 		orr	r3, r3, r2, lsl #8
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s 			page 7
+
+
+ 306              		.loc 1 46 17 view .LVU63
+ 307 0038 A380     		strh	r3, [r4, #4]	@ movhi
+  47:Dev/dev_imu.c **** }...
+ 308              		.loc 1 47 1 view .LVU64
+ 309 003a 02B0     		add	sp, sp, #8
+ 310              	.LCFI12:
+ 311              		.cfi_def_cfa_offset 8
+ 312              		@ sp needed
+ 313 003c 10BD     		pop	{r4, pc}
+ 314              		.loc 1 47 1 view .LVU65
+ 315              		.cfi_endproc
+ 316              	.LFE243:
+ 318              		.text
+ 319              	.Letext0:
+ 320              		.file 2 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 321              		.file 3 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 322              		.file 4 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h"
+ 323              		.file 5 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 324              		.file 6 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 325              		.file 7 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c.h"
+ 326              		.file 8 "Dev/dev_imu.h"
+ 327              		.file 9 "Core/Inc/i2c.h"
+ 328              		.file 10 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 dev_imu.c
+C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s:21     .text.MPU6050_WriteReg:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s:27     .text.MPU6050_WriteReg:00000000 MPU6050_WriteReg
+C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s:70     .text.MPU6050_WriteReg:00000024 $d
+C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s:75     .text.MPU6050_ReadData:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s:81     .text.MPU6050_ReadData:00000000 MPU6050_ReadData
+C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s:122    .text.MPU6050_ReadData:0000001c $d
+C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s:127    .text.dev_imu_init:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s:133    .text.dev_imu_init:00000000 dev_imu_init
+C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s:179    .text.dev_imu_read_acc:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s:185    .text.dev_imu_read_acc:00000000 dev_imu_read_acc
+C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s:249    .text.dev_imu_read_gyro:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\cc2Xjy4G.s:255    .text.dev_imu_read_gyro:00000000 dev_imu_read_gyro
+
+UNDEFINED SYMBOLS
+HAL_I2C_Mem_Write
+hi2c1
+HAL_I2C_Mem_Read
+HAL_Delay

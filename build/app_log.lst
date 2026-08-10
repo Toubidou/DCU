@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 1
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccNk7W1L.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -28,7 +28,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 1
   25              		.thumb_func
   27              	bsp_debug_log_send_buf:
   28              	.LVL0:
-  29              	.LFB137:
+  29              	.LFB242:
    1:KTimeSlice/app_log.c **** #include "app_log.h"
    2:KTimeSlice/app_log.c **** 
    3:KTimeSlice/app_log.c **** static char _log_buf[256];
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 1
   48 0008 0148     		ldr	r0, .L3
   49              	.LVL3:
   50              		.loc 1 8 5 view .LVU5
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 2
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccNk7W1L.s 			page 2
 
 
   51 000a FFF7FEFF 		bl	HAL_UART_Transmit
@@ -70,9 +70,9 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 1
   55              	.L4:
   56              		.align	2
   57              	.L3:
-  58 0010 00000000 		.word	huart2
+  58 0010 00000000 		.word	huart3
   59              		.cfi_endproc
-  60              	.LFE137:
+  60              	.LFE242:
   62              		.section	.text.app_log,"ax",%progbits
   63              		.align	1
   64              		.global	app_log
@@ -81,7 +81,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 1
   67              		.thumb_func
   69              	app_log:
   70              	.LVL5:
-  71              	.LFB138:
+  71              	.LFB243:
   11:KTimeSlice/app_log.c **** void app_log( char *format, ... )
   12:KTimeSlice/app_log.c **** {
   72              		.loc 1 12 1 is_stmt 1 view -0
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 1
   99 0010 4FF48071 		mov	r1, #256
  100 0014 2046     		mov	r0, r4
  101 0016 FFF7FEFF 		bl	vsnprintf
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 3
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccNk7W1L.s 			page 3
 
 
  102              	.LVL6:
@@ -160,7 +160,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 1
  135              	.L7:
  136 0034 00000000 		.word	_log_buf
  137              		.cfi_endproc
- 138              	.LFE138:
+ 138              	.LFE243:
  140              		.section	.bss._log_buf,"aw",%nobits
  141              		.align	2
  144              	_log_buf:
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 1
  152              		.file 6 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
  153              		.file 7 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h"
  154              		.file 8 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 4
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccNk7W1L.s 			page 4
 
 
  155              		.file 9 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
@@ -186,22 +186,22 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 1
  157              		.file 11 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/inclu
  158              		.file 12 "<built-in>"
  159              		.file 13 "Core/Inc/usart.h"
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s 			page 5
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccNk7W1L.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 app_log.c
-C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s:21     .text.bsp_debug_log_send_buf:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s:27     .text.bsp_debug_log_send_buf:00000000 bsp_debug_log_send_buf
-C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s:58     .text.bsp_debug_log_send_buf:00000010 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s:63     .text.app_log:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s:69     .text.app_log:00000000 app_log
-C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s:136    .text.app_log:00000034 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s:144    .bss._log_buf:00000000 _log_buf
-C:\Users\Toubidou\AppData\Local\Temp\ccrR5AWe.s:141    .bss._log_buf:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccNk7W1L.s:21     .text.bsp_debug_log_send_buf:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccNk7W1L.s:27     .text.bsp_debug_log_send_buf:00000000 bsp_debug_log_send_buf
+C:\Users\Toubidou\AppData\Local\Temp\ccNk7W1L.s:58     .text.bsp_debug_log_send_buf:00000010 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccNk7W1L.s:63     .text.app_log:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccNk7W1L.s:69     .text.app_log:00000000 app_log
+C:\Users\Toubidou\AppData\Local\Temp\ccNk7W1L.s:136    .text.app_log:00000034 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccNk7W1L.s:144    .bss._log_buf:00000000 _log_buf
+C:\Users\Toubidou\AppData\Local\Temp\ccNk7W1L.s:141    .bss._log_buf:00000000 $d
 
 UNDEFINED SYMBOLS
 HAL_UART_Transmit
-huart2
+huart3
 vsnprintf
 strlen

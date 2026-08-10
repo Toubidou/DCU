@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s 			page 1
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccEhP35i.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -27,7 +27,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s 			page 1
   24              		.thumb
   25              		.thumb_func
   27              	list_append:
-  28              	.LFB137:
+  28              	.LFB242:
    1:KTimeSlice/list.c **** #include "list.h"
    2:KTimeSlice/list.c **** 
    3:KTimeSlice/list.c **** void list_append(ListNode *l, ListNode *n)
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s 			page 1
   10:KTimeSlice/list.c ****     n->next = NULL;
   47              		.loc 1 10 5 is_stmt 1 view .LVU6
   48              		.loc 1 10 13 is_stmt 0 view .LVU7
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s 			page 2
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccEhP35i.s 			page 2
 
 
   49 000a 0860     		str	r0, [r1]
@@ -66,7 +66,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s 			page 1
   50              		.loc 1 11 1 view .LVU8
   51 000c 7047     		bx	lr
   52              		.cfi_endproc
-  53              	.LFE137:
+  53              	.LFE242:
   55              		.section	.text.list_get_len,"ax",%progbits
   56              		.align	1
   57              		.global	list_get_len
@@ -75,7 +75,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s 			page 1
   60              		.thumb_func
   62              	list_get_len:
   63              	.LVL2:
-  64              	.LFB138:
+  64              	.LFB243:
   12:KTimeSlice/list.c **** unsigned int list_get_len(const ListNode *l)
   13:KTimeSlice/list.c **** {
   65              		.loc 1 13 1 is_stmt 1 view -0
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s 			page 1
   94 000c FBD1     		bne	.L5
   20:KTimeSlice/list.c ****     }
   21:KTimeSlice/list.c **** 
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s 			page 3
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccEhP35i.s 			page 3
 
 
   22:KTimeSlice/list.c ****     return len;
@@ -127,7 +127,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s 			page 1
   96              		.loc 1 23 1 is_stmt 0 view .LVU22
   97 000e 7047     		bx	lr
   98              		.cfi_endproc
-  99              	.LFE138:
+  99              	.LFE243:
  101              		.section	.text.list_remove,"ax",%progbits
  102              		.align	1
  103              		.global	list_remove
@@ -136,7 +136,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s 			page 1
  106              		.thumb_func
  108              	list_remove:
  109              	.LVL8:
- 110              	.LFB139:
+ 110              	.LFB244:
   24:KTimeSlice/list.c **** 
   25:KTimeSlice/list.c **** ListNode *list_remove(ListNode *l, ListNode *n)
   26:KTimeSlice/list.c **** {
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s 			page 1
  139              		.loc 1 32 49 discriminator 1 view .LVU35
  140 0010 1360     		str	r3, [r2]
  141              	.L9:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s 			page 4
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccEhP35i.s 			page 4
 
 
   33:KTimeSlice/list.c **** 
@@ -188,20 +188,20 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s 			page 1
  143              		.loc 1 35 1 is_stmt 0 view .LVU37
  144 0012 7047     		bx	lr
  145              		.cfi_endproc
- 146              	.LFE139:
+ 146              	.LFE244:
  148              		.text
  149              	.Letext0:
  150              		.file 2 "KTimeSlice/list.h"
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s 			page 5
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccEhP35i.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 list.c
-C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s:21     .text.list_append:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s:27     .text.list_append:00000000 list_append
-C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s:56     .text.list_get_len:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s:62     .text.list_get_len:00000000 list_get_len
-C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s:102    .text.list_remove:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccMtSm8D.s:108    .text.list_remove:00000000 list_remove
+C:\Users\Toubidou\AppData\Local\Temp\ccEhP35i.s:21     .text.list_append:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccEhP35i.s:27     .text.list_append:00000000 list_append
+C:\Users\Toubidou\AppData\Local\Temp\ccEhP35i.s:56     .text.list_get_len:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccEhP35i.s:62     .text.list_get_len:00000000 list_get_len
+C:\Users\Toubidou\AppData\Local\Temp\ccEhP35i.s:102    .text.list_remove:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccEhP35i.s:108    .text.list_remove:00000000 list_remove
 
 NO UNDEFINED SYMBOLS

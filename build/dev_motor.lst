@@ -1,0 +1,302 @@
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccOaCBKP.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"dev_motor.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Dev/dev_motor.c"
+  20              		.section	.text.dev_motor_dir_set,"ax",%progbits
+  21              		.align	1
+  22              		.global	dev_motor_dir_set
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	dev_motor_dir_set:
+  28              	.LVL0:
+  29              	.LFB239:
+   1:Dev/dev_motor.c **** #include "dev_motor.h"
+   2:Dev/dev_motor.c **** 
+   3:Dev/dev_motor.c **** /// @brief 
+   4:Dev/dev_motor.c **** /// @param dir  0: stop, 1: forward, 2: backward 
+   5:Dev/dev_motor.c **** /// @param motor MOTOR_A or MOTOR_B
+   6:Dev/dev_motor.c **** void dev_motor_dir_set(uint8_t dir, uint8_t motor)
+   7:Dev/dev_motor.c **** {
+  30              		.loc 1 7 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 7 1 is_stmt 0 view .LVU1
+  35 0000 10B5     		push	{r4, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 4, -8
+  39              		.cfi_offset 14, -4
+  40 0002 0B46     		mov	r3, r1
+   8:Dev/dev_motor.c ****     GPIO_TypeDef *GPIOx_IN1, *GPIOx_IN2;
+  41              		.loc 1 8 5 is_stmt 1 view .LVU2
+   9:Dev/dev_motor.c ****     uint16_t GPIO_Pin_IN1;
+  42              		.loc 1 9 5 view .LVU3
+  10:Dev/dev_motor.c ****     uint16_t GPIO_Pin_IN2;
+  43              		.loc 1 10 5 view .LVU4
+  11:Dev/dev_motor.c ****     if (motor == MOTOR_A)
+  44              		.loc 1 11 5 view .LVU5
+  45              		.loc 1 11 8 is_stmt 0 view .LVU6
+  46 0004 0129     		cmp	r1, #1
+  47 0006 09D0     		beq	.L6
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccOaCBKP.s 			page 2
+
+
+  48 0008 0021     		movs	r1, #0
+  49              	.LVL1:
+  50              		.loc 1 11 8 view .LVU7
+  51 000a 0C46     		mov	r4, r1
+  12:Dev/dev_motor.c ****     {
+  13:Dev/dev_motor.c ****         GPIOx_IN1 = MOTORA_IN1_GPIO_Port;
+  14:Dev/dev_motor.c ****         GPIOx_IN2 = MOTORA_IN2_GPIO_Port;
+  15:Dev/dev_motor.c ****         GPIO_Pin_IN1 = MOTORA_IN1_Pin;
+  16:Dev/dev_motor.c ****         GPIO_Pin_IN2 = MOTORA_IN2_Pin;
+  17:Dev/dev_motor.c ****     }
+  18:Dev/dev_motor.c ****     else if (motor == MOTOR_B)
+  52              		.loc 1 18 10 is_stmt 1 view .LVU8
+  53              		.loc 1 18 13 is_stmt 0 view .LVU9
+  54 000c 022B     		cmp	r3, #2
+  55 000e 0CD0     		beq	.L9
+  56              	.LVL2:
+  57              	.L2:
+  19:Dev/dev_motor.c ****     {
+  20:Dev/dev_motor.c ****         GPIOx_IN1 = MOTORB_IN1_GPIO_Port;
+  21:Dev/dev_motor.c ****         GPIOx_IN2 = MOTORB_IN2_GPIO_Port;
+  22:Dev/dev_motor.c ****         GPIO_Pin_IN1 = MOTORB_IN1_Pin;
+  23:Dev/dev_motor.c ****         GPIO_Pin_IN2 = MOTORB_IN2_Pin;
+  24:Dev/dev_motor.c ****     }
+  25:Dev/dev_motor.c ****     
+  26:Dev/dev_motor.c ****     if (dir == 0)
+  58              		.loc 1 26 5 is_stmt 1 view .LVU10
+  59              		.loc 1 26 8 is_stmt 0 view .LVU11
+  60 0010 98B1     		cbz	r0, .L10
+  27:Dev/dev_motor.c ****     {
+  28:Dev/dev_motor.c ****         HAL_GPIO_WritePin(GPIOx_IN1, GPIO_Pin_IN1, GPIO_PIN_SET);
+  29:Dev/dev_motor.c ****         HAL_GPIO_WritePin(GPIOx_IN2, GPIO_Pin_IN2, GPIO_PIN_SET);
+  30:Dev/dev_motor.c ****     }
+  31:Dev/dev_motor.c ****     else if (dir == 1)
+  61              		.loc 1 31 10 is_stmt 1 view .LVU12
+  62              		.loc 1 31 13 is_stmt 0 view .LVU13
+  63 0012 0128     		cmp	r0, #1
+  64 0014 1BD0     		beq	.L11
+  32:Dev/dev_motor.c ****     {
+  33:Dev/dev_motor.c ****         HAL_GPIO_WritePin(GPIOx_IN1, GPIO_Pin_IN1, GPIO_PIN_SET);
+  34:Dev/dev_motor.c ****         HAL_GPIO_WritePin(GPIOx_IN2, GPIO_Pin_IN2, GPIO_PIN_RESET);
+  35:Dev/dev_motor.c ****     }
+  36:Dev/dev_motor.c ****     else if (dir == 2)
+  65              		.loc 1 36 10 is_stmt 1 view .LVU14
+  66              		.loc 1 36 13 is_stmt 0 view .LVU15
+  67 0016 0228     		cmp	r0, #2
+  68 0018 23D0     		beq	.L12
+  69              	.LVL3:
+  70              	.L1:
+  37:Dev/dev_motor.c ****     {
+  38:Dev/dev_motor.c ****         HAL_GPIO_WritePin(GPIOx_IN1, GPIO_Pin_IN1, GPIO_PIN_RESET);
+  39:Dev/dev_motor.c ****         HAL_GPIO_WritePin(GPIOx_IN2, GPIO_Pin_IN2, GPIO_PIN_SET);
+  40:Dev/dev_motor.c ****     }
+  41:Dev/dev_motor.c **** }
+  71              		.loc 1 41 1 view .LVU16
+  72 001a 10BD     		pop	{r4, pc}
+  73              	.LVL4:
+  74              	.L6:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccOaCBKP.s 			page 3
+
+
+  16:Dev/dev_motor.c ****     }
+  75              		.loc 1 16 22 view .LVU17
+  76 001c 4FF48073 		mov	r3, #256
+  77 0020 1C46     		mov	r4, r3
+  15:Dev/dev_motor.c ****         GPIO_Pin_IN2 = MOTORA_IN2_Pin;
+  78              		.loc 1 15 22 view .LVU18
+  79 0022 8021     		movs	r1, #128
+  80              	.LVL5:
+  13:Dev/dev_motor.c ****         GPIOx_IN2 = MOTORA_IN2_GPIO_Port;
+  81              		.loc 1 13 19 view .LVU19
+  82 0024 DFF850C0 		ldr	ip, .L13
+  83 0028 F2E7     		b	.L2
+  84              	.L9:
+  23:Dev/dev_motor.c ****     }
+  85              		.loc 1 23 22 view .LVU20
+  86 002a 4FF40073 		mov	r3, #512
+  87 002e 1C46     		mov	r4, r3
+  22:Dev/dev_motor.c ****         GPIO_Pin_IN2 = MOTORB_IN2_Pin;
+  88              		.loc 1 22 22 view .LVU21
+  89 0030 4FF48071 		mov	r1, #256
+  20:Dev/dev_motor.c ****         GPIOx_IN2 = MOTORB_IN2_GPIO_Port;
+  90              		.loc 1 20 19 view .LVU22
+  91 0034 DFF844C0 		ldr	ip, .L13+4
+  92 0038 EAE7     		b	.L2
+  93              	.LVL6:
+  94              	.L10:
+  28:Dev/dev_motor.c ****         HAL_GPIO_WritePin(GPIOx_IN2, GPIO_Pin_IN2, GPIO_PIN_SET);
+  95              		.loc 1 28 9 is_stmt 1 view .LVU23
+  96 003a 0122     		movs	r2, #1
+  97 003c 6046     		mov	r0, ip
+  98              	.LVL7:
+  28:Dev/dev_motor.c ****         HAL_GPIO_WritePin(GPIOx_IN2, GPIO_Pin_IN2, GPIO_PIN_SET);
+  99              		.loc 1 28 9 is_stmt 0 view .LVU24
+ 100 003e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 101              	.LVL8:
+  29:Dev/dev_motor.c ****     }
+ 102              		.loc 1 29 9 is_stmt 1 view .LVU25
+ 103 0042 0122     		movs	r2, #1
+ 104 0044 2146     		mov	r1, r4
+ 105 0046 0C48     		ldr	r0, .L13
+ 106 0048 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 107              	.LVL9:
+ 108 004c E5E7     		b	.L1
+ 109              	.LVL10:
+ 110              	.L11:
+  33:Dev/dev_motor.c ****         HAL_GPIO_WritePin(GPIOx_IN2, GPIO_Pin_IN2, GPIO_PIN_RESET);
+ 111              		.loc 1 33 9 view .LVU26
+ 112 004e 0122     		movs	r2, #1
+ 113 0050 6046     		mov	r0, ip
+ 114              	.LVL11:
+  33:Dev/dev_motor.c ****         HAL_GPIO_WritePin(GPIOx_IN2, GPIO_Pin_IN2, GPIO_PIN_RESET);
+ 115              		.loc 1 33 9 is_stmt 0 view .LVU27
+ 116 0052 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 117              	.LVL12:
+  34:Dev/dev_motor.c ****     }
+ 118              		.loc 1 34 9 is_stmt 1 view .LVU28
+ 119 0056 0022     		movs	r2, #0
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccOaCBKP.s 			page 4
+
+
+ 120 0058 2146     		mov	r1, r4
+ 121 005a 0748     		ldr	r0, .L13
+ 122 005c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 123              	.LVL13:
+ 124 0060 DBE7     		b	.L1
+ 125              	.LVL14:
+ 126              	.L12:
+  38:Dev/dev_motor.c ****         HAL_GPIO_WritePin(GPIOx_IN2, GPIO_Pin_IN2, GPIO_PIN_SET);
+ 127              		.loc 1 38 9 view .LVU29
+ 128 0062 0022     		movs	r2, #0
+ 129 0064 6046     		mov	r0, ip
+ 130              	.LVL15:
+  38:Dev/dev_motor.c ****         HAL_GPIO_WritePin(GPIOx_IN2, GPIO_Pin_IN2, GPIO_PIN_SET);
+ 131              		.loc 1 38 9 is_stmt 0 view .LVU30
+ 132 0066 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 133              	.LVL16:
+  39:Dev/dev_motor.c ****     }
+ 134              		.loc 1 39 9 is_stmt 1 view .LVU31
+ 135 006a 0122     		movs	r2, #1
+ 136 006c 2146     		mov	r1, r4
+ 137 006e 0248     		ldr	r0, .L13
+ 138 0070 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 139              	.LVL17:
+ 140              		.loc 1 41 1 is_stmt 0 view .LVU32
+ 141 0074 D1E7     		b	.L1
+ 142              	.L14:
+ 143 0076 00BF     		.align	2
+ 144              	.L13:
+ 145 0078 00080240 		.word	1073874944
+ 146 007c 00000240 		.word	1073872896
+ 147              		.cfi_endproc
+ 148              	.LFE239:
+ 150              		.section	.text.dev_motor_init,"ax",%progbits
+ 151              		.align	1
+ 152              		.global	dev_motor_init
+ 153              		.syntax unified
+ 154              		.thumb
+ 155              		.thumb_func
+ 157              	dev_motor_init:
+ 158              	.LFB240:
+  42:Dev/dev_motor.c **** 
+  43:Dev/dev_motor.c **** void dev_motor_init(void)
+  44:Dev/dev_motor.c **** {
+ 159              		.loc 1 44 1 is_stmt 1 view -0
+ 160              		.cfi_startproc
+ 161              		@ args = 0, pretend = 0, frame = 0
+ 162              		@ frame_needed = 0, uses_anonymous_args = 0
+ 163 0000 08B5     		push	{r3, lr}
+ 164              	.LCFI1:
+ 165              		.cfi_def_cfa_offset 8
+ 166              		.cfi_offset 3, -8
+ 167              		.cfi_offset 14, -4
+  45:Dev/dev_motor.c ****     dev_motor_dir_set(MOTOR_FORWARD, MOTOR_A);
+ 168              		.loc 1 45 5 view .LVU34
+ 169 0002 0121     		movs	r1, #1
+ 170 0004 0846     		mov	r0, r1
+ 171 0006 FFF7FEFF 		bl	dev_motor_dir_set
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccOaCBKP.s 			page 5
+
+
+ 172              	.LVL18:
+  46:Dev/dev_motor.c ****     dev_motor_dir_set(MOTOR_FORWARD, MOTOR_B);
+ 173              		.loc 1 46 5 view .LVU35
+ 174 000a 0221     		movs	r1, #2
+ 175 000c 0120     		movs	r0, #1
+ 176 000e FFF7FEFF 		bl	dev_motor_dir_set
+ 177              	.LVL19:
+  47:Dev/dev_motor.c ****     // __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 8000);
+  48:Dev/dev_motor.c ****     // __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, 8000);
+  49:Dev/dev_motor.c ****     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+ 178              		.loc 1 49 5 view .LVU36
+ 179 0012 0421     		movs	r1, #4
+ 180 0014 0348     		ldr	r0, .L17
+ 181 0016 FFF7FEFF 		bl	HAL_TIM_PWM_Start
+ 182              	.LVL20:
+  50:Dev/dev_motor.c ****     HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
+ 183              		.loc 1 50 5 view .LVU37
+ 184 001a 0021     		movs	r1, #0
+ 185 001c 0248     		ldr	r0, .L17+4
+ 186 001e FFF7FEFF 		bl	HAL_TIM_PWM_Start
+ 187              	.LVL21:
+  51:Dev/dev_motor.c **** }...
+ 188              		.loc 1 51 1 is_stmt 0 view .LVU38
+ 189 0022 08BD     		pop	{r3, pc}
+ 190              	.L18:
+ 191              		.align	2
+ 192              	.L17:
+ 193 0024 00000000 		.word	htim1
+ 194 0028 00000000 		.word	htim8
+ 195              		.cfi_endproc
+ 196              	.LFE240:
+ 198              		.text
+ 199              	.Letext0:
+ 200              		.file 2 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 201              		.file 3 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 202              		.file 4 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h"
+ 203              		.file 5 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 204              		.file 6 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h"
+ 205              		.file 7 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 206              		.file 8 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h"
+ 207              		.file 9 "Core/Inc/tim.h"
+ 208              		.file 10 "Dev/dev_motor.h"
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccOaCBKP.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 dev_motor.c
+C:\Users\Toubidou\AppData\Local\Temp\ccOaCBKP.s:21     .text.dev_motor_dir_set:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccOaCBKP.s:27     .text.dev_motor_dir_set:00000000 dev_motor_dir_set
+C:\Users\Toubidou\AppData\Local\Temp\ccOaCBKP.s:145    .text.dev_motor_dir_set:00000078 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccOaCBKP.s:151    .text.dev_motor_init:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccOaCBKP.s:157    .text.dev_motor_init:00000000 dev_motor_init
+C:\Users\Toubidou\AppData\Local\Temp\ccOaCBKP.s:193    .text.dev_motor_init:00000024 $d
+
+UNDEFINED SYMBOLS
+HAL_GPIO_WritePin
+HAL_TIM_PWM_Start
+htim1
+htim8

@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -28,7 +28,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
   25              		.thumb_func
   27              	button_create:
   28              	.LVL0:
-  29              	.LFB137:
+  29              	.LFB242:
    1:KTimeSlice/button.c **** #include "button.h"
    2:KTimeSlice/button.c **** #include "async_event.h"
    3:KTimeSlice/button.c **** 
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
   46 0002 164B     		ldr	r3, .L5
   47 0004 1D78     		ldrb	r5, [r3]	@ zero_extendqisi2
   48              		.loc 1 10 7 view .LVU4
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 2
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 2
 
 
   49 0006 102D     		cmp	r5, #16
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
   90 0028 80F82430 		strb	r3, [r0, #36]
   24:KTimeSlice/button.c ****     btn_new->cob_ready_flag = 0;
   91              		.loc 1 24 5 is_stmt 1 view .LVU27
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 3
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 3
 
 
   92              		.loc 1 24 29 is_stmt 0 view .LVU28
@@ -173,19 +173,19 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  133 005c 00000000 		.word	button_num
  134 0060 00000000 		.word	btn_list_head
  135              		.cfi_endproc
- 136              	.LFE137:
+ 136              	.LFE242:
  138              		.section	.text.button_set_long_pressed_cb,"ax",%progbits
  139              		.align	1
  140              		.global	button_set_long_pressed_cb
  141              		.syntax unified
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 4
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 4
 
 
  142              		.thumb
  143              		.thumb_func
  145              	button_set_long_pressed_cb:
  146              	.LVL8:
- 147              	.LFB138:
+ 147              	.LFB243:
   32:KTimeSlice/button.c **** void button_set_long_pressed_cb(BUTTON *btn, void (*long_event)(void))
   33:KTimeSlice/button.c **** {
  148              		.loc 1 33 1 is_stmt 1 view -0
@@ -217,7 +217,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  171              		.loc 1 36 1 view .LVU50
  172 000e 08BD     		pop	{r3, pc}
  173              		.cfi_endproc
- 174              	.LFE138:
+ 174              	.LFE243:
  176              		.section	.text.button_clear_long_pressed_cb,"ax",%progbits
  177              		.align	1
  178              		.global	button_clear_long_pressed_cb
@@ -226,7 +226,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  181              		.thumb_func
  183              	button_clear_long_pressed_cb:
  184              	.LVL11:
- 185              	.LFB139:
+ 185              	.LFB244:
   37:KTimeSlice/button.c **** int button_clear_long_pressed_cb(BUTTON *btn)
   38:KTimeSlice/button.c **** {
  186              		.loc 1 38 1 is_stmt 1 view -0
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  191              		.loc 1 39 8 is_stmt 0 view .LVU53
  192 0000 48B1     		cbz	r0, .L11
   38:KTimeSlice/button.c ****     if (btn == NULL)
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 5
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 5
 
 
  193              		.loc 1 38 1 view .LVU54
@@ -286,7 +286,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  227              		.loc 1 46 1 view .LVU65
  228 001a 7047     		bx	lr
  229              		.cfi_endproc
- 230              	.LFE139:
+ 230              	.LFE244:
  232              		.section	.text.button_cob_Reg,"ax",%progbits
  233              		.align	1
  234              		.global	button_cob_Reg
@@ -295,10 +295,10 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  237              		.thumb_func
  239              	button_cob_Reg:
  240              	.LVL16:
- 241              	.LFB140:
+ 241              	.LFB245:
   47:KTimeSlice/button.c **** 
   48:KTimeSlice/button.c **** int button_cob_Reg(uint8_t btn_id0, uint8_t btn_id1, void (*cob_event)(void))
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 6
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 6
 
 
   49:KTimeSlice/button.c **** {
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  288 0026 0133     		adds	r3, r3, #1
  289 0028 7372     		strb	r3, [r6, #9]
   57:KTimeSlice/button.c **** 
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 7
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 7
 
 
   58:KTimeSlice/button.c ****         list_for_each(node, &btn_list_head)
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  323              		.loc 1 71 12 view .LVU93
  324 0046 1846     		mov	r0, r3
  325              	.LVL27:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 8
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 8
 
 
  326              	.L16:
@@ -437,7 +437,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  337 0050 00000000 		.word	bci
  338 0054 00000000 		.word	btn_list_head
  339              		.cfi_endproc
- 340              	.LFE140:
+ 340              	.LFE245:
  342              		.section	.text.button_cob_set_trig_flag,"ax",%progbits
  343              		.align	1
  344              		.global	button_cob_set_trig_flag
@@ -446,7 +446,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  347              		.thumb_func
  349              	button_cob_set_trig_flag:
  350              	.LVL29:
- 351              	.LFB141:
+ 351              	.LFB246:
   73:KTimeSlice/button.c **** 
   74:KTimeSlice/button.c **** /// @brief 设置组合按键触发标志位
   75:KTimeSlice/button.c **** /// @param button_cob_mask 
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
   82:KTimeSlice/button.c ****     {
   83:KTimeSlice/button.c ****         temp_btn_p = list_entry(node, BUTTON, next);
   84:KTimeSlice/button.c ****         if (button_cob_mask & (0x01 << i))
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 9
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 9
 
 
   85:KTimeSlice/button.c ****         {
@@ -538,10 +538,10 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  406              	.L32:
  407 0028 00000000 		.word	btn_list_head
  408              		.cfi_endproc
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 10
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 10
 
 
- 409              	.LFE141:
+ 409              	.LFE246:
  411              		.section	.text.button_get_id,"ax",%progbits
  412              		.align	1
  413              		.global	button_get_id
@@ -550,7 +550,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  416              		.thumb_func
  418              	button_get_id:
  419              	.LVL37:
- 420              	.LFB142:
+ 420              	.LFB247:
   95:KTimeSlice/button.c **** int button_get_id(BUTTON *btn)
   96:KTimeSlice/button.c **** {
  421              		.loc 1 96 1 is_stmt 1 view -0
@@ -582,7 +582,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  440              		.loc 1 102 1 view .LVU124
  441 000a 7047     		bx	lr
  442              		.cfi_endproc
- 443              	.LFE142:
+ 443              	.LFE247:
  445              		.section	.text.button_scan,"ax",%progbits
  446              		.align	1
  447              		.global	button_scan
@@ -591,14 +591,14 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  450              		.thumb_func
  452              	button_scan:
  453              	.LVL41:
- 454              	.LFB143:
+ 454              	.LFB248:
  103:KTimeSlice/button.c **** 
  104:KTimeSlice/button.c **** //检测每个按键的状态并发送对应事件
  105:KTimeSlice/button.c **** void button_scan(void *p)
  106:KTimeSlice/button.c **** {
  455              		.loc 1 106 1 is_stmt 1 view -0
  456              		.cfi_startproc
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 11
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 11
 
 
  457              		@ args = 0, pretend = 0, frame = 0
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  486 000e 1AD0     		beq	.L54
  487              	.L40:
  111:KTimeSlice/button.c ****     {
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 12
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 12
 
 
  488              		.loc 1 111 5 is_stmt 1 discriminator 2 view .LVU136
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  526              		.loc 1 125 17 is_stmt 1 view .LVU152
  125:KTimeSlice/button.c ****             }
  527              		.loc 1 125 35 is_stmt 0 view .LVU153
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 13
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 13
 
 
  528 0038 0223     		movs	r3, #2
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  571 006e 02FA03F3 		lsl	r3, r2, r3
  572              		.loc 1 140 41 view .LVU173
  573 0072 2649     		ldr	r1, .L57+4
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 14
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 14
 
 
  574 0074 0888     		ldrh	r0, [r1]
@@ -838,7 +838,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  152:KTimeSlice/button.c ****                 {
  153:KTimeSlice/button.c ****                     // app_log("test\n");
  154:KTimeSlice/button.c ****                     asy_evt_emit(BUTTON_0_SIG_NUM + temp_btn_p->id * 2);
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 15
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 15
 
 
  155:KTimeSlice/button.c ****                 }
@@ -898,7 +898,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  655              		.loc 1 166 8 view .LVU209
  656 00d4 ABB9     		cbnz	r3, .L51
  657              	.LVL53:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 16
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 16
 
 
  658              	.L37:
@@ -958,7 +958,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  691 00f8 FFF7FEFF 		bl	button_cob_set_trig_flag
  692              	.LVL58:
  174:KTimeSlice/button.c ****             }
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 17
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 17
 
 
  693              		.loc 1 174 17 view .LVU220
@@ -984,7 +984,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  710 0110 00000000 		.word	bci
  711              	.LBE2:
  712              		.cfi_endproc
- 713              	.LFE143:
+ 713              	.LFE248:
  715              		.section	.bss.button_cob_mask.0,"aw",%nobits
  716              		.align	1
  719              	button_cob_mask.0:
@@ -1010,37 +1010,37 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 1
  743              		.file 5 "KTimeSlice/button.h"
  744              		.file 6 "KTimeSlice/async_event.h"
  745              		.file 7 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s 			page 18
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s 			page 18
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 button.c
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:21     .text.button_create:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:27     .text.button_create:00000000 button_create
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:133    .text.button_create:0000005c $d
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:736    .bss.button_num:00000000 button_num
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:731    .bss.btn_list_head:00000000 btn_list_head
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:139    .text.button_set_long_pressed_cb:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:145    .text.button_set_long_pressed_cb:00000000 button_set_long_pressed_cb
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:177    .text.button_clear_long_pressed_cb:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:183    .text.button_clear_long_pressed_cb:00000000 button_clear_long_pressed_cb
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:233    .text.button_cob_Reg:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:239    .text.button_cob_Reg:00000000 button_cob_Reg
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:337    .text.button_cob_Reg:00000050 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:725    .bss.bci:00000000 bci
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:343    .text.button_cob_set_trig_flag:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:349    .text.button_cob_set_trig_flag:00000000 button_cob_set_trig_flag
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:407    .text.button_cob_set_trig_flag:00000028 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:412    .text.button_get_id:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:418    .text.button_get_id:00000000 button_get_id
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:446    .text.button_scan:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:452    .text.button_scan:00000000 button_scan
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:708    .text.button_scan:00000108 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:719    .bss.button_cob_mask.0:00000000 button_cob_mask.0
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:716    .bss.button_cob_mask.0:00000000 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:722    .bss.bci:00000000 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:728    .bss.btn_list_head:00000000 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccyYIahi.s:737    .bss.button_num:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:21     .text.button_create:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:27     .text.button_create:00000000 button_create
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:133    .text.button_create:0000005c $d
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:736    .bss.button_num:00000000 button_num
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:731    .bss.btn_list_head:00000000 btn_list_head
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:139    .text.button_set_long_pressed_cb:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:145    .text.button_set_long_pressed_cb:00000000 button_set_long_pressed_cb
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:177    .text.button_clear_long_pressed_cb:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:183    .text.button_clear_long_pressed_cb:00000000 button_clear_long_pressed_cb
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:233    .text.button_cob_Reg:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:239    .text.button_cob_Reg:00000000 button_cob_Reg
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:337    .text.button_cob_Reg:00000050 $d
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:725    .bss.bci:00000000 bci
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:343    .text.button_cob_set_trig_flag:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:349    .text.button_cob_set_trig_flag:00000000 button_cob_set_trig_flag
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:407    .text.button_cob_set_trig_flag:00000028 $d
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:412    .text.button_get_id:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:418    .text.button_get_id:00000000 button_get_id
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:446    .text.button_scan:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:452    .text.button_scan:00000000 button_scan
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:708    .text.button_scan:00000108 $d
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:719    .bss.button_cob_mask.0:00000000 button_cob_mask.0
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:716    .bss.button_cob_mask.0:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:722    .bss.bci:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:728    .bss.btn_list_head:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\cchOg7v0.s:737    .bss.button_num:00000000 $d
 
 UNDEFINED SYMBOLS
 malloc

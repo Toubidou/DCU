@@ -57,6 +57,24 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define BAT_ADC_Pin GPIO_PIN_0
+#define BAT_ADC_GPIO_Port GPIOA
+#define CH_MOTORA_Pin GPIO_PIN_6
+#define CH_MOTORA_GPIO_Port GPIOC
+#define MOTORA_IN1_Pin GPIO_PIN_7
+#define MOTORA_IN1_GPIO_Port GPIOC
+#define MOTORA_IN2_Pin GPIO_PIN_8
+#define MOTORA_IN2_GPIO_Port GPIOC
+#define MOTORB_IN2_Pin GPIO_PIN_9
+#define MOTORB_IN2_GPIO_Port GPIOC
+#define MOTORB_IN1_Pin GPIO_PIN_8
+#define MOTORB_IN1_GPIO_Port GPIOA
+#define CH_MOTORB_Pin GPIO_PIN_9
+#define CH_MOTORB_GPIO_Port GPIOA
+#define VOL_5V_RN_Pin GPIO_PIN_3
+#define VOL_5V_RN_GPIO_Port GPIOB
+#define PWR_EN_Pin GPIO_PIN_5
+#define PWR_EN_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
