@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccTNuD8e.s 			page 1
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -19,12 +19,2336 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccTNuD8e.s 			page 1
   16              		.text
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
-  19              		.file 1 "KTimeSlice/flash_blanced_erase.c"
-  20              	.Letext0:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccTNuD8e.s 			page 2
+  19              		.file 1 "KTimeSlice/Algorithm/flash_blanced_erase.c"
+  20              		.section	.text.fbe_read_byte,"ax",%progbits
+  21              		.align	1
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	fbe_read_byte:
+  27              	.LVL0:
+  28              	.LFB239:
+   1:KTimeSlice/Algorithm/flash_blanced_erase.c **** #include "flash_blanced_erase.h"
+   2:KTimeSlice/Algorithm/flash_blanced_erase.c **** #include "stm32f4xx_hal.h"
+   3:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+   4:KTimeSlice/Algorithm/flash_blanced_erase.c **** /* ==================== 常量定义 ==================== */
+   5:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+   6:KTimeSlice/Algorithm/flash_blanced_erase.c **** #define FBE_MAGIC               0xA5F0u /* 有效记录魔数 */
+   7:KTimeSlice/Algorithm/flash_blanced_erase.c **** #define FBE_STATE_VALID         0xAAu   /* 记录有效标志（最后写入） */
+   8:KTimeSlice/Algorithm/flash_blanced_erase.c **** #define FBE_STATE_ERASED        0xFFu   /* 擦除态（空） */
+   9:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+  10:KTimeSlice/Algorithm/flash_blanced_erase.c **** /* 记录头部字段偏移（单位：字节） */
+  11:KTimeSlice/Algorithm/flash_blanced_erase.c **** #define FBE_OFF_MAGIC           0       /* uint16_t */
+  12:KTimeSlice/Algorithm/flash_blanced_erase.c **** #define FBE_OFF_CRC             2       /* uint16_t */
+  13:KTimeSlice/Algorithm/flash_blanced_erase.c **** #define FBE_OFF_SEQ             4       /* uint32_t，4 字节对齐 */
+  14:KTimeSlice/Algorithm/flash_blanced_erase.c **** #define FBE_OFF_DATA_LEN        8       /* uint8_t  */
+  15:KTimeSlice/Algorithm/flash_blanced_erase.c **** #define FBE_OFF_STATE           9       /* uint8_t  */
+  16:KTimeSlice/Algorithm/flash_blanced_erase.c **** #define FBE_OFF_DATA            10      /* 数据区起始 */
+  17:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+  18:KTimeSlice/Algorithm/flash_blanced_erase.c **** #define FBE_HEADER_SIZE         10
+  19:KTimeSlice/Algorithm/flash_blanced_erase.c **** #define FBE_RECORD_SIZE         (FBE_HEADER_SIZE + FBE_DATA_SIZE)
+  20:KTimeSlice/Algorithm/flash_blanced_erase.c **** #define FBE_RECORD_SIZE_ALIGNED (((FBE_RECORD_SIZE) + 3u) & ~3u)   /* 4 字节对齐 */
+  21:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+  22:KTimeSlice/Algorithm/flash_blanced_erase.c **** /* STM32F407VETx 扇区地址表（与 header 中注释一致） */
+  23:KTimeSlice/Algorithm/flash_blanced_erase.c **** static const uint32_t s_sector_addr[] = {
+  24:KTimeSlice/Algorithm/flash_blanced_erase.c ****     0x08000000u, /* 0: 16KB  */
+  25:KTimeSlice/Algorithm/flash_blanced_erase.c ****     0x08004000u, /* 1: 16KB  */
+  26:KTimeSlice/Algorithm/flash_blanced_erase.c ****     0x08008000u, /* 2: 16KB  */
+  27:KTimeSlice/Algorithm/flash_blanced_erase.c ****     0x0800C000u, /* 3: 16KB  */
+  28:KTimeSlice/Algorithm/flash_blanced_erase.c ****     0x08010000u, /* 4: 64KB  */
+  29:KTimeSlice/Algorithm/flash_blanced_erase.c ****     0x08020000u, /* 5: 128KB */
+  30:KTimeSlice/Algorithm/flash_blanced_erase.c ****     0x08040000u, /* 6: 128KB */
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 2
+
+
+  31:KTimeSlice/Algorithm/flash_blanced_erase.c ****     0x08060000u, /* 7: 128KB */
+  32:KTimeSlice/Algorithm/flash_blanced_erase.c **** };
+  33:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+  34:KTimeSlice/Algorithm/flash_blanced_erase.c **** #define FBE_SECTOR_A_ADDR       (s_sector_addr[FBE_SECTOR_A])
+  35:KTimeSlice/Algorithm/flash_blanced_erase.c **** #define FBE_SECTOR_B_ADDR       (s_sector_addr[FBE_SECTOR_B])
+  36:KTimeSlice/Algorithm/flash_blanced_erase.c **** #define FBE_SECTOR_SIZE         0x4000u                        /* 16KB，两个扇区须等大小 *
+  37:KTimeSlice/Algorithm/flash_blanced_erase.c **** #define FBE_RECORDS_PER_SECTOR  (FBE_SECTOR_SIZE / FBE_RECORD_SIZE_ALIGNED)
+  38:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+  39:KTimeSlice/Algorithm/flash_blanced_erase.c **** /* ==================== RAM 缓存 ==================== */
+  40:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+  41:KTimeSlice/Algorithm/flash_blanced_erase.c **** typedef struct
+  42:KTimeSlice/Algorithm/flash_blanced_erase.c **** {
+  43:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t active_sector;    /* 当前写入扇区基地址 */
+  44:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t latest_addr;      /* 最新有效记录地址（0 表示无数据） */
+  45:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t next_seq;         /* 下一条记录序号 */
+  46:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t write_idx;        /* 当前扇区内下一条记录的槽位索引 */
+  47:KTimeSlice/Algorithm/flash_blanced_erase.c **** } fbe_cache_t;
+  48:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+  49:KTimeSlice/Algorithm/flash_blanced_erase.c **** static fbe_cache_t s_cache;
+  50:KTimeSlice/Algorithm/flash_blanced_erase.c **** static int s_inited = 0;
+  51:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+  52:KTimeSlice/Algorithm/flash_blanced_erase.c **** /* ==================== 底层 Flash 读写 ==================== */
+  53:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+  54:KTimeSlice/Algorithm/flash_blanced_erase.c **** static uint8_t  fbe_read_byte(uint32_t addr)     { return *(volatile uint8_t *)addr; }
+  29              		.loc 1 54 50 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34              		.loc 1 54 52 view .LVU1
+  35              		.loc 1 54 59 is_stmt 0 view .LVU2
+  36 0000 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+  37              	.LVL1:
+  38              		.loc 1 54 86 view .LVU3
+  39 0002 7047     		bx	lr
+  40              		.cfi_endproc
+  41              	.LFE239:
+  43              		.section	.text.fbe_read_halfword,"ax",%progbits
+  44              		.align	1
+  45              		.syntax unified
+  46              		.thumb
+  47              		.thumb_func
+  49              	fbe_read_halfword:
+  50              	.LVL2:
+  51              	.LFB240:
+  55:KTimeSlice/Algorithm/flash_blanced_erase.c **** static uint16_t fbe_read_halfword(uint32_t addr) { return *(volatile uint16_t *)addr; }
+  52              		.loc 1 55 50 is_stmt 1 view -0
+  53              		.cfi_startproc
+  54              		@ args = 0, pretend = 0, frame = 0
+  55              		@ frame_needed = 0, uses_anonymous_args = 0
+  56              		@ link register save eliminated.
+  57              		.loc 1 55 52 view .LVU5
+  58              		.loc 1 55 59 is_stmt 0 view .LVU6
+  59 0000 0088     		ldrh	r0, [r0]
+  60              	.LVL3:
+  61              		.loc 1 55 87 view .LVU7
+  62 0002 80B2     		uxth	r0, r0
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 3
+
+
+  63 0004 7047     		bx	lr
+  64              		.cfi_endproc
+  65              	.LFE240:
+  67              		.section	.text.fbe_read_word,"ax",%progbits
+  68              		.align	1
+  69              		.syntax unified
+  70              		.thumb
+  71              		.thumb_func
+  73              	fbe_read_word:
+  74              	.LVL4:
+  75              	.LFB241:
+  56:KTimeSlice/Algorithm/flash_blanced_erase.c **** static uint32_t fbe_read_word(uint32_t addr)     { return *(volatile uint32_t *)addr; }
+  76              		.loc 1 56 50 is_stmt 1 view -0
+  77              		.cfi_startproc
+  78              		@ args = 0, pretend = 0, frame = 0
+  79              		@ frame_needed = 0, uses_anonymous_args = 0
+  80              		@ link register save eliminated.
+  81              		.loc 1 56 52 view .LVU9
+  82              		.loc 1 56 59 is_stmt 0 view .LVU10
+  83 0000 0068     		ldr	r0, [r0]
+  84              	.LVL5:
+  85              		.loc 1 56 87 view .LVU11
+  86 0002 7047     		bx	lr
+  87              		.cfi_endproc
+  88              	.LFE241:
+  90              		.section	.text.fbe_crc_update,"ax",%progbits
+  91              		.align	1
+  92              		.syntax unified
+  93              		.thumb
+  94              		.thumb_func
+  96              	fbe_crc_update:
+  97              	.LVL6:
+  98              	.LFB246:
+  57:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+  58:KTimeSlice/Algorithm/flash_blanced_erase.c **** static int fbe_write_byte(uint32_t addr, uint8_t val)
+  59:KTimeSlice/Algorithm/flash_blanced_erase.c **** {
+  60:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, addr, (uint64_t)val) == HAL_OK) ? 0 : -1;
+  61:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+  62:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+  63:KTimeSlice/Algorithm/flash_blanced_erase.c **** static int fbe_write_halfword(uint32_t addr, uint16_t val)
+  64:KTimeSlice/Algorithm/flash_blanced_erase.c **** {
+  65:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return (HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, addr, (uint64_t)val) == HAL_OK) ? 0 : -1;
+  66:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+  67:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+  68:KTimeSlice/Algorithm/flash_blanced_erase.c **** static int fbe_write_word(uint32_t addr, uint32_t val)
+  69:KTimeSlice/Algorithm/flash_blanced_erase.c **** {
+  70:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, addr, (uint64_t)val) == HAL_OK) ? 0 : -1;
+  71:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+  72:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+  73:KTimeSlice/Algorithm/flash_blanced_erase.c **** /* 擦除单个扇区（须在 Flash 已解锁状态下调用）。
+  74:KTimeSlice/Algorithm/flash_blanced_erase.c ****  * 16KB 扇区擦除约几十毫秒，期间 CPU 无法从 Flash 取指、中断会被短暂阻塞�
+  75:KTimeSlice/Algorithm/flash_blanced_erase.c ****  */
+  76:KTimeSlice/Algorithm/flash_blanced_erase.c **** static int fbe_erase_sector(uint8_t sector_num)
+  77:KTimeSlice/Algorithm/flash_blanced_erase.c **** {
+  78:KTimeSlice/Algorithm/flash_blanced_erase.c ****     FLASH_EraseInitTypeDef erase = {0};
+  79:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t sector_error = 0;
+  80:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 4
+
+
+  81:KTimeSlice/Algorithm/flash_blanced_erase.c ****     erase.TypeErase    = FLASH_TYPEERASE_SECTORS;
+  82:KTimeSlice/Algorithm/flash_blanced_erase.c ****     erase.Sector       = sector_num;
+  83:KTimeSlice/Algorithm/flash_blanced_erase.c ****     erase.NbSectors    = 1;
+  84:KTimeSlice/Algorithm/flash_blanced_erase.c ****     erase.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+  85:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+  86:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (HAL_FLASHEx_Erase(&erase, &sector_error) != HAL_OK)
+  87:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+  88:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+  89:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+  90:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (sector_error != 0xFFFFFFFFu)
+  91:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+  92:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+  93:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+  94:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return 0;
+  95:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+  96:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+  97:KTimeSlice/Algorithm/flash_blanced_erase.c **** /* ==================== CRC16 (MODBUS) ==================== */
+  98:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+  99:KTimeSlice/Algorithm/flash_blanced_erase.c **** static uint16_t fbe_crc_update(uint16_t crc, uint8_t byte)
+ 100:KTimeSlice/Algorithm/flash_blanced_erase.c **** {
+  99              		.loc 1 100 1 is_stmt 1 view -0
+ 100              		.cfi_startproc
+ 101              		@ args = 0, pretend = 0, frame = 0
+ 102              		@ frame_needed = 0, uses_anonymous_args = 0
+ 103              		@ link register save eliminated.
+ 101:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint8_t i;
+ 104              		.loc 1 101 5 view .LVU13
+ 102:KTimeSlice/Algorithm/flash_blanced_erase.c ****     crc ^= byte;
+ 105              		.loc 1 102 5 view .LVU14
+ 106              		.loc 1 102 9 is_stmt 0 view .LVU15
+ 107 0000 4840     		eors	r0, r0, r1
+ 108              	.LVL7:
+ 103:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < 8; i++)
+ 109              		.loc 1 103 5 is_stmt 1 view .LVU16
+ 110              		.loc 1 103 12 is_stmt 0 view .LVU17
+ 111 0002 0023     		movs	r3, #0
+ 112              		.loc 1 103 5 view .LVU18
+ 113 0004 02E0     		b	.L5
+ 114              	.LVL8:
+ 115              	.L6:
+ 104:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 105:KTimeSlice/Algorithm/flash_blanced_erase.c ****         if (crc & 0x0001u)
+ 106:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 107:KTimeSlice/Algorithm/flash_blanced_erase.c ****             crc = (uint16_t)((crc >> 1) ^ 0xA001u);
+ 108:KTimeSlice/Algorithm/flash_blanced_erase.c ****         }
+ 109:KTimeSlice/Algorithm/flash_blanced_erase.c ****         else
+ 110:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 111:KTimeSlice/Algorithm/flash_blanced_erase.c ****             crc >>= 1;
+ 116              		.loc 1 111 13 is_stmt 1 view .LVU19
+ 117              		.loc 1 111 17 is_stmt 0 view .LVU20
+ 118 0006 4008     		lsrs	r0, r0, #1
+ 119              	.LVL9:
+ 120              	.L7:
+ 103:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < 8; i++)
+ 121              		.loc 1 103 25 is_stmt 1 discriminator 2 view .LVU21
+ 122 0008 0133     		adds	r3, r3, #1
+ 123              	.LVL10:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 5
+
+
+ 103:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < 8; i++)
+ 124              		.loc 1 103 25 is_stmt 0 discriminator 2 view .LVU22
+ 125 000a DBB2     		uxtb	r3, r3
+ 126              	.LVL11:
+ 127              	.L5:
+ 103:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < 8; i++)
+ 128              		.loc 1 103 19 is_stmt 1 discriminator 1 view .LVU23
+ 129 000c 072B     		cmp	r3, #7
+ 130 000e 07D8     		bhi	.L9
+ 105:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 131              		.loc 1 105 9 view .LVU24
+ 105:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 132              		.loc 1 105 12 is_stmt 0 view .LVU25
+ 133 0010 10F0010F 		tst	r0, #1
+ 134 0014 F7D0     		beq	.L6
+ 107:KTimeSlice/Algorithm/flash_blanced_erase.c ****         }
+ 135              		.loc 1 107 13 is_stmt 1 view .LVU26
+ 107:KTimeSlice/Algorithm/flash_blanced_erase.c ****         }
+ 136              		.loc 1 107 17 is_stmt 0 view .LVU27
+ 137 0016 4AF20102 		movw	r2, #40961
+ 138 001a 82EA5000 		eor	r0, r2, r0, lsr #1
+ 139              	.LVL12:
+ 107:KTimeSlice/Algorithm/flash_blanced_erase.c ****         }
+ 140              		.loc 1 107 17 view .LVU28
+ 141 001e F3E7     		b	.L7
+ 142              	.L9:
+ 112:KTimeSlice/Algorithm/flash_blanced_erase.c ****         }
+ 113:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 114:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return crc;
+ 143              		.loc 1 114 5 is_stmt 1 view .LVU29
+ 115:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 144              		.loc 1 115 1 is_stmt 0 view .LVU30
+ 145 0020 7047     		bx	lr
+ 146              		.cfi_endproc
+ 147              	.LFE246:
+ 149              		.section	.text.fbe_crc_calc,"ax",%progbits
+ 150              		.align	1
+ 151              		.syntax unified
+ 152              		.thumb
+ 153              		.thumb_func
+ 155              	fbe_crc_calc:
+ 156              	.LVL13:
+ 157              	.LFB247:
+ 116:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 117:KTimeSlice/Algorithm/flash_blanced_erase.c **** /* 对 RAM 数据计算 CRC：覆盖 data_len 字节 + data 区 */
+ 118:KTimeSlice/Algorithm/flash_blanced_erase.c **** static uint16_t fbe_crc_calc(uint8_t data_len, const uint8_t *data)
+ 119:KTimeSlice/Algorithm/flash_blanced_erase.c **** {
+ 158              		.loc 1 119 1 is_stmt 1 view -0
+ 159              		.cfi_startproc
+ 160              		@ args = 0, pretend = 0, frame = 0
+ 161              		@ frame_needed = 0, uses_anonymous_args = 0
+ 162              		.loc 1 119 1 is_stmt 0 view .LVU32
+ 163 0000 70B5     		push	{r4, r5, r6, lr}
+ 164              	.LCFI0:
+ 165              		.cfi_def_cfa_offset 16
+ 166              		.cfi_offset 4, -16
+ 167              		.cfi_offset 5, -12
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 6
+
+
+ 168              		.cfi_offset 6, -8
+ 169              		.cfi_offset 14, -4
+ 170 0002 0546     		mov	r5, r0
+ 171 0004 0E46     		mov	r6, r1
+ 120:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint16_t crc = 0xFFFFu;
+ 172              		.loc 1 120 5 is_stmt 1 view .LVU33
+ 173              	.LVL14:
+ 121:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint16_t i;
+ 174              		.loc 1 121 5 view .LVU34
+ 122:KTimeSlice/Algorithm/flash_blanced_erase.c ****     crc = fbe_crc_update(crc, data_len);
+ 175              		.loc 1 122 5 view .LVU35
+ 176              		.loc 1 122 11 is_stmt 0 view .LVU36
+ 177 0006 0146     		mov	r1, r0
+ 178              	.LVL15:
+ 179              		.loc 1 122 11 view .LVU37
+ 180 0008 4FF6FF70 		movw	r0, #65535
+ 181              	.LVL16:
+ 182              		.loc 1 122 11 view .LVU38
+ 183 000c FFF7FEFF 		bl	fbe_crc_update
+ 184              	.LVL17:
+ 123:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < data_len; i++)
+ 185              		.loc 1 123 5 is_stmt 1 view .LVU39
+ 186              		.loc 1 123 12 is_stmt 0 view .LVU40
+ 187 0010 0024     		movs	r4, #0
+ 188              		.loc 1 123 5 view .LVU41
+ 189 0012 04E0     		b	.L11
+ 190              	.LVL18:
+ 191              	.L12:
+ 124:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 125:KTimeSlice/Algorithm/flash_blanced_erase.c ****         crc = fbe_crc_update(crc, data[i]);
+ 192              		.loc 1 125 9 is_stmt 1 view .LVU42
+ 193              		.loc 1 125 15 is_stmt 0 view .LVU43
+ 194 0014 315D     		ldrb	r1, [r6, r4]	@ zero_extendqisi2
+ 195 0016 FFF7FEFF 		bl	fbe_crc_update
+ 196              	.LVL19:
+ 123:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < data_len; i++)
+ 197              		.loc 1 123 32 is_stmt 1 discriminator 3 view .LVU44
+ 198 001a 0134     		adds	r4, r4, #1
+ 199              	.LVL20:
+ 123:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < data_len; i++)
+ 200              		.loc 1 123 32 is_stmt 0 discriminator 3 view .LVU45
+ 201 001c A4B2     		uxth	r4, r4
+ 202              	.LVL21:
+ 203              	.L11:
+ 123:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < data_len; i++)
+ 204              		.loc 1 123 19 is_stmt 1 discriminator 1 view .LVU46
+ 205 001e A542     		cmp	r5, r4
+ 206 0020 F8D8     		bhi	.L12
+ 126:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 127:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return crc;
+ 207              		.loc 1 127 5 view .LVU47
+ 128:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 208              		.loc 1 128 1 is_stmt 0 view .LVU48
+ 209 0022 70BD     		pop	{r4, r5, r6, pc}
+ 210              		.loc 1 128 1 view .LVU49
+ 211              		.cfi_endproc
+ 212              	.LFE247:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 7
+
+
+ 214              		.section	.text.fbe_crc_flash,"ax",%progbits
+ 215              		.align	1
+ 216              		.syntax unified
+ 217              		.thumb
+ 218              		.thumb_func
+ 220              	fbe_crc_flash:
+ 221              	.LVL22:
+ 222              	.LFB248:
+ 129:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 130:KTimeSlice/Algorithm/flash_blanced_erase.c **** /* 对 Flash 中一条记录计算 CRC：覆盖 data_len 字节 + data 区 */
+ 131:KTimeSlice/Algorithm/flash_blanced_erase.c **** static uint16_t fbe_crc_flash(uint32_t addr)
+ 132:KTimeSlice/Algorithm/flash_blanced_erase.c **** {
+ 223              		.loc 1 132 1 is_stmt 1 view -0
+ 224              		.cfi_startproc
+ 225              		@ args = 0, pretend = 0, frame = 0
+ 226              		@ frame_needed = 0, uses_anonymous_args = 0
+ 227              		.loc 1 132 1 is_stmt 0 view .LVU51
+ 228 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 229              	.LCFI1:
+ 230              		.cfi_def_cfa_offset 24
+ 231              		.cfi_offset 3, -24
+ 232              		.cfi_offset 4, -20
+ 233              		.cfi_offset 5, -16
+ 234              		.cfi_offset 6, -12
+ 235              		.cfi_offset 7, -8
+ 236              		.cfi_offset 14, -4
+ 237 0002 0746     		mov	r7, r0
+ 133:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint16_t crc = 0xFFFFu;
+ 238              		.loc 1 133 5 is_stmt 1 view .LVU52
+ 239              	.LVL23:
+ 134:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint16_t data_len = fbe_read_byte(addr + FBE_OFF_DATA_LEN);
+ 240              		.loc 1 134 5 view .LVU53
+ 241              		.loc 1 134 25 is_stmt 0 view .LVU54
+ 242 0004 0830     		adds	r0, r0, #8
+ 243              	.LVL24:
+ 244              		.loc 1 134 25 view .LVU55
+ 245 0006 FFF7FEFF 		bl	fbe_read_byte
+ 246              	.LVL25:
+ 247 000a 0646     		mov	r6, r0
+ 248              	.LVL26:
+ 135:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint16_t i;
+ 249              		.loc 1 135 5 is_stmt 1 view .LVU56
+ 136:KTimeSlice/Algorithm/flash_blanced_erase.c ****     crc = fbe_crc_update(crc, (uint8_t)data_len);
+ 250              		.loc 1 136 5 view .LVU57
+ 251              		.loc 1 136 11 is_stmt 0 view .LVU58
+ 252 000c 0146     		mov	r1, r0
+ 253 000e 4FF6FF70 		movw	r0, #65535
+ 254              	.LVL27:
+ 255              		.loc 1 136 11 view .LVU59
+ 256 0012 FFF7FEFF 		bl	fbe_crc_update
+ 257              	.LVL28:
+ 258 0016 0546     		mov	r5, r0
+ 259              	.LVL29:
+ 137:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < data_len; i++)
+ 260              		.loc 1 137 5 is_stmt 1 view .LVU60
+ 261              		.loc 1 137 12 is_stmt 0 view .LVU61
+ 262 0018 0024     		movs	r4, #0
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 8
+
+
+ 263              		.loc 1 137 5 view .LVU62
+ 264 001a 0AE0     		b	.L15
+ 265              	.LVL30:
+ 266              	.L16:
+ 138:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 139:KTimeSlice/Algorithm/flash_blanced_erase.c ****         crc = fbe_crc_update(crc, fbe_read_byte(addr + FBE_OFF_DATA + i));
+ 267              		.loc 1 139 9 is_stmt 1 view .LVU63
+ 268              		.loc 1 139 69 is_stmt 0 view .LVU64
+ 269 001c E019     		adds	r0, r4, r7
+ 270              		.loc 1 139 15 view .LVU65
+ 271 001e 0A30     		adds	r0, r0, #10
+ 272 0020 FFF7FEFF 		bl	fbe_read_byte
+ 273              	.LVL31:
+ 274 0024 0146     		mov	r1, r0
+ 275              		.loc 1 139 15 discriminator 1 view .LVU66
+ 276 0026 2846     		mov	r0, r5
+ 277 0028 FFF7FEFF 		bl	fbe_crc_update
+ 278              	.LVL32:
+ 279 002c 0546     		mov	r5, r0
+ 280              	.LVL33:
+ 137:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < data_len; i++)
+ 281              		.loc 1 137 32 is_stmt 1 discriminator 3 view .LVU67
+ 282 002e 0134     		adds	r4, r4, #1
+ 283              	.LVL34:
+ 137:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < data_len; i++)
+ 284              		.loc 1 137 32 is_stmt 0 discriminator 3 view .LVU68
+ 285 0030 A4B2     		uxth	r4, r4
+ 286              	.LVL35:
+ 287              	.L15:
+ 137:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < data_len; i++)
+ 288              		.loc 1 137 19 is_stmt 1 discriminator 1 view .LVU69
+ 289 0032 B442     		cmp	r4, r6
+ 290 0034 F2D3     		bcc	.L16
+ 140:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 141:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return crc;
+ 291              		.loc 1 141 5 view .LVU70
+ 142:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 292              		.loc 1 142 1 is_stmt 0 view .LVU71
+ 293 0036 2846     		mov	r0, r5
+ 294 0038 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 295              		.loc 1 142 1 view .LVU72
+ 296              		.cfi_endproc
+ 297              	.LFE248:
+ 299              		.section	.text.fbe_scan_sector,"ax",%progbits
+ 300              		.align	1
+ 301              		.syntax unified
+ 302              		.thumb
+ 303              		.thumb_func
+ 305              	fbe_scan_sector:
+ 306              	.LVL36:
+ 307              	.LFB249:
+ 143:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 144:KTimeSlice/Algorithm/flash_blanced_erase.c **** /* ==================== 扇区扫描 ==================== */
+ 145:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 146:KTimeSlice/Algorithm/flash_blanced_erase.c **** typedef struct
+ 147:KTimeSlice/Algorithm/flash_blanced_erase.c **** {
+ 148:KTimeSlice/Algorithm/flash_blanced_erase.c ****     int      has_valid;   /* 是否找到有效记录 */
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 9
+
+
+ 149:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t latest_addr; /* 最新有效记录地址 */
+ 150:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t latest_seq;  /* 最新有效记录序号 */
+ 151:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t free_idx;    /* 第一个空闲槽索引（0..FBE_RECORDS_PER_SECTOR） */
+ 152:KTimeSlice/Algorithm/flash_blanced_erase.c **** } fbe_scan_t;
+ 153:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 154:KTimeSlice/Algorithm/flash_blanced_erase.c **** /* 扫描一个扇区：定位最新有效记录与第一个空闲槽。
+ 155:KTimeSlice/Algorithm/flash_blanced_erase.c ****  * 记录按顺序追加，因此遇到全擦除槽(magic==0xFFFF)即空闲位置；
+ 156:KTimeSlice/Algorithm/flash_blanced_erase.c ****  * 撕裂/垃圾槽(magic!=0xFFFF 但非有效记录)跳过，等待扇区擦除时回收。
+ 157:KTimeSlice/Algorithm/flash_blanced_erase.c ****  */
+ 158:KTimeSlice/Algorithm/flash_blanced_erase.c **** static void fbe_scan_sector(uint32_t sector_addr, fbe_scan_t *scan)
+ 159:KTimeSlice/Algorithm/flash_blanced_erase.c **** {
+ 308              		.loc 1 159 1 is_stmt 1 view -0
+ 309              		.cfi_startproc
+ 310              		@ args = 0, pretend = 0, frame = 0
+ 311              		@ frame_needed = 0, uses_anonymous_args = 0
+ 312              		.loc 1 159 1 is_stmt 0 view .LVU74
+ 313 0000 2DE9F84F 		push	{r3, r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 314              	.LCFI2:
+ 315              		.cfi_def_cfa_offset 40
+ 316              		.cfi_offset 3, -40
+ 317              		.cfi_offset 4, -36
+ 318              		.cfi_offset 5, -32
+ 319              		.cfi_offset 6, -28
+ 320              		.cfi_offset 7, -24
+ 321              		.cfi_offset 8, -20
+ 322              		.cfi_offset 9, -16
+ 323              		.cfi_offset 10, -12
+ 324              		.cfi_offset 11, -8
+ 325              		.cfi_offset 14, -4
+ 326 0004 0746     		mov	r7, r0
+ 327 0006 8846     		mov	r8, r1
+ 160:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t i;
+ 328              		.loc 1 160 5 is_stmt 1 view .LVU75
+ 161:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t latest_addr = 0;
+ 329              		.loc 1 161 5 view .LVU76
+ 330              	.LVL37:
+ 162:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t latest_seq  = 0;
+ 331              		.loc 1 162 5 view .LVU77
+ 163:KTimeSlice/Algorithm/flash_blanced_erase.c ****     int      found       = 0;
+ 332              		.loc 1 163 5 view .LVU78
+ 164:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 165:KTimeSlice/Algorithm/flash_blanced_erase.c ****     scan->has_valid   = 0;
+ 333              		.loc 1 165 5 view .LVU79
+ 334              		.loc 1 165 23 is_stmt 0 view .LVU80
+ 335 0008 0026     		movs	r6, #0
+ 336 000a 0E60     		str	r6, [r1]
+ 166:KTimeSlice/Algorithm/flash_blanced_erase.c ****     scan->free_idx    = 0;
+ 337              		.loc 1 166 5 is_stmt 1 view .LVU81
+ 338              		.loc 1 166 23 is_stmt 0 view .LVU82
+ 339 000c CE60     		str	r6, [r1, #12]
+ 167:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 168:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < FBE_RECORDS_PER_SECTOR; i++)
+ 340              		.loc 1 168 5 is_stmt 1 view .LVU83
+ 341              	.LVL38:
+ 163:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 342              		.loc 1 163 14 is_stmt 0 view .LVU84
+ 343 000e B146     		mov	r9, r6
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 10
+
+
+ 162:KTimeSlice/Algorithm/flash_blanced_erase.c ****     int      found       = 0;
+ 344              		.loc 1 162 14 view .LVU85
+ 345 0010 B246     		mov	r10, r6
+ 161:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t latest_seq  = 0;
+ 346              		.loc 1 161 14 view .LVU86
+ 347 0012 B346     		mov	fp, r6
+ 348              		.loc 1 168 5 view .LVU87
+ 349 0014 13E0     		b	.L19
+ 350              	.LVL39:
+ 351              	.L28:
+ 352              	.LBB2:
+ 169:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 170:KTimeSlice/Algorithm/flash_blanced_erase.c ****         uint32_t addr = sector_addr + i * FBE_RECORD_SIZE_ALIGNED;
+ 171:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 172:KTimeSlice/Algorithm/flash_blanced_erase.c ****         uint16_t magic = fbe_read_halfword(addr + FBE_OFF_MAGIC);
+ 173:KTimeSlice/Algorithm/flash_blanced_erase.c ****         if (magic == 0xFFFFu)
+ 174:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 175:KTimeSlice/Algorithm/flash_blanced_erase.c ****             /* 全擦除槽 -> 空闲位置 */
+ 176:KTimeSlice/Algorithm/flash_blanced_erase.c ****             scan->free_idx = i;
+ 353              		.loc 1 176 13 is_stmt 1 view .LVU88
+ 354              		.loc 1 176 28 is_stmt 0 view .LVU89
+ 355 0016 C8F80C60 		str	r6, [r8, #12]
+ 177:KTimeSlice/Algorithm/flash_blanced_erase.c ****             break;
+ 356              		.loc 1 177 13 is_stmt 1 view .LVU90
+ 357              	.LVL40:
+ 358              	.L21:
+ 359              		.loc 1 177 13 is_stmt 0 view .LVU91
+ 360              	.LBE2:
+ 178:KTimeSlice/Algorithm/flash_blanced_erase.c ****         }
+ 179:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 180:KTimeSlice/Algorithm/flash_blanced_erase.c ****         uint8_t state = fbe_read_byte(addr + FBE_OFF_STATE);
+ 181:KTimeSlice/Algorithm/flash_blanced_erase.c ****         if (magic == FBE_MAGIC && state == FBE_STATE_VALID)
+ 182:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 183:KTimeSlice/Algorithm/flash_blanced_erase.c ****             uint16_t crc_stored = fbe_read_halfword(addr + FBE_OFF_CRC);
+ 184:KTimeSlice/Algorithm/flash_blanced_erase.c ****             if (crc_stored == fbe_crc_flash(addr))
+ 185:KTimeSlice/Algorithm/flash_blanced_erase.c ****             {
+ 186:KTimeSlice/Algorithm/flash_blanced_erase.c ****                 uint32_t seq = fbe_read_word(addr + FBE_OFF_SEQ);
+ 187:KTimeSlice/Algorithm/flash_blanced_erase.c ****                 if (!found || (int32_t)(seq - latest_seq) > 0)
+ 188:KTimeSlice/Algorithm/flash_blanced_erase.c ****                 {
+ 189:KTimeSlice/Algorithm/flash_blanced_erase.c ****                     found       = 1;
+ 190:KTimeSlice/Algorithm/flash_blanced_erase.c ****                     latest_seq  = seq;
+ 191:KTimeSlice/Algorithm/flash_blanced_erase.c ****                     latest_addr = addr;
+ 192:KTimeSlice/Algorithm/flash_blanced_erase.c ****                 }
+ 193:KTimeSlice/Algorithm/flash_blanced_erase.c ****             }
+ 194:KTimeSlice/Algorithm/flash_blanced_erase.c ****         }
+ 195:KTimeSlice/Algorithm/flash_blanced_erase.c ****         /* 其余情况（撕裂写入/损坏记录）跳过 */
+ 196:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 197:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 198:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (i >= FBE_RECORDS_PER_SECTOR)
+ 361              		.loc 1 198 5 is_stmt 1 view .LVU92
+ 362              		.loc 1 198 8 is_stmt 0 view .LVU93
+ 363 001a 3C2E     		cmp	r6, #60
+ 364 001c 02D9     		bls	.L24
+ 199:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 200:KTimeSlice/Algorithm/flash_blanced_erase.c ****         /* 扇区已写满，无空闲槽 */
+ 201:KTimeSlice/Algorithm/flash_blanced_erase.c ****         scan->free_idx = FBE_RECORDS_PER_SECTOR;
+ 365              		.loc 1 201 9 is_stmt 1 view .LVU94
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 11
+
+
+ 366              		.loc 1 201 24 is_stmt 0 view .LVU95
+ 367 001e 3D23     		movs	r3, #61
+ 368 0020 C8F80C30 		str	r3, [r8, #12]
+ 369              	.L24:
+ 202:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 203:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 204:KTimeSlice/Algorithm/flash_blanced_erase.c ****     scan->has_valid   = found;
+ 370              		.loc 1 204 5 is_stmt 1 view .LVU96
+ 371              		.loc 1 204 23 is_stmt 0 view .LVU97
+ 372 0024 C8F80090 		str	r9, [r8]
+ 205:KTimeSlice/Algorithm/flash_blanced_erase.c ****     scan->latest_addr = latest_addr;
+ 373              		.loc 1 205 5 is_stmt 1 view .LVU98
+ 374              		.loc 1 205 23 is_stmt 0 view .LVU99
+ 375 0028 C8F804B0 		str	fp, [r8, #4]
+ 206:KTimeSlice/Algorithm/flash_blanced_erase.c ****     scan->latest_seq  = latest_seq;
+ 376              		.loc 1 206 5 is_stmt 1 view .LVU100
+ 377              		.loc 1 206 23 is_stmt 0 view .LVU101
+ 378 002c C8F808A0 		str	r10, [r8, #8]
+ 207:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 379              		.loc 1 207 1 view .LVU102
+ 380 0030 BDE8F88F 		pop	{r3, r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 381              	.LVL41:
+ 382              	.L25:
+ 383              	.LBB7:
+ 384              	.LBB3:
+ 385              	.LBB4:
+ 190:KTimeSlice/Algorithm/flash_blanced_erase.c ****                     latest_addr = addr;
+ 386              		.loc 1 190 33 view .LVU103
+ 387 0034 8246     		mov	r10, r0
+ 388              	.LVL42:
+ 191:KTimeSlice/Algorithm/flash_blanced_erase.c ****                 }
+ 389              		.loc 1 191 33 view .LVU104
+ 390 0036 A346     		mov	fp, r4
+ 391              	.LVL43:
+ 189:KTimeSlice/Algorithm/flash_blanced_erase.c ****                     latest_seq  = seq;
+ 392              		.loc 1 189 33 view .LVU105
+ 393 0038 0123     		movs	r3, #1
+ 394              	.LVL44:
+ 189:KTimeSlice/Algorithm/flash_blanced_erase.c ****                     latest_seq  = seq;
+ 395              		.loc 1 189 33 view .LVU106
+ 396 003a 9946     		mov	r9, r3
+ 397              	.LVL45:
+ 398              	.L22:
+ 189:KTimeSlice/Algorithm/flash_blanced_erase.c ****                     latest_seq  = seq;
+ 399              		.loc 1 189 33 view .LVU107
+ 400              	.LBE4:
+ 401              	.LBE3:
+ 402              	.LBE7:
+ 168:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 403              		.loc 1 168 46 is_stmt 1 discriminator 2 view .LVU108
+ 404 003c 0136     		adds	r6, r6, #1
+ 405              	.LVL46:
+ 406              	.L19:
+ 168:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 407              		.loc 1 168 19 discriminator 1 view .LVU109
+ 408 003e 3C2E     		cmp	r6, #60
+ 409 0040 EBD8     		bhi	.L21
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 12
+
+
+ 410              	.LBB8:
+ 170:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 411              		.loc 1 170 9 view .LVU110
+ 170:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 412              		.loc 1 170 18 is_stmt 0 view .LVU111
+ 413 0042 4FF48674 		mov	r4, #268
+ 414 0046 04FB0674 		mla	r4, r4, r6, r7
+ 415              	.LVL47:
+ 172:KTimeSlice/Algorithm/flash_blanced_erase.c ****         if (magic == 0xFFFFu)
+ 416              		.loc 1 172 9 is_stmt 1 view .LVU112
+ 172:KTimeSlice/Algorithm/flash_blanced_erase.c ****         if (magic == 0xFFFFu)
+ 417              		.loc 1 172 26 is_stmt 0 view .LVU113
+ 418 004a 2046     		mov	r0, r4
+ 419 004c FFF7FEFF 		bl	fbe_read_halfword
+ 420              	.LVL48:
+ 421 0050 0546     		mov	r5, r0
+ 422              	.LVL49:
+ 173:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 423              		.loc 1 173 9 is_stmt 1 view .LVU114
+ 173:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 424              		.loc 1 173 12 is_stmt 0 view .LVU115
+ 425 0052 4FF6FF73 		movw	r3, #65535
+ 426 0056 9842     		cmp	r0, r3
+ 427 0058 DDD0     		beq	.L28
+ 180:KTimeSlice/Algorithm/flash_blanced_erase.c ****         if (magic == FBE_MAGIC && state == FBE_STATE_VALID)
+ 428              		.loc 1 180 9 is_stmt 1 view .LVU116
+ 180:KTimeSlice/Algorithm/flash_blanced_erase.c ****         if (magic == FBE_MAGIC && state == FBE_STATE_VALID)
+ 429              		.loc 1 180 25 is_stmt 0 view .LVU117
+ 430 005a 04F10900 		add	r0, r4, #9
+ 431              	.LVL50:
+ 180:KTimeSlice/Algorithm/flash_blanced_erase.c ****         if (magic == FBE_MAGIC && state == FBE_STATE_VALID)
+ 432              		.loc 1 180 25 view .LVU118
+ 433 005e FFF7FEFF 		bl	fbe_read_byte
+ 434              	.LVL51:
+ 181:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 435              		.loc 1 181 9 is_stmt 1 view .LVU119
+ 181:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 436              		.loc 1 181 12 is_stmt 0 view .LVU120
+ 437 0062 4AF2F053 		movw	r3, #42480
+ 438 0066 9D42     		cmp	r5, r3
+ 439 0068 E8D1     		bne	.L22
+ 181:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 440              		.loc 1 181 32 discriminator 1 view .LVU121
+ 441 006a AA28     		cmp	r0, #170
+ 442 006c E6D1     		bne	.L22
+ 443              	.LBB6:
+ 183:KTimeSlice/Algorithm/flash_blanced_erase.c ****             if (crc_stored == fbe_crc_flash(addr))
+ 444              		.loc 1 183 13 is_stmt 1 view .LVU122
+ 183:KTimeSlice/Algorithm/flash_blanced_erase.c ****             if (crc_stored == fbe_crc_flash(addr))
+ 445              		.loc 1 183 35 is_stmt 0 view .LVU123
+ 446 006e A01C     		adds	r0, r4, #2
+ 447              	.LVL52:
+ 183:KTimeSlice/Algorithm/flash_blanced_erase.c ****             if (crc_stored == fbe_crc_flash(addr))
+ 448              		.loc 1 183 35 view .LVU124
+ 449 0070 FFF7FEFF 		bl	fbe_read_halfword
+ 450              	.LVL53:
+ 451 0074 0546     		mov	r5, r0
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 13
+
+
+ 452              	.LVL54:
+ 184:KTimeSlice/Algorithm/flash_blanced_erase.c ****             {
+ 453              		.loc 1 184 13 is_stmt 1 view .LVU125
+ 184:KTimeSlice/Algorithm/flash_blanced_erase.c ****             {
+ 454              		.loc 1 184 31 is_stmt 0 view .LVU126
+ 455 0076 2046     		mov	r0, r4
+ 456 0078 FFF7FEFF 		bl	fbe_crc_flash
+ 457              	.LVL55:
+ 184:KTimeSlice/Algorithm/flash_blanced_erase.c ****             {
+ 458              		.loc 1 184 16 discriminator 1 view .LVU127
+ 459 007c A842     		cmp	r0, r5
+ 460 007e DDD1     		bne	.L22
+ 461              	.LBB5:
+ 186:KTimeSlice/Algorithm/flash_blanced_erase.c ****                 if (!found || (int32_t)(seq - latest_seq) > 0)
+ 462              		.loc 1 186 17 is_stmt 1 view .LVU128
+ 186:KTimeSlice/Algorithm/flash_blanced_erase.c ****                 if (!found || (int32_t)(seq - latest_seq) > 0)
+ 463              		.loc 1 186 32 is_stmt 0 view .LVU129
+ 464 0080 201D     		adds	r0, r4, #4
+ 465 0082 FFF7FEFF 		bl	fbe_read_word
+ 466              	.LVL56:
+ 187:KTimeSlice/Algorithm/flash_blanced_erase.c ****                 {
+ 467              		.loc 1 187 17 is_stmt 1 view .LVU130
+ 187:KTimeSlice/Algorithm/flash_blanced_erase.c ****                 {
+ 468              		.loc 1 187 20 is_stmt 0 view .LVU131
+ 469 0086 4B46     		mov	r3, r9
+ 470 0088 002B     		cmp	r3, #0
+ 471 008a D3D0     		beq	.L25
+ 187:KTimeSlice/Algorithm/flash_blanced_erase.c ****                 {
+ 472              		.loc 1 187 45 discriminator 1 view .LVU132
+ 473 008c 5346     		mov	r3, r10
+ 474 008e C31A     		subs	r3, r0, r3
+ 187:KTimeSlice/Algorithm/flash_blanced_erase.c ****                 {
+ 475              		.loc 1 187 28 discriminator 1 view .LVU133
+ 476 0090 002B     		cmp	r3, #0
+ 477 0092 D3DD     		ble	.L22
+ 190:KTimeSlice/Algorithm/flash_blanced_erase.c ****                     latest_addr = addr;
+ 478              		.loc 1 190 33 view .LVU134
+ 479 0094 8246     		mov	r10, r0
+ 480              	.LVL57:
+ 191:KTimeSlice/Algorithm/flash_blanced_erase.c ****                 }
+ 481              		.loc 1 191 33 view .LVU135
+ 482 0096 A346     		mov	fp, r4
+ 483              	.LVL58:
+ 189:KTimeSlice/Algorithm/flash_blanced_erase.c ****                     latest_seq  = seq;
+ 484              		.loc 1 189 33 view .LVU136
+ 485 0098 0123     		movs	r3, #1
+ 486 009a 9946     		mov	r9, r3
+ 487              	.LVL59:
+ 189:KTimeSlice/Algorithm/flash_blanced_erase.c ****                     latest_seq  = seq;
+ 488              		.loc 1 189 33 view .LVU137
+ 489 009c CEE7     		b	.L22
+ 490              	.LBE5:
+ 491              	.LBE6:
+ 492              	.LBE8:
+ 493              		.cfi_endproc
+ 494              	.LFE249:
+ 496              		.section	.text.fbe_erase_sector,"ax",%progbits
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 14
+
+
+ 497              		.align	1
+ 498              		.syntax unified
+ 499              		.thumb
+ 500              		.thumb_func
+ 502              	fbe_erase_sector:
+ 503              	.LVL60:
+ 504              	.LFB245:
+  77:KTimeSlice/Algorithm/flash_blanced_erase.c ****     FLASH_EraseInitTypeDef erase = {0};
+ 505              		.loc 1 77 1 is_stmt 1 view -0
+ 506              		.cfi_startproc
+ 507              		@ args = 0, pretend = 0, frame = 24
+ 508              		@ frame_needed = 0, uses_anonymous_args = 0
+  77:KTimeSlice/Algorithm/flash_blanced_erase.c ****     FLASH_EraseInitTypeDef erase = {0};
+ 509              		.loc 1 77 1 is_stmt 0 view .LVU139
+ 510 0000 00B5     		push	{lr}
+ 511              	.LCFI3:
+ 512              		.cfi_def_cfa_offset 4
+ 513              		.cfi_offset 14, -4
+ 514 0002 87B0     		sub	sp, sp, #28
+ 515              	.LCFI4:
+ 516              		.cfi_def_cfa_offset 32
+  78:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t sector_error = 0;
+ 517              		.loc 1 78 5 is_stmt 1 view .LVU140
+  78:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t sector_error = 0;
+ 518              		.loc 1 78 28 is_stmt 0 view .LVU141
+ 519 0004 01AA     		add	r2, sp, #4
+ 520 0006 0023     		movs	r3, #0
+ 521 0008 0193     		str	r3, [sp, #4]
+ 522 000a 0293     		str	r3, [sp, #8]
+ 523 000c 0393     		str	r3, [sp, #12]
+ 524 000e 0493     		str	r3, [sp, #16]
+ 525 0010 0593     		str	r3, [sp, #20]
+  79:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 526              		.loc 1 79 5 is_stmt 1 view .LVU142
+  79:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 527              		.loc 1 79 14 is_stmt 0 view .LVU143
+ 528 0012 0093     		str	r3, [sp]
+  81:KTimeSlice/Algorithm/flash_blanced_erase.c ****     erase.Sector       = sector_num;
+ 529              		.loc 1 81 5 is_stmt 1 view .LVU144
+  82:KTimeSlice/Algorithm/flash_blanced_erase.c ****     erase.NbSectors    = 1;
+ 530              		.loc 1 82 5 view .LVU145
+  82:KTimeSlice/Algorithm/flash_blanced_erase.c ****     erase.NbSectors    = 1;
+ 531              		.loc 1 82 24 is_stmt 0 view .LVU146
+ 532 0014 0390     		str	r0, [sp, #12]
+  83:KTimeSlice/Algorithm/flash_blanced_erase.c ****     erase.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+ 533              		.loc 1 83 5 is_stmt 1 view .LVU147
+  83:KTimeSlice/Algorithm/flash_blanced_erase.c ****     erase.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+ 534              		.loc 1 83 24 is_stmt 0 view .LVU148
+ 535 0016 0123     		movs	r3, #1
+ 536 0018 0493     		str	r3, [sp, #16]
+  84:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 537              		.loc 1 84 5 is_stmt 1 view .LVU149
+  84:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 538              		.loc 1 84 24 is_stmt 0 view .LVU150
+ 539 001a 0223     		movs	r3, #2
+ 540 001c 0593     		str	r3, [sp, #20]
+  86:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 15
+
+
+ 541              		.loc 1 86 5 is_stmt 1 view .LVU151
+  86:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 542              		.loc 1 86 9 is_stmt 0 view .LVU152
+ 543 001e 6946     		mov	r1, sp
+ 544 0020 1046     		mov	r0, r2
+ 545              	.LVL61:
+  86:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 546              		.loc 1 86 9 view .LVU153
+ 547 0022 FFF7FEFF 		bl	HAL_FLASHEx_Erase
+ 548              	.LVL62:
+  86:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 549              		.loc 1 86 8 discriminator 1 view .LVU154
+ 550 0026 28B9     		cbnz	r0, .L31
+  90:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 551              		.loc 1 90 5 is_stmt 1 view .LVU155
+  90:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 552              		.loc 1 90 22 is_stmt 0 view .LVU156
+ 553 0028 009B     		ldr	r3, [sp]
+  90:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 554              		.loc 1 90 8 view .LVU157
+ 555 002a B3F1FF3F 		cmp	r3, #-1
+ 556 002e 04D1     		bne	.L32
+ 557              	.L29:
+  95:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 558              		.loc 1 95 1 view .LVU158
+ 559 0030 07B0     		add	sp, sp, #28
+ 560              	.LCFI5:
+ 561              		.cfi_remember_state
+ 562              		.cfi_def_cfa_offset 4
+ 563              		@ sp needed
+ 564 0032 00BD     		pop	{pc}
+ 565              	.L31:
+ 566              	.LCFI6:
+ 567              		.cfi_restore_state
+  88:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 568              		.loc 1 88 16 view .LVU159
+ 569 0034 4FF0FF30 		mov	r0, #-1
+ 570 0038 FAE7     		b	.L29
+ 571              	.L32:
+  92:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 572              		.loc 1 92 16 view .LVU160
+ 573 003a 4FF0FF30 		mov	r0, #-1
+ 574 003e F7E7     		b	.L29
+ 575              		.cfi_endproc
+ 576              	.LFE245:
+ 578              		.section	.text.fbe_switch_sector,"ax",%progbits
+ 579              		.align	1
+ 580              		.syntax unified
+ 581              		.thumb
+ 582              		.thumb_func
+ 584              	fbe_switch_sector:
+ 585              	.LFB251:
+ 208:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 209:KTimeSlice/Algorithm/flash_blanced_erase.c **** /* ==================== 记录写入 ==================== */
+ 210:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 211:KTimeSlice/Algorithm/flash_blanced_erase.c **** /* 写入一条记录。写序：magic(首) -> crc -> seq -> data_len -> data -> state(末)。
+ 212:KTimeSlice/Algorithm/flash_blanced_erase.c ****  * magic 最先写，保证撕裂写入不会被误判为空闲槽（避免 1->0 重写问题）；
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 16
+
+
+ 213:KTimeSlice/Algorithm/flash_blanced_erase.c ****  * state 最后写，保证只有完整写入的记录才被标记有效。
+ 214:KTimeSlice/Algorithm/flash_blanced_erase.c ****  */
+ 215:KTimeSlice/Algorithm/flash_blanced_erase.c **** static int fbe_write_record(uint32_t addr, uint32_t seq, const uint8_t *data, uint16_t len)
+ 216:KTimeSlice/Algorithm/flash_blanced_erase.c **** {
+ 217:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint16_t i;
+ 218:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint16_t crc = fbe_crc_calc((uint8_t)len, data);
+ 219:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 220:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (HAL_FLASH_Unlock() != HAL_OK)
+ 221:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 222:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+ 223:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 224:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 225:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_write_halfword(addr + FBE_OFF_MAGIC, FBE_MAGIC) != 0)  goto fail;
+ 226:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_write_halfword(addr + FBE_OFF_CRC, crc) != 0)          goto fail;
+ 227:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_write_word(addr + FBE_OFF_SEQ, seq) != 0)              goto fail;
+ 228:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_write_byte(addr + FBE_OFF_DATA_LEN, (uint8_t)len) != 0) goto fail;
+ 229:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 230:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < len; i++)
+ 231:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 232:KTimeSlice/Algorithm/flash_blanced_erase.c ****         if (fbe_write_byte(addr + FBE_OFF_DATA + i, data[i]) != 0)
+ 233:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 234:KTimeSlice/Algorithm/flash_blanced_erase.c ****             goto fail;
+ 235:KTimeSlice/Algorithm/flash_blanced_erase.c ****         }
+ 236:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 237:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 238:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_write_byte(addr + FBE_OFF_STATE, FBE_STATE_VALID) != 0) goto fail;
+ 239:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 240:KTimeSlice/Algorithm/flash_blanced_erase.c ****     HAL_FLASH_Lock();
+ 241:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return 0;
+ 242:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 243:KTimeSlice/Algorithm/flash_blanced_erase.c **** fail:
+ 244:KTimeSlice/Algorithm/flash_blanced_erase.c ****     HAL_FLASH_Lock();
+ 245:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return -1;
+ 246:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 247:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 248:KTimeSlice/Algorithm/flash_blanced_erase.c **** /* ==================== 扇区切换 ==================== */
+ 249:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 250:KTimeSlice/Algorithm/flash_blanced_erase.c **** /* 当前扇区写满时切换到备用扇区（先擦除备用扇区）。
+ 251:KTimeSlice/Algorithm/flash_blanced_erase.c ****  * 最新数据仍保留在旧扇区，只有下一次成功写入后新扇区才成为权威。
+ 252:KTimeSlice/Algorithm/flash_blanced_erase.c ****  * 若切换后、写入前掉电，重启会重新识别旧扇区为有效并再次切换，安全
+ 253:KTimeSlice/Algorithm/flash_blanced_erase.c ****  */
+ 254:KTimeSlice/Algorithm/flash_blanced_erase.c **** static int fbe_switch_sector(void)
+ 255:KTimeSlice/Algorithm/flash_blanced_erase.c **** {
+ 586              		.loc 1 255 1 is_stmt 1 view -0
+ 587              		.cfi_startproc
+ 588              		@ args = 0, pretend = 0, frame = 0
+ 589              		@ frame_needed = 0, uses_anonymous_args = 0
+ 590 0000 38B5     		push	{r3, r4, r5, lr}
+ 591              	.LCFI7:
+ 592              		.cfi_def_cfa_offset 16
+ 593              		.cfi_offset 3, -16
+ 594              		.cfi_offset 4, -12
+ 595              		.cfi_offset 5, -8
+ 596              		.cfi_offset 14, -4
+ 256:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t new_addr;
+ 597              		.loc 1 256 5 view .LVU162
+ 257:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint8_t  new_num;
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 17
+
+
+ 598              		.loc 1 257 5 view .LVU163
+ 258:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 259:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (s_cache.active_sector == FBE_SECTOR_A_ADDR)
+ 599              		.loc 1 259 5 view .LVU164
+ 600              		.loc 1 259 16 is_stmt 0 view .LVU165
+ 601 0002 134B     		ldr	r3, .L42
+ 602 0004 1A68     		ldr	r2, [r3]
+ 603              		.loc 1 259 8 view .LVU166
+ 604 0006 134B     		ldr	r3, .L42+4
+ 605 0008 9A42     		cmp	r2, r3
+ 606 000a 13D0     		beq	.L41
+ 260:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 261:KTimeSlice/Algorithm/flash_blanced_erase.c ****         new_addr = FBE_SECTOR_B_ADDR;
+ 262:KTimeSlice/Algorithm/flash_blanced_erase.c ****         new_num  = FBE_SECTOR_B;
+ 263:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 264:KTimeSlice/Algorithm/flash_blanced_erase.c ****     else
+ 265:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 266:KTimeSlice/Algorithm/flash_blanced_erase.c ****         new_addr = FBE_SECTOR_A_ADDR;
+ 267:KTimeSlice/Algorithm/flash_blanced_erase.c ****         new_num  = FBE_SECTOR_A;
+ 607              		.loc 1 267 18 view .LVU167
+ 608 000c 0223     		movs	r3, #2
+ 609 000e 1C46     		mov	r4, r3
+ 266:KTimeSlice/Algorithm/flash_blanced_erase.c ****         new_num  = FBE_SECTOR_A;
+ 610              		.loc 1 266 18 view .LVU168
+ 611 0010 104B     		ldr	r3, .L42+4
+ 612 0012 1D46     		mov	r5, r3
+ 613              	.L35:
+ 614              	.LVL63:
+ 268:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 269:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 270:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (HAL_FLASH_Unlock() != HAL_OK)
+ 615              		.loc 1 270 5 is_stmt 1 view .LVU169
+ 616              		.loc 1 270 9 is_stmt 0 view .LVU170
+ 617 0014 FFF7FEFF 		bl	HAL_FLASH_Unlock
+ 618              	.LVL64:
+ 619              		.loc 1 270 8 discriminator 1 view .LVU171
+ 620 0018 88B9     		cbnz	r0, .L38
+ 271:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 272:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+ 273:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 274:KTimeSlice/Algorithm/flash_blanced_erase.c ****     int ret = fbe_erase_sector(new_num);
+ 621              		.loc 1 274 5 is_stmt 1 view .LVU172
+ 622              		.loc 1 274 15 is_stmt 0 view .LVU173
+ 623 001a 2046     		mov	r0, r4
+ 624 001c FFF7FEFF 		bl	fbe_erase_sector
+ 625              	.LVL65:
+ 626 0020 0446     		mov	r4, r0
+ 627              	.LVL66:
+ 275:KTimeSlice/Algorithm/flash_blanced_erase.c ****     HAL_FLASH_Lock();
+ 628              		.loc 1 275 5 is_stmt 1 view .LVU174
+ 629 0022 FFF7FEFF 		bl	HAL_FLASH_Lock
+ 630              	.LVL67:
+ 276:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (ret != 0)
+ 631              		.loc 1 276 5 view .LVU175
+ 632              		.loc 1 276 8 is_stmt 0 view .LVU176
+ 633 0026 74B9     		cbnz	r4, .L39
+ 277:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 18
+
+
+ 278:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+ 279:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 280:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 281:KTimeSlice/Algorithm/flash_blanced_erase.c ****     s_cache.active_sector = new_addr;
+ 634              		.loc 1 281 5 is_stmt 1 view .LVU177
+ 635              		.loc 1 281 27 is_stmt 0 view .LVU178
+ 636 0028 094B     		ldr	r3, .L42
+ 637 002a 1D60     		str	r5, [r3]
+ 282:KTimeSlice/Algorithm/flash_blanced_erase.c ****     s_cache.write_idx     = 0;
+ 638              		.loc 1 282 5 is_stmt 1 view .LVU179
+ 639              		.loc 1 282 27 is_stmt 0 view .LVU180
+ 640 002c 0022     		movs	r2, #0
+ 641 002e DA60     		str	r2, [r3, #12]
+ 283:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return 0;
+ 642              		.loc 1 283 5 is_stmt 1 view .LVU181
+ 643              	.LVL68:
+ 644              	.L34:
+ 284:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 645              		.loc 1 284 1 is_stmt 0 view .LVU182
+ 646 0030 2046     		mov	r0, r4
+ 647 0032 38BD     		pop	{r3, r4, r5, pc}
+ 648              	.LVL69:
+ 649              	.L41:
+ 262:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 650              		.loc 1 262 18 view .LVU183
+ 651 0034 0323     		movs	r3, #3
+ 652 0036 1C46     		mov	r4, r3
+ 261:KTimeSlice/Algorithm/flash_blanced_erase.c ****         new_num  = FBE_SECTOR_B;
+ 653              		.loc 1 261 18 view .LVU184
+ 654 0038 074B     		ldr	r3, .L42+8
+ 655 003a 1D46     		mov	r5, r3
+ 656 003c EAE7     		b	.L35
+ 657              	.LVL70:
+ 658              	.L38:
+ 272:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 659              		.loc 1 272 16 view .LVU185
+ 660 003e 4FF0FF33 		mov	r3, #-1
+ 661 0042 1C46     		mov	r4, r3
+ 662              	.LVL71:
+ 272:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 663              		.loc 1 272 16 view .LVU186
+ 664 0044 F4E7     		b	.L34
+ 665              	.LVL72:
+ 666              	.L39:
+ 278:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 667              		.loc 1 278 16 view .LVU187
+ 668 0046 4FF0FF33 		mov	r3, #-1
+ 669 004a 1C46     		mov	r4, r3
+ 670              	.LVL73:
+ 278:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 671              		.loc 1 278 16 view .LVU188
+ 672 004c F0E7     		b	.L34
+ 673              	.L43:
+ 674 004e 00BF     		.align	2
+ 675              	.L42:
+ 676 0050 00000000 		.word	s_cache
+ 677 0054 00800008 		.word	134250496
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 19
+
+
+ 678 0058 00C00008 		.word	134266880
+ 679              		.cfi_endproc
+ 680              	.LFE251:
+ 682              		.section	.text.fbe_write_halfword,"ax",%progbits
+ 683              		.align	1
+ 684              		.syntax unified
+ 685              		.thumb
+ 686              		.thumb_func
+ 688              	fbe_write_halfword:
+ 689              	.LVL74:
+ 690              	.LFB243:
+  64:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return (HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, addr, (uint64_t)val) == HAL_OK) ? 0 : -1;
+ 691              		.loc 1 64 1 is_stmt 1 view -0
+ 692              		.cfi_startproc
+ 693              		@ args = 0, pretend = 0, frame = 0
+ 694              		@ frame_needed = 0, uses_anonymous_args = 0
+  64:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return (HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, addr, (uint64_t)val) == HAL_OK) ? 0 : -1;
+ 695              		.loc 1 64 1 is_stmt 0 view .LVU190
+ 696 0000 08B5     		push	{r3, lr}
+ 697              	.LCFI8:
+ 698              		.cfi_def_cfa_offset 8
+ 699              		.cfi_offset 3, -8
+ 700              		.cfi_offset 14, -4
+ 701 0002 0A46     		mov	r2, r1
+  65:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 702              		.loc 1 65 5 is_stmt 1 view .LVU191
+  65:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 703              		.loc 1 65 13 is_stmt 0 view .LVU192
+ 704 0004 0023     		movs	r3, #0
+ 705 0006 0146     		mov	r1, r0
+ 706              	.LVL75:
+  65:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 707              		.loc 1 65 13 view .LVU193
+ 708 0008 0120     		movs	r0, #1
+ 709              	.LVL76:
+  65:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 710              		.loc 1 65 13 view .LVU194
+ 711 000a FFF7FEFF 		bl	HAL_FLASH_Program
+ 712              	.LVL77:
+  65:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 713              		.loc 1 65 95 discriminator 1 view .LVU195
+ 714 000e 00B9     		cbnz	r0, .L48
+ 715              	.L44:
+  66:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 716              		.loc 1 66 1 view .LVU196
+ 717 0010 08BD     		pop	{r3, pc}
+ 718              	.L48:
+  65:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 719              		.loc 1 65 95 discriminator 3 view .LVU197
+ 720 0012 4FF0FF30 		mov	r0, #-1
+  65:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 721              		.loc 1 65 95 view .LVU198
+ 722 0016 FBE7     		b	.L44
+ 723              		.cfi_endproc
+ 724              	.LFE243:
+ 726              		.section	.text.fbe_write_word,"ax",%progbits
+ 727              		.align	1
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 20
+
+
+ 728              		.syntax unified
+ 729              		.thumb
+ 730              		.thumb_func
+ 732              	fbe_write_word:
+ 733              	.LVL78:
+ 734              	.LFB244:
+  69:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, addr, (uint64_t)val) == HAL_OK) ? 0 : -1;
+ 735              		.loc 1 69 1 is_stmt 1 view -0
+ 736              		.cfi_startproc
+ 737              		@ args = 0, pretend = 0, frame = 0
+ 738              		@ frame_needed = 0, uses_anonymous_args = 0
+  69:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, addr, (uint64_t)val) == HAL_OK) ? 0 : -1;
+ 739              		.loc 1 69 1 is_stmt 0 view .LVU200
+ 740 0000 08B5     		push	{r3, lr}
+ 741              	.LCFI9:
+ 742              		.cfi_def_cfa_offset 8
+ 743              		.cfi_offset 3, -8
+ 744              		.cfi_offset 14, -4
+ 745 0002 0A46     		mov	r2, r1
+  70:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 746              		.loc 1 70 5 is_stmt 1 view .LVU201
+  70:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 747              		.loc 1 70 13 is_stmt 0 view .LVU202
+ 748 0004 0023     		movs	r3, #0
+ 749 0006 0146     		mov	r1, r0
+ 750              	.LVL79:
+  70:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 751              		.loc 1 70 13 view .LVU203
+ 752 0008 0220     		movs	r0, #2
+ 753              	.LVL80:
+  70:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 754              		.loc 1 70 13 view .LVU204
+ 755 000a FFF7FEFF 		bl	HAL_FLASH_Program
+ 756              	.LVL81:
+  70:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 757              		.loc 1 70 91 discriminator 1 view .LVU205
+ 758 000e 00B9     		cbnz	r0, .L53
+ 759              	.L49:
+  71:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 760              		.loc 1 71 1 view .LVU206
+ 761 0010 08BD     		pop	{r3, pc}
+ 762              	.L53:
+  70:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 763              		.loc 1 70 91 discriminator 3 view .LVU207
+ 764 0012 4FF0FF30 		mov	r0, #-1
+  70:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 765              		.loc 1 70 91 view .LVU208
+ 766 0016 FBE7     		b	.L49
+ 767              		.cfi_endproc
+ 768              	.LFE244:
+ 770              		.section	.text.fbe_write_byte,"ax",%progbits
+ 771              		.align	1
+ 772              		.syntax unified
+ 773              		.thumb
+ 774              		.thumb_func
+ 776              	fbe_write_byte:
+ 777              	.LVL82:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 21
+
+
+ 778              	.LFB242:
+  59:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, addr, (uint64_t)val) == HAL_OK) ? 0 : -1;
+ 779              		.loc 1 59 1 is_stmt 1 view -0
+ 780              		.cfi_startproc
+ 781              		@ args = 0, pretend = 0, frame = 0
+ 782              		@ frame_needed = 0, uses_anonymous_args = 0
+  59:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, addr, (uint64_t)val) == HAL_OK) ? 0 : -1;
+ 783              		.loc 1 59 1 is_stmt 0 view .LVU210
+ 784 0000 08B5     		push	{r3, lr}
+ 785              	.LCFI10:
+ 786              		.cfi_def_cfa_offset 8
+ 787              		.cfi_offset 3, -8
+ 788              		.cfi_offset 14, -4
+ 789 0002 0A46     		mov	r2, r1
+  60:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 790              		.loc 1 60 5 is_stmt 1 view .LVU211
+  60:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 791              		.loc 1 60 13 is_stmt 0 view .LVU212
+ 792 0004 0023     		movs	r3, #0
+ 793 0006 0146     		mov	r1, r0
+ 794              	.LVL83:
+  60:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 795              		.loc 1 60 13 view .LVU213
+ 796 0008 1846     		mov	r0, r3
+ 797              	.LVL84:
+  60:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 798              		.loc 1 60 13 view .LVU214
+ 799 000a FFF7FEFF 		bl	HAL_FLASH_Program
+ 800              	.LVL85:
+  60:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 801              		.loc 1 60 91 discriminator 1 view .LVU215
+ 802 000e 00B9     		cbnz	r0, .L58
+ 803              	.L54:
+  61:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 804              		.loc 1 61 1 view .LVU216
+ 805 0010 08BD     		pop	{r3, pc}
+ 806              	.L58:
+  60:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 807              		.loc 1 60 91 discriminator 3 view .LVU217
+ 808 0012 4FF0FF30 		mov	r0, #-1
+  60:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 809              		.loc 1 60 91 view .LVU218
+ 810 0016 FBE7     		b	.L54
+ 811              		.cfi_endproc
+ 812              	.LFE242:
+ 814              		.section	.text.fbe_write_record,"ax",%progbits
+ 815              		.align	1
+ 816              		.syntax unified
+ 817              		.thumb
+ 818              		.thumb_func
+ 820              	fbe_write_record:
+ 821              	.LVL86:
+ 822              	.LFB250:
+ 216:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint16_t i;
+ 823              		.loc 1 216 1 is_stmt 1 view -0
+ 824              		.cfi_startproc
+ 825              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 22
+
+
+ 826              		@ frame_needed = 0, uses_anonymous_args = 0
+ 216:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint16_t i;
+ 827              		.loc 1 216 1 is_stmt 0 view .LVU220
+ 828 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 829              	.LCFI11:
+ 830              		.cfi_def_cfa_offset 32
+ 831              		.cfi_offset 3, -32
+ 832              		.cfi_offset 4, -28
+ 833              		.cfi_offset 5, -24
+ 834              		.cfi_offset 6, -20
+ 835              		.cfi_offset 7, -16
+ 836              		.cfi_offset 8, -12
+ 837              		.cfi_offset 9, -8
+ 838              		.cfi_offset 14, -4
+ 839 0004 0546     		mov	r5, r0
+ 840 0006 8946     		mov	r9, r1
+ 841 0008 1746     		mov	r7, r2
+ 842 000a 1E46     		mov	r6, r3
+ 217:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint16_t crc = fbe_crc_calc((uint8_t)len, data);
+ 843              		.loc 1 217 5 is_stmt 1 view .LVU221
+ 218:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 844              		.loc 1 218 5 view .LVU222
+ 218:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 845              		.loc 1 218 20 is_stmt 0 view .LVU223
+ 846 000c 5FFA83F8 		uxtb	r8, r3
+ 847 0010 1146     		mov	r1, r2
+ 848              	.LVL87:
+ 218:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 849              		.loc 1 218 20 view .LVU224
+ 850 0012 4046     		mov	r0, r8
+ 851              	.LVL88:
+ 218:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 852              		.loc 1 218 20 view .LVU225
+ 853 0014 FFF7FEFF 		bl	fbe_crc_calc
+ 854              	.LVL89:
+ 218:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 855              		.loc 1 218 20 view .LVU226
+ 856 0018 0446     		mov	r4, r0
+ 857              	.LVL90:
+ 220:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 858              		.loc 1 220 5 is_stmt 1 view .LVU227
+ 220:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 859              		.loc 1 220 9 is_stmt 0 view .LVU228
+ 860 001a FFF7FEFF 		bl	HAL_FLASH_Unlock
+ 861              	.LVL91:
+ 220:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 862              		.loc 1 220 8 discriminator 1 view .LVU229
+ 863 001e 90BB     		cbnz	r0, .L64
+ 225:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_write_halfword(addr + FBE_OFF_CRC, crc) != 0)          goto fail;
+ 864              		.loc 1 225 5 is_stmt 1 view .LVU230
+ 225:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_write_halfword(addr + FBE_OFF_CRC, crc) != 0)          goto fail;
+ 865              		.loc 1 225 9 is_stmt 0 view .LVU231
+ 866 0020 4AF2F051 		movw	r1, #42480
+ 867 0024 2846     		mov	r0, r5
+ 868 0026 FFF7FEFF 		bl	fbe_write_halfword
+ 869              	.LVL92:
+ 225:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_write_halfword(addr + FBE_OFF_CRC, crc) != 0)          goto fail;
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 23
+
+
+ 870              		.loc 1 225 8 discriminator 1 view .LVU232
+ 871 002a 28BB     		cbnz	r0, .L61
+ 226:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_write_word(addr + FBE_OFF_SEQ, seq) != 0)              goto fail;
+ 872              		.loc 1 226 5 is_stmt 1 view .LVU233
+ 226:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_write_word(addr + FBE_OFF_SEQ, seq) != 0)              goto fail;
+ 873              		.loc 1 226 9 is_stmt 0 view .LVU234
+ 874 002c 2146     		mov	r1, r4
+ 875 002e A81C     		adds	r0, r5, #2
+ 876 0030 FFF7FEFF 		bl	fbe_write_halfword
+ 877              	.LVL93:
+ 226:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_write_word(addr + FBE_OFF_SEQ, seq) != 0)              goto fail;
+ 878              		.loc 1 226 8 discriminator 1 view .LVU235
+ 879 0034 00BB     		cbnz	r0, .L61
+ 227:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_write_byte(addr + FBE_OFF_DATA_LEN, (uint8_t)len) != 0) goto fail;
+ 880              		.loc 1 227 5 is_stmt 1 view .LVU236
+ 227:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_write_byte(addr + FBE_OFF_DATA_LEN, (uint8_t)len) != 0) goto fail;
+ 881              		.loc 1 227 9 is_stmt 0 view .LVU237
+ 882 0036 4946     		mov	r1, r9
+ 883 0038 281D     		adds	r0, r5, #4
+ 884 003a FFF7FEFF 		bl	fbe_write_word
+ 885              	.LVL94:
+ 227:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_write_byte(addr + FBE_OFF_DATA_LEN, (uint8_t)len) != 0) goto fail;
+ 886              		.loc 1 227 8 discriminator 1 view .LVU238
+ 887 003e D8B9     		cbnz	r0, .L61
+ 228:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 888              		.loc 1 228 5 is_stmt 1 view .LVU239
+ 228:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 889              		.loc 1 228 9 is_stmt 0 view .LVU240
+ 890 0040 4146     		mov	r1, r8
+ 891 0042 05F10800 		add	r0, r5, #8
+ 892 0046 FFF7FEFF 		bl	fbe_write_byte
+ 893              	.LVL95:
+ 228:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 894              		.loc 1 228 8 discriminator 1 view .LVU241
+ 895 004a A8B9     		cbnz	r0, .L61
+ 230:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 896              		.loc 1 230 12 view .LVU242
+ 897 004c 0446     		mov	r4, r0
+ 898              	.LVL96:
+ 899              	.L62:
+ 230:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 900              		.loc 1 230 19 is_stmt 1 discriminator 1 view .LVU243
+ 901 004e B442     		cmp	r4, r6
+ 902 0050 08D2     		bcs	.L66
+ 232:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 903              		.loc 1 232 9 view .LVU244
+ 232:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 904              		.loc 1 232 48 is_stmt 0 view .LVU245
+ 905 0052 6019     		adds	r0, r4, r5
+ 232:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 906              		.loc 1 232 13 view .LVU246
+ 907 0054 395D     		ldrb	r1, [r7, r4]	@ zero_extendqisi2
+ 908 0056 0A30     		adds	r0, r0, #10
+ 909 0058 FFF7FEFF 		bl	fbe_write_byte
+ 910              	.LVL97:
+ 232:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 911              		.loc 1 232 12 discriminator 1 view .LVU247
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 24
+
+
+ 912 005c 60B9     		cbnz	r0, .L61
+ 230:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 913              		.loc 1 230 27 is_stmt 1 discriminator 2 view .LVU248
+ 914 005e 0134     		adds	r4, r4, #1
+ 915              	.LVL98:
+ 230:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 916              		.loc 1 230 27 is_stmt 0 discriminator 2 view .LVU249
+ 917 0060 A4B2     		uxth	r4, r4
+ 918              	.LVL99:
+ 230:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 919              		.loc 1 230 27 discriminator 2 view .LVU250
+ 920 0062 F4E7     		b	.L62
+ 921              	.LVL100:
+ 922              	.L66:
+ 238:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 923              		.loc 1 238 5 is_stmt 1 view .LVU251
+ 238:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 924              		.loc 1 238 9 is_stmt 0 view .LVU252
+ 925 0064 AA21     		movs	r1, #170
+ 926 0066 05F10900 		add	r0, r5, #9
+ 927 006a FFF7FEFF 		bl	fbe_write_byte
+ 928              	.LVL101:
+ 238:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 929              		.loc 1 238 8 discriminator 1 view .LVU253
+ 930 006e 0446     		mov	r4, r0
+ 931              	.LVL102:
+ 238:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 932              		.loc 1 238 8 discriminator 1 view .LVU254
+ 933 0070 10B9     		cbnz	r0, .L61
+ 240:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return 0;
+ 934              		.loc 1 240 5 is_stmt 1 view .LVU255
+ 935 0072 FFF7FEFF 		bl	HAL_FLASH_Lock
+ 936              	.LVL103:
+ 241:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 937              		.loc 1 241 5 view .LVU256
+ 241:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 938              		.loc 1 241 12 is_stmt 0 view .LVU257
+ 939 0076 03E0     		b	.L59
+ 940              	.LVL104:
+ 941              	.L61:
+ 244:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return -1;
+ 942              		.loc 1 244 5 is_stmt 1 view .LVU258
+ 943 0078 FFF7FEFF 		bl	HAL_FLASH_Lock
+ 944              	.LVL105:
+ 245:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 945              		.loc 1 245 5 view .LVU259
+ 245:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 946              		.loc 1 245 12 is_stmt 0 view .LVU260
+ 947 007c 4FF0FF34 		mov	r4, #-1
+ 948              	.L59:
+ 246:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 949              		.loc 1 246 1 view .LVU261
+ 950 0080 2046     		mov	r0, r4
+ 951 0082 BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 952              	.LVL106:
+ 953              	.L64:
+ 222:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 25
+
+
+ 954              		.loc 1 222 16 view .LVU262
+ 955 0086 4FF0FF34 		mov	r4, #-1
+ 956              	.LVL107:
+ 222:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 957              		.loc 1 222 16 view .LVU263
+ 958 008a F9E7     		b	.L59
+ 959              		.cfi_endproc
+ 960              	.LFE250:
+ 962              		.section	.text.fbe_init,"ax",%progbits
+ 963              		.align	1
+ 964              		.global	fbe_init
+ 965              		.syntax unified
+ 966              		.thumb
+ 967              		.thumb_func
+ 969              	fbe_init:
+ 970              	.LFB252:
+ 285:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 286:KTimeSlice/Algorithm/flash_blanced_erase.c **** /* ==================== 对外接口 ==================== */
+ 287:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 288:KTimeSlice/Algorithm/flash_blanced_erase.c **** int fbe_init(void)
+ 289:KTimeSlice/Algorithm/flash_blanced_erase.c **** {
+ 971              		.loc 1 289 1 is_stmt 1 view -0
+ 972              		.cfi_startproc
+ 973              		@ args = 0, pretend = 0, frame = 32
+ 974              		@ frame_needed = 0, uses_anonymous_args = 0
+ 975 0000 00B5     		push	{lr}
+ 976              	.LCFI12:
+ 977              		.cfi_def_cfa_offset 4
+ 978              		.cfi_offset 14, -4
+ 979 0002 89B0     		sub	sp, sp, #36
+ 980              	.LCFI13:
+ 981              		.cfi_def_cfa_offset 40
+ 290:KTimeSlice/Algorithm/flash_blanced_erase.c ****     fbe_scan_t scan_a, scan_b;
+ 982              		.loc 1 290 5 view .LVU265
+ 291:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 292:KTimeSlice/Algorithm/flash_blanced_erase.c ****     fbe_scan_sector(FBE_SECTOR_A_ADDR, &scan_a);
+ 983              		.loc 1 292 5 view .LVU266
+ 984 0004 04A9     		add	r1, sp, #16
+ 985 0006 2B48     		ldr	r0, .L76
+ 986 0008 FFF7FEFF 		bl	fbe_scan_sector
+ 987              	.LVL108:
+ 293:KTimeSlice/Algorithm/flash_blanced_erase.c ****     fbe_scan_sector(FBE_SECTOR_B_ADDR, &scan_b);
+ 988              		.loc 1 293 5 view .LVU267
+ 989 000c 6946     		mov	r1, sp
+ 990 000e 2A48     		ldr	r0, .L76+4
+ 991 0010 FFF7FEFF 		bl	fbe_scan_sector
+ 992              	.LVL109:
+ 294:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 295:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (scan_a.has_valid && scan_b.has_valid)
+ 993              		.loc 1 295 5 view .LVU268
+ 994              		.loc 1 295 15 is_stmt 0 view .LVU269
+ 995 0014 049B     		ldr	r3, [sp, #16]
+ 996              		.loc 1 295 8 view .LVU270
+ 997 0016 D3B1     		cbz	r3, .L68
+ 998              		.loc 1 295 35 discriminator 1 view .LVU271
+ 999 0018 009A     		ldr	r2, [sp]
+ 1000              		.loc 1 295 26 discriminator 1 view .LVU272
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 26
+
+
+ 1001 001a C2B1     		cbz	r2, .L68
+ 296:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 297:KTimeSlice/Algorithm/flash_blanced_erase.c ****         /* 两个扇区都有有效记录，取序号更大者 */
+ 298:KTimeSlice/Algorithm/flash_blanced_erase.c ****         if ((int32_t)(scan_a.latest_seq - scan_b.latest_seq) >= 0)
+ 1002              		.loc 1 298 9 is_stmt 1 view .LVU273
+ 1003              		.loc 1 298 29 is_stmt 0 view .LVU274
+ 1004 001c 069B     		ldr	r3, [sp, #24]
+ 1005              		.loc 1 298 49 view .LVU275
+ 1006 001e 029A     		ldr	r2, [sp, #8]
+ 1007              		.loc 1 298 41 view .LVU276
+ 1008 0020 991A     		subs	r1, r3, r2
+ 1009              		.loc 1 298 12 view .LVU277
+ 1010 0022 0029     		cmp	r1, #0
+ 1011 0024 09DB     		blt	.L69
+ 299:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 300:KTimeSlice/Algorithm/flash_blanced_erase.c ****             s_cache.active_sector = FBE_SECTOR_A_ADDR;
+ 1012              		.loc 1 300 13 is_stmt 1 view .LVU278
+ 1013              		.loc 1 300 35 is_stmt 0 view .LVU279
+ 1014 0026 254A     		ldr	r2, .L76+8
+ 1015 0028 2249     		ldr	r1, .L76
+ 1016 002a 1160     		str	r1, [r2]
+ 301:KTimeSlice/Algorithm/flash_blanced_erase.c ****             s_cache.latest_addr   = scan_a.latest_addr;
+ 1017              		.loc 1 301 13 is_stmt 1 view .LVU280
+ 1018              		.loc 1 301 43 is_stmt 0 view .LVU281
+ 1019 002c 0599     		ldr	r1, [sp, #20]
+ 1020              		.loc 1 301 35 view .LVU282
+ 1021 002e 5160     		str	r1, [r2, #4]
+ 302:KTimeSlice/Algorithm/flash_blanced_erase.c ****             s_cache.next_seq      = scan_a.latest_seq + 1;
+ 1022              		.loc 1 302 13 is_stmt 1 view .LVU283
+ 1023              		.loc 1 302 55 is_stmt 0 view .LVU284
+ 1024 0030 0133     		adds	r3, r3, #1
+ 1025              		.loc 1 302 35 view .LVU285
+ 1026 0032 9360     		str	r3, [r2, #8]
+ 303:KTimeSlice/Algorithm/flash_blanced_erase.c ****             s_cache.write_idx     = scan_a.free_idx;
+ 1027              		.loc 1 303 13 is_stmt 1 view .LVU286
+ 1028              		.loc 1 303 43 is_stmt 0 view .LVU287
+ 1029 0034 079B     		ldr	r3, [sp, #28]
+ 1030              		.loc 1 303 35 view .LVU288
+ 1031 0036 D360     		str	r3, [r2, #12]
+ 1032 0038 14E0     		b	.L70
+ 1033              	.L69:
+ 304:KTimeSlice/Algorithm/flash_blanced_erase.c ****         }
+ 305:KTimeSlice/Algorithm/flash_blanced_erase.c ****         else
+ 306:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 307:KTimeSlice/Algorithm/flash_blanced_erase.c ****             s_cache.active_sector = FBE_SECTOR_B_ADDR;
+ 1034              		.loc 1 307 13 is_stmt 1 view .LVU289
+ 1035              		.loc 1 307 35 is_stmt 0 view .LVU290
+ 1036 003a 204B     		ldr	r3, .L76+8
+ 1037 003c 1E49     		ldr	r1, .L76+4
+ 1038 003e 1960     		str	r1, [r3]
+ 308:KTimeSlice/Algorithm/flash_blanced_erase.c ****             s_cache.latest_addr   = scan_b.latest_addr;
+ 1039              		.loc 1 308 13 is_stmt 1 view .LVU291
+ 1040              		.loc 1 308 43 is_stmt 0 view .LVU292
+ 1041 0040 0199     		ldr	r1, [sp, #4]
+ 1042              		.loc 1 308 35 view .LVU293
+ 1043 0042 5960     		str	r1, [r3, #4]
+ 309:KTimeSlice/Algorithm/flash_blanced_erase.c ****             s_cache.next_seq      = scan_b.latest_seq + 1;
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 27
+
+
+ 1044              		.loc 1 309 13 is_stmt 1 view .LVU294
+ 1045              		.loc 1 309 55 is_stmt 0 view .LVU295
+ 1046 0044 0132     		adds	r2, r2, #1
+ 1047              		.loc 1 309 35 view .LVU296
+ 1048 0046 9A60     		str	r2, [r3, #8]
+ 310:KTimeSlice/Algorithm/flash_blanced_erase.c ****             s_cache.write_idx     = scan_b.free_idx;
+ 1049              		.loc 1 310 13 is_stmt 1 view .LVU297
+ 1050              		.loc 1 310 43 is_stmt 0 view .LVU298
+ 1051 0048 039A     		ldr	r2, [sp, #12]
+ 1052              		.loc 1 310 35 view .LVU299
+ 1053 004a DA60     		str	r2, [r3, #12]
+ 1054 004c 0AE0     		b	.L70
+ 1055              	.L68:
+ 311:KTimeSlice/Algorithm/flash_blanced_erase.c ****         }
+ 312:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 313:KTimeSlice/Algorithm/flash_blanced_erase.c ****     else if (scan_a.has_valid)
+ 1056              		.loc 1 313 10 is_stmt 1 view .LVU300
+ 1057              		.loc 1 313 13 is_stmt 0 view .LVU301
+ 1058 004e 7BB1     		cbz	r3, .L71
+ 314:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 315:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.active_sector = FBE_SECTOR_A_ADDR;
+ 1059              		.loc 1 315 9 is_stmt 1 view .LVU302
+ 1060              		.loc 1 315 31 is_stmt 0 view .LVU303
+ 1061 0050 1A4B     		ldr	r3, .L76+8
+ 1062 0052 184A     		ldr	r2, .L76
+ 1063 0054 1A60     		str	r2, [r3]
+ 316:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.latest_addr   = scan_a.latest_addr;
+ 1064              		.loc 1 316 9 is_stmt 1 view .LVU304
+ 1065              		.loc 1 316 39 is_stmt 0 view .LVU305
+ 1066 0056 059A     		ldr	r2, [sp, #20]
+ 1067              		.loc 1 316 31 view .LVU306
+ 1068 0058 5A60     		str	r2, [r3, #4]
+ 317:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.next_seq      = scan_a.latest_seq + 1;
+ 1069              		.loc 1 317 9 is_stmt 1 view .LVU307
+ 1070              		.loc 1 317 39 is_stmt 0 view .LVU308
+ 1071 005a 069A     		ldr	r2, [sp, #24]
+ 1072              		.loc 1 317 51 view .LVU309
+ 1073 005c 0132     		adds	r2, r2, #1
+ 1074              		.loc 1 317 31 view .LVU310
+ 1075 005e 9A60     		str	r2, [r3, #8]
+ 318:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.write_idx     = scan_a.free_idx;
+ 1076              		.loc 1 318 9 is_stmt 1 view .LVU311
+ 1077              		.loc 1 318 39 is_stmt 0 view .LVU312
+ 1078 0060 079A     		ldr	r2, [sp, #28]
+ 1079              		.loc 1 318 31 view .LVU313
+ 1080 0062 DA60     		str	r2, [r3, #12]
+ 1081              	.L70:
+ 319:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 320:KTimeSlice/Algorithm/flash_blanced_erase.c ****     else if (scan_b.has_valid)
+ 321:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 322:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.active_sector = FBE_SECTOR_B_ADDR;
+ 323:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.latest_addr   = scan_b.latest_addr;
+ 324:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.next_seq      = scan_b.latest_seq + 1;
+ 325:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.write_idx     = scan_b.free_idx;
+ 326:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 327:KTimeSlice/Algorithm/flash_blanced_erase.c ****     else
+ 328:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 28
+
+
+ 329:KTimeSlice/Algorithm/flash_blanced_erase.c ****         /* 两个扇区均无有效记录（首次上电或全部损坏）-> 擦除 A 作为初始�
+ 330:KTimeSlice/Algorithm/flash_blanced_erase.c ****         if (HAL_FLASH_Unlock() != HAL_OK)
+ 331:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 332:KTimeSlice/Algorithm/flash_blanced_erase.c ****             return -1;
+ 333:KTimeSlice/Algorithm/flash_blanced_erase.c ****         }
+ 334:KTimeSlice/Algorithm/flash_blanced_erase.c ****         fbe_erase_sector(FBE_SECTOR_A);
+ 335:KTimeSlice/Algorithm/flash_blanced_erase.c ****         HAL_FLASH_Lock();
+ 336:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 337:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.active_sector = FBE_SECTOR_A_ADDR;
+ 338:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.latest_addr   = 0;
+ 339:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.next_seq      = 1;
+ 340:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.write_idx     = 0;
+ 341:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 342:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 343:KTimeSlice/Algorithm/flash_blanced_erase.c ****     s_inited = 1;
+ 1082              		.loc 1 343 5 is_stmt 1 view .LVU314
+ 1083              		.loc 1 343 14 is_stmt 0 view .LVU315
+ 1084 0064 164B     		ldr	r3, .L76+12
+ 1085 0066 0122     		movs	r2, #1
+ 1086 0068 1A60     		str	r2, [r3]
+ 344:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return 0;
+ 1087              		.loc 1 344 5 is_stmt 1 view .LVU316
+ 1088              		.loc 1 344 12 is_stmt 0 view .LVU317
+ 1089 006a 0020     		movs	r0, #0
+ 1090              	.L67:
+ 345:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 1091              		.loc 1 345 1 view .LVU318
+ 1092 006c 09B0     		add	sp, sp, #36
+ 1093              	.LCFI14:
+ 1094              		.cfi_remember_state
+ 1095              		.cfi_def_cfa_offset 4
+ 1096              		@ sp needed
+ 1097 006e 00BD     		pop	{pc}
+ 1098              	.L71:
+ 1099              	.LCFI15:
+ 1100              		.cfi_restore_state
+ 320:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 1101              		.loc 1 320 10 is_stmt 1 view .LVU319
+ 320:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 1102              		.loc 1 320 20 is_stmt 0 view .LVU320
+ 1103 0070 009B     		ldr	r3, [sp]
+ 320:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 1104              		.loc 1 320 13 view .LVU321
+ 1105 0072 53B1     		cbz	r3, .L72
+ 322:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.latest_addr   = scan_b.latest_addr;
+ 1106              		.loc 1 322 9 is_stmt 1 view .LVU322
+ 322:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.latest_addr   = scan_b.latest_addr;
+ 1107              		.loc 1 322 31 is_stmt 0 view .LVU323
+ 1108 0074 114B     		ldr	r3, .L76+8
+ 1109 0076 104A     		ldr	r2, .L76+4
+ 1110 0078 1A60     		str	r2, [r3]
+ 323:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.next_seq      = scan_b.latest_seq + 1;
+ 1111              		.loc 1 323 9 is_stmt 1 view .LVU324
+ 323:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.next_seq      = scan_b.latest_seq + 1;
+ 1112              		.loc 1 323 39 is_stmt 0 view .LVU325
+ 1113 007a 019A     		ldr	r2, [sp, #4]
+ 323:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.next_seq      = scan_b.latest_seq + 1;
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 29
+
+
+ 1114              		.loc 1 323 31 view .LVU326
+ 1115 007c 5A60     		str	r2, [r3, #4]
+ 324:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.write_idx     = scan_b.free_idx;
+ 1116              		.loc 1 324 9 is_stmt 1 view .LVU327
+ 324:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.write_idx     = scan_b.free_idx;
+ 1117              		.loc 1 324 39 is_stmt 0 view .LVU328
+ 1118 007e 029A     		ldr	r2, [sp, #8]
+ 324:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.write_idx     = scan_b.free_idx;
+ 1119              		.loc 1 324 51 view .LVU329
+ 1120 0080 0132     		adds	r2, r2, #1
+ 324:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.write_idx     = scan_b.free_idx;
+ 1121              		.loc 1 324 31 view .LVU330
+ 1122 0082 9A60     		str	r2, [r3, #8]
+ 325:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1123              		.loc 1 325 9 is_stmt 1 view .LVU331
+ 325:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1124              		.loc 1 325 39 is_stmt 0 view .LVU332
+ 1125 0084 039A     		ldr	r2, [sp, #12]
+ 325:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1126              		.loc 1 325 31 view .LVU333
+ 1127 0086 DA60     		str	r2, [r3, #12]
+ 1128 0088 ECE7     		b	.L70
+ 1129              	.L72:
+ 330:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 1130              		.loc 1 330 9 is_stmt 1 view .LVU334
+ 330:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 1131              		.loc 1 330 13 is_stmt 0 view .LVU335
+ 1132 008a FFF7FEFF 		bl	HAL_FLASH_Unlock
+ 1133              	.LVL110:
+ 330:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 1134              		.loc 1 330 12 discriminator 1 view .LVU336
+ 1135 008e 68B9     		cbnz	r0, .L74
+ 334:KTimeSlice/Algorithm/flash_blanced_erase.c ****         HAL_FLASH_Lock();
+ 1136              		.loc 1 334 9 is_stmt 1 view .LVU337
+ 1137 0090 0220     		movs	r0, #2
+ 1138 0092 FFF7FEFF 		bl	fbe_erase_sector
+ 1139              	.LVL111:
+ 335:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 1140              		.loc 1 335 9 view .LVU338
+ 1141 0096 FFF7FEFF 		bl	HAL_FLASH_Lock
+ 1142              	.LVL112:
+ 337:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.latest_addr   = 0;
+ 1143              		.loc 1 337 9 view .LVU339
+ 337:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.latest_addr   = 0;
+ 1144              		.loc 1 337 31 is_stmt 0 view .LVU340
+ 1145 009a 084B     		ldr	r3, .L76+8
+ 1146 009c 054A     		ldr	r2, .L76
+ 1147 009e 1A60     		str	r2, [r3]
+ 338:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.next_seq      = 1;
+ 1148              		.loc 1 338 9 is_stmt 1 view .LVU341
+ 338:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.next_seq      = 1;
+ 1149              		.loc 1 338 31 is_stmt 0 view .LVU342
+ 1150 00a0 0022     		movs	r2, #0
+ 1151 00a2 5A60     		str	r2, [r3, #4]
+ 339:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.write_idx     = 0;
+ 1152              		.loc 1 339 9 is_stmt 1 view .LVU343
+ 339:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.write_idx     = 0;
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 30
+
+
+ 1153              		.loc 1 339 31 is_stmt 0 view .LVU344
+ 1154 00a4 0121     		movs	r1, #1
+ 1155 00a6 9960     		str	r1, [r3, #8]
+ 340:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1156              		.loc 1 340 9 is_stmt 1 view .LVU345
+ 340:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1157              		.loc 1 340 31 is_stmt 0 view .LVU346
+ 1158 00a8 DA60     		str	r2, [r3, #12]
+ 1159 00aa DBE7     		b	.L70
+ 1160              	.L74:
+ 332:KTimeSlice/Algorithm/flash_blanced_erase.c ****         }
+ 1161              		.loc 1 332 20 view .LVU347
+ 1162 00ac 4FF0FF30 		mov	r0, #-1
+ 1163 00b0 DCE7     		b	.L67
+ 1164              	.L77:
+ 1165 00b2 00BF     		.align	2
+ 1166              	.L76:
+ 1167 00b4 00800008 		.word	134250496
+ 1168 00b8 00C00008 		.word	134266880
+ 1169 00bc 00000000 		.word	s_cache
+ 1170 00c0 00000000 		.word	s_inited
+ 1171              		.cfi_endproc
+ 1172              	.LFE252:
+ 1174              		.section	.text.fbe_read,"ax",%progbits
+ 1175              		.align	1
+ 1176              		.global	fbe_read
+ 1177              		.syntax unified
+ 1178              		.thumb
+ 1179              		.thumb_func
+ 1181              	fbe_read:
+ 1182              	.LVL113:
+ 1183              	.LFB253:
+ 346:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 347:KTimeSlice/Algorithm/flash_blanced_erase.c **** int fbe_read(uint8_t *buf, uint16_t *len)
+ 348:KTimeSlice/Algorithm/flash_blanced_erase.c **** {
+ 1184              		.loc 1 348 1 is_stmt 1 view -0
+ 1185              		.cfi_startproc
+ 1186              		@ args = 0, pretend = 0, frame = 0
+ 1187              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1188              		.loc 1 348 1 is_stmt 0 view .LVU349
+ 1189 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 1190              	.LCFI16:
+ 1191              		.cfi_def_cfa_offset 24
+ 1192              		.cfi_offset 3, -24
+ 1193              		.cfi_offset 4, -20
+ 1194              		.cfi_offset 5, -16
+ 1195              		.cfi_offset 6, -12
+ 1196              		.cfi_offset 7, -8
+ 1197              		.cfi_offset 14, -4
+ 349:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint16_t data_len, i;
+ 1198              		.loc 1 349 5 is_stmt 1 view .LVU350
+ 350:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 351:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (!s_inited || buf == NULL || len == NULL)
+ 1199              		.loc 1 351 5 view .LVU351
+ 1200              		.loc 1 351 9 is_stmt 0 view .LVU352
+ 1201 0002 154B     		ldr	r3, .L87
+ 1202 0004 1B68     		ldr	r3, [r3]
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 31
+
+
+ 1203              		.loc 1 351 8 view .LVU353
+ 1204 0006 D3B1     		cbz	r3, .L82
+ 1205 0008 0646     		mov	r6, r0
+ 1206 000a 0F46     		mov	r7, r1
+ 1207              		.loc 1 351 19 discriminator 1 view .LVU354
+ 1208 000c D0B1     		cbz	r0, .L83
+ 1209              		.loc 1 351 34 discriminator 2 view .LVU355
+ 1210 000e E1B1     		cbz	r1, .L84
+ 352:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 353:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+ 354:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 355:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (s_cache.latest_addr == 0)
+ 1211              		.loc 1 355 5 is_stmt 1 view .LVU356
+ 1212              		.loc 1 355 16 is_stmt 0 view .LVU357
+ 1213 0010 124B     		ldr	r3, .L87+4
+ 1214 0012 5868     		ldr	r0, [r3, #4]
+ 1215              	.LVL114:
+ 1216              		.loc 1 355 8 view .LVU358
+ 1217 0014 E0B1     		cbz	r0, .L85
+ 356:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 357:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;   /* 尚无数据 */
+ 358:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 359:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 360:KTimeSlice/Algorithm/flash_blanced_erase.c ****     data_len = fbe_read_byte(s_cache.latest_addr + FBE_OFF_DATA_LEN);
+ 1218              		.loc 1 360 5 is_stmt 1 view .LVU359
+ 1219              		.loc 1 360 16 is_stmt 0 view .LVU360
+ 1220 0016 0830     		adds	r0, r0, #8
+ 1221 0018 FFF7FEFF 		bl	fbe_read_byte
+ 1222              	.LVL115:
+ 1223              		.loc 1 360 16 view .LVU361
+ 1224 001c 0546     		mov	r5, r0
+ 1225              	.LVL116:
+ 361:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < data_len; i++)
+ 1226              		.loc 1 361 5 is_stmt 1 view .LVU362
+ 1227              		.loc 1 361 12 is_stmt 0 view .LVU363
+ 1228 001e 0024     		movs	r4, #0
+ 1229              		.loc 1 361 5 view .LVU364
+ 1230 0020 08E0     		b	.L80
+ 1231              	.LVL117:
+ 1232              	.L81:
+ 362:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 363:KTimeSlice/Algorithm/flash_blanced_erase.c ****         buf[i] = fbe_read_byte(s_cache.latest_addr + FBE_OFF_DATA + i);
+ 1233              		.loc 1 363 9 is_stmt 1 view .LVU365
+ 1234              		.loc 1 363 39 is_stmt 0 view .LVU366
+ 1235 0022 0E4B     		ldr	r3, .L87+4
+ 1236 0024 5868     		ldr	r0, [r3, #4]
+ 1237              		.loc 1 363 67 view .LVU367
+ 1238 0026 2044     		add	r0, r0, r4
+ 1239              		.loc 1 363 18 view .LVU368
+ 1240 0028 0A30     		adds	r0, r0, #10
+ 1241 002a FFF7FEFF 		bl	fbe_read_byte
+ 1242              	.LVL118:
+ 1243              		.loc 1 363 16 discriminator 1 view .LVU369
+ 1244 002e 3055     		strb	r0, [r6, r4]
+ 361:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < data_len; i++)
+ 1245              		.loc 1 361 32 is_stmt 1 discriminator 3 view .LVU370
+ 1246 0030 0134     		adds	r4, r4, #1
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 32
+
+
+ 1247              	.LVL119:
+ 361:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < data_len; i++)
+ 1248              		.loc 1 361 32 is_stmt 0 discriminator 3 view .LVU371
+ 1249 0032 A4B2     		uxth	r4, r4
+ 1250              	.LVL120:
+ 1251              	.L80:
+ 361:KTimeSlice/Algorithm/flash_blanced_erase.c ****     for (i = 0; i < data_len; i++)
+ 1252              		.loc 1 361 19 is_stmt 1 discriminator 1 view .LVU372
+ 1253 0034 AC42     		cmp	r4, r5
+ 1254 0036 F4D3     		bcc	.L81
+ 364:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 365:KTimeSlice/Algorithm/flash_blanced_erase.c ****     *len = data_len;
+ 1255              		.loc 1 365 5 view .LVU373
+ 1256              		.loc 1 365 10 is_stmt 0 view .LVU374
+ 1257 0038 3D80     		strh	r5, [r7]	@ movhi
+ 366:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return 0;
+ 1258              		.loc 1 366 5 is_stmt 1 view .LVU375
+ 1259              		.loc 1 366 12 is_stmt 0 view .LVU376
+ 1260 003a 0020     		movs	r0, #0
+ 1261              	.LVL121:
+ 1262              	.L78:
+ 367:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 1263              		.loc 1 367 1 view .LVU377
+ 1264 003c F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 1265              	.LVL122:
+ 1266              	.L82:
+ 353:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1267              		.loc 1 353 16 view .LVU378
+ 1268 003e 4FF0FF30 		mov	r0, #-1
+ 1269              	.LVL123:
+ 353:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1270              		.loc 1 353 16 view .LVU379
+ 1271 0042 FBE7     		b	.L78
+ 1272              	.LVL124:
+ 1273              	.L83:
+ 353:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1274              		.loc 1 353 16 view .LVU380
+ 1275 0044 4FF0FF30 		mov	r0, #-1
+ 1276              	.LVL125:
+ 353:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1277              		.loc 1 353 16 view .LVU381
+ 1278 0048 F8E7     		b	.L78
+ 1279              	.LVL126:
+ 1280              	.L84:
+ 353:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1281              		.loc 1 353 16 view .LVU382
+ 1282 004a 4FF0FF30 		mov	r0, #-1
+ 1283              	.LVL127:
+ 353:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1284              		.loc 1 353 16 view .LVU383
+ 1285 004e F5E7     		b	.L78
+ 1286              	.L85:
+ 357:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1287              		.loc 1 357 16 view .LVU384
+ 1288 0050 4FF0FF30 		mov	r0, #-1
+ 1289 0054 F2E7     		b	.L78
+ 1290              	.L88:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 33
+
+
+ 1291 0056 00BF     		.align	2
+ 1292              	.L87:
+ 1293 0058 00000000 		.word	s_inited
+ 1294 005c 00000000 		.word	s_cache
+ 1295              		.cfi_endproc
+ 1296              	.LFE253:
+ 1298              		.section	.text.fbe_write,"ax",%progbits
+ 1299              		.align	1
+ 1300              		.global	fbe_write
+ 1301              		.syntax unified
+ 1302              		.thumb
+ 1303              		.thumb_func
+ 1305              	fbe_write:
+ 1306              	.LVL128:
+ 1307              	.LFB254:
+ 368:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 369:KTimeSlice/Algorithm/flash_blanced_erase.c **** int fbe_write(const uint8_t *data, uint16_t len)
+ 370:KTimeSlice/Algorithm/flash_blanced_erase.c **** {
+ 1308              		.loc 1 370 1 is_stmt 1 view -0
+ 1309              		.cfi_startproc
+ 1310              		@ args = 0, pretend = 0, frame = 0
+ 1311              		@ frame_needed = 0, uses_anonymous_args = 0
+ 371:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t addr;
+ 1312              		.loc 1 371 5 view .LVU386
+ 372:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 373:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (!s_inited || len > FBE_DATA_SIZE)
+ 1313              		.loc 1 373 5 view .LVU387
+ 1314              		.loc 1 373 9 is_stmt 0 view .LVU388
+ 1315 0000 1E4B     		ldr	r3, .L104
+ 1316 0002 1B68     		ldr	r3, [r3]
+ 1317              		.loc 1 373 8 view .LVU389
+ 1318 0004 002B     		cmp	r3, #0
+ 1319 0006 30D0     		beq	.L94
+ 370:KTimeSlice/Algorithm/flash_blanced_erase.c ****     uint32_t addr;
+ 1320              		.loc 1 370 1 view .LVU390
+ 1321 0008 70B5     		push	{r4, r5, r6, lr}
+ 1322              	.LCFI17:
+ 1323              		.cfi_def_cfa_offset 16
+ 1324              		.cfi_offset 4, -16
+ 1325              		.cfi_offset 5, -12
+ 1326              		.cfi_offset 6, -8
+ 1327              		.cfi_offset 14, -4
+ 1328 000a 0646     		mov	r6, r0
+ 1329 000c 0C46     		mov	r4, r1
+ 1330              		.loc 1 373 19 discriminator 1 view .LVU391
+ 1331 000e B1F5807F 		cmp	r1, #256
+ 1332 0012 2DD8     		bhi	.L95
+ 374:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 375:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+ 376:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 377:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (data == NULL && len > 0)
+ 1333              		.loc 1 377 5 is_stmt 1 view .LVU392
+ 1334              		.loc 1 377 8 is_stmt 0 view .LVU393
+ 1335 0014 E8B1     		cbz	r0, .L102
+ 1336              	.L91:
+ 378:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 379:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 34
+
+
+ 380:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 381:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 382:KTimeSlice/Algorithm/flash_blanced_erase.c ****     /* 当前扇区写满则切换 */
+ 383:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (s_cache.write_idx >= FBE_RECORDS_PER_SECTOR)
+ 1337              		.loc 1 383 5 is_stmt 1 view .LVU394
+ 1338              		.loc 1 383 16 is_stmt 0 view .LVU395
+ 1339 0016 1A4B     		ldr	r3, .L104+4
+ 1340 0018 DB68     		ldr	r3, [r3, #12]
+ 1341              		.loc 1 383 8 view .LVU396
+ 1342 001a 3C2B     		cmp	r3, #60
+ 1343 001c 02D9     		bls	.L92
+ 384:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 385:KTimeSlice/Algorithm/flash_blanced_erase.c ****         if (fbe_switch_sector() != 0)
+ 1344              		.loc 1 385 9 is_stmt 1 view .LVU397
+ 1345              		.loc 1 385 13 is_stmt 0 view .LVU398
+ 1346 001e FFF7FEFF 		bl	fbe_switch_sector
+ 1347              	.LVL129:
+ 1348              		.loc 1 385 12 discriminator 1 view .LVU399
+ 1349 0022 40BB     		cbnz	r0, .L97
+ 1350              	.L92:
+ 386:KTimeSlice/Algorithm/flash_blanced_erase.c ****         {
+ 387:KTimeSlice/Algorithm/flash_blanced_erase.c ****             return -1;
+ 388:KTimeSlice/Algorithm/flash_blanced_erase.c ****         }
+ 389:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 390:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 391:KTimeSlice/Algorithm/flash_blanced_erase.c ****     addr = s_cache.active_sector + s_cache.write_idx * FBE_RECORD_SIZE_ALIGNED;
+ 1351              		.loc 1 391 5 is_stmt 1 view .LVU400
+ 1352              		.loc 1 391 19 is_stmt 0 view .LVU401
+ 1353 0024 1649     		ldr	r1, .L104+4
+ 1354 0026 0D68     		ldr	r5, [r1]
+ 1355              		.loc 1 391 43 view .LVU402
+ 1356 0028 CB68     		ldr	r3, [r1, #12]
+ 1357              		.loc 1 391 10 view .LVU403
+ 1358 002a 4FF48672 		mov	r2, #268
+ 1359 002e 02FB0355 		mla	r5, r2, r3, r5
+ 1360              	.LVL130:
+ 392:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 393:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_write_record(addr, s_cache.next_seq, data, len) != 0)
+ 1361              		.loc 1 393 5 is_stmt 1 view .LVU404
+ 1362              		.loc 1 393 9 is_stmt 0 view .LVU405
+ 1363 0032 2346     		mov	r3, r4
+ 1364 0034 3246     		mov	r2, r6
+ 1365 0036 8968     		ldr	r1, [r1, #8]
+ 1366 0038 2846     		mov	r0, r5
+ 1367 003a FFF7FEFF 		bl	fbe_write_record
+ 1368              	.LVL131:
+ 1369              		.loc 1 393 8 discriminator 1 view .LVU406
+ 1370 003e 68B9     		cbnz	r0, .L103
+ 394:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 395:KTimeSlice/Algorithm/flash_blanced_erase.c ****         /* 写入失败：跳过此槽，避免再次写入已部分编程的槽（Flash 1->0 限�
+ 396:KTimeSlice/Algorithm/flash_blanced_erase.c ****         s_cache.write_idx++;
+ 397:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+ 398:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 399:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 400:KTimeSlice/Algorithm/flash_blanced_erase.c ****     s_cache.latest_addr = addr;
+ 1371              		.loc 1 400 5 is_stmt 1 view .LVU407
+ 1372              		.loc 1 400 25 is_stmt 0 view .LVU408
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 35
+
+
+ 1373 0040 0F4B     		ldr	r3, .L104+4
+ 1374 0042 5D60     		str	r5, [r3, #4]
+ 401:KTimeSlice/Algorithm/flash_blanced_erase.c ****     s_cache.write_idx++;
+ 1375              		.loc 1 401 5 is_stmt 1 view .LVU409
+ 1376              		.loc 1 401 12 is_stmt 0 view .LVU410
+ 1377 0044 DA68     		ldr	r2, [r3, #12]
+ 1378              		.loc 1 401 22 view .LVU411
+ 1379 0046 0132     		adds	r2, r2, #1
+ 1380 0048 DA60     		str	r2, [r3, #12]
+ 402:KTimeSlice/Algorithm/flash_blanced_erase.c ****     s_cache.next_seq++;
+ 1381              		.loc 1 402 5 is_stmt 1 view .LVU412
+ 1382              		.loc 1 402 12 is_stmt 0 view .LVU413
+ 1383 004a 9A68     		ldr	r2, [r3, #8]
+ 1384              		.loc 1 402 21 view .LVU414
+ 1385 004c 0132     		adds	r2, r2, #1
+ 1386 004e 9A60     		str	r2, [r3, #8]
+ 403:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 404:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return 0;
+ 1387              		.loc 1 404 5 is_stmt 1 view .LVU415
+ 1388              	.LVL132:
+ 1389              	.L89:
+ 405:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 1390              		.loc 1 405 1 is_stmt 0 view .LVU416
+ 1391 0050 70BD     		pop	{r4, r5, r6, pc}
+ 1392              	.LVL133:
+ 1393              	.L102:
+ 377:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 1394              		.loc 1 377 22 discriminator 1 view .LVU417
+ 1395 0052 0029     		cmp	r1, #0
+ 1396 0054 DFD0     		beq	.L91
+ 379:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1397              		.loc 1 379 16 view .LVU418
+ 1398 0056 4FF0FF30 		mov	r0, #-1
+ 1399              	.LVL134:
+ 379:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1400              		.loc 1 379 16 view .LVU419
+ 1401 005a F9E7     		b	.L89
+ 1402              	.LVL135:
+ 1403              	.L103:
+ 396:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+ 1404              		.loc 1 396 9 is_stmt 1 view .LVU420
+ 396:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+ 1405              		.loc 1 396 16 is_stmt 0 view .LVU421
+ 1406 005c 084A     		ldr	r2, .L104+4
+ 1407 005e D368     		ldr	r3, [r2, #12]
+ 396:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+ 1408              		.loc 1 396 26 view .LVU422
+ 1409 0060 0133     		adds	r3, r3, #1
+ 1410 0062 D360     		str	r3, [r2, #12]
+ 397:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1411              		.loc 1 397 9 is_stmt 1 view .LVU423
+ 397:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1412              		.loc 1 397 16 is_stmt 0 view .LVU424
+ 1413 0064 4FF0FF30 		mov	r0, #-1
+ 1414 0068 F2E7     		b	.L89
+ 1415              	.LVL136:
+ 1416              	.L94:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 36
+
+
+ 1417              	.LCFI18:
+ 1418              		.cfi_def_cfa_offset 0
+ 1419              		.cfi_restore 4
+ 1420              		.cfi_restore 5
+ 1421              		.cfi_restore 6
+ 1422              		.cfi_restore 14
+ 375:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1423              		.loc 1 375 16 view .LVU425
+ 1424 006a 4FF0FF30 		mov	r0, #-1
+ 1425              	.LVL137:
+ 1426              		.loc 1 405 1 view .LVU426
+ 1427 006e 7047     		bx	lr
+ 1428              	.LVL138:
+ 1429              	.L95:
+ 1430              	.LCFI19:
+ 1431              		.cfi_def_cfa_offset 16
+ 1432              		.cfi_offset 4, -16
+ 1433              		.cfi_offset 5, -12
+ 1434              		.cfi_offset 6, -8
+ 1435              		.cfi_offset 14, -4
+ 375:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1436              		.loc 1 375 16 view .LVU427
+ 1437 0070 4FF0FF30 		mov	r0, #-1
+ 1438              	.LVL139:
+ 375:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1439              		.loc 1 375 16 view .LVU428
+ 1440 0074 ECE7     		b	.L89
+ 1441              	.LVL140:
+ 1442              	.L97:
+ 387:KTimeSlice/Algorithm/flash_blanced_erase.c ****         }
+ 1443              		.loc 1 387 20 view .LVU429
+ 1444 0076 4FF0FF30 		mov	r0, #-1
+ 1445 007a E9E7     		b	.L89
+ 1446              	.L105:
+ 1447              		.align	2
+ 1448              	.L104:
+ 1449 007c 00000000 		.word	s_inited
+ 1450 0080 00000000 		.word	s_cache
+ 1451              		.cfi_endproc
+ 1452              	.LFE254:
+ 1454              		.section	.text.fbe_format,"ax",%progbits
+ 1455              		.align	1
+ 1456              		.global	fbe_format
+ 1457              		.syntax unified
+ 1458              		.thumb
+ 1459              		.thumb_func
+ 1461              	fbe_format:
+ 1462              	.LFB255:
+ 406:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 407:KTimeSlice/Algorithm/flash_blanced_erase.c **** int fbe_format(void)
+ 408:KTimeSlice/Algorithm/flash_blanced_erase.c **** {
+ 1463              		.loc 1 408 1 is_stmt 1 view -0
+ 1464              		.cfi_startproc
+ 1465              		@ args = 0, pretend = 0, frame = 0
+ 1466              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1467 0000 10B5     		push	{r4, lr}
+ 1468              	.LCFI20:
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 37
+
+
+ 1469              		.cfi_def_cfa_offset 8
+ 1470              		.cfi_offset 4, -8
+ 1471              		.cfi_offset 14, -4
+ 409:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (HAL_FLASH_Unlock() != HAL_OK)
+ 1472              		.loc 1 409 5 view .LVU431
+ 1473              		.loc 1 409 9 is_stmt 0 view .LVU432
+ 1474 0002 FFF7FEFF 		bl	HAL_FLASH_Unlock
+ 1475              	.LVL141:
+ 1476              		.loc 1 409 8 discriminator 1 view .LVU433
+ 1477 0006 10BB     		cbnz	r0, .L110
+ 410:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 411:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+ 412:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 413:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_erase_sector(FBE_SECTOR_A) != 0)
+ 1478              		.loc 1 413 5 is_stmt 1 view .LVU434
+ 1479              		.loc 1 413 9 is_stmt 0 view .LVU435
+ 1480 0008 0220     		movs	r0, #2
+ 1481 000a FFF7FEFF 		bl	fbe_erase_sector
+ 1482              	.LVL142:
+ 1483              		.loc 1 413 8 discriminator 1 view .LVU436
+ 1484 000e 90B9     		cbnz	r0, .L112
+ 414:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 415:KTimeSlice/Algorithm/flash_blanced_erase.c ****         HAL_FLASH_Lock();
+ 416:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+ 417:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 418:KTimeSlice/Algorithm/flash_blanced_erase.c ****     if (fbe_erase_sector(FBE_SECTOR_B) != 0)
+ 1485              		.loc 1 418 5 is_stmt 1 view .LVU437
+ 1486              		.loc 1 418 9 is_stmt 0 view .LVU438
+ 1487 0010 0320     		movs	r0, #3
+ 1488 0012 FFF7FEFF 		bl	fbe_erase_sector
+ 1489              	.LVL143:
+ 1490              		.loc 1 418 8 discriminator 1 view .LVU439
+ 1491 0016 0446     		mov	r4, r0
+ 1492 0018 98B9     		cbnz	r0, .L113
+ 419:KTimeSlice/Algorithm/flash_blanced_erase.c ****     {
+ 420:KTimeSlice/Algorithm/flash_blanced_erase.c ****         HAL_FLASH_Lock();
+ 421:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+ 422:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 423:KTimeSlice/Algorithm/flash_blanced_erase.c ****     HAL_FLASH_Lock();
+ 1493              		.loc 1 423 5 is_stmt 1 view .LVU440
+ 1494 001a FFF7FEFF 		bl	HAL_FLASH_Lock
+ 1495              	.LVL144:
+ 424:KTimeSlice/Algorithm/flash_blanced_erase.c **** 
+ 425:KTimeSlice/Algorithm/flash_blanced_erase.c ****     s_cache.active_sector = FBE_SECTOR_A_ADDR;
+ 1496              		.loc 1 425 5 view .LVU441
+ 1497              		.loc 1 425 27 is_stmt 0 view .LVU442
+ 1498 001e 0E4B     		ldr	r3, .L114
+ 1499 0020 0E4A     		ldr	r2, .L114+4
+ 1500 0022 1A60     		str	r2, [r3]
+ 426:KTimeSlice/Algorithm/flash_blanced_erase.c ****     s_cache.latest_addr   = 0;
+ 1501              		.loc 1 426 5 is_stmt 1 view .LVU443
+ 1502              		.loc 1 426 27 is_stmt 0 view .LVU444
+ 1503 0024 0021     		movs	r1, #0
+ 1504 0026 5960     		str	r1, [r3, #4]
+ 427:KTimeSlice/Algorithm/flash_blanced_erase.c ****     s_cache.next_seq      = 1;
+ 1505              		.loc 1 427 5 is_stmt 1 view .LVU445
+ 1506              		.loc 1 427 27 is_stmt 0 view .LVU446
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 38
+
+
+ 1507 0028 0122     		movs	r2, #1
+ 1508 002a 9A60     		str	r2, [r3, #8]
+ 428:KTimeSlice/Algorithm/flash_blanced_erase.c ****     s_cache.write_idx     = 0;
+ 1509              		.loc 1 428 5 is_stmt 1 view .LVU447
+ 1510              		.loc 1 428 27 is_stmt 0 view .LVU448
+ 1511 002c D960     		str	r1, [r3, #12]
+ 429:KTimeSlice/Algorithm/flash_blanced_erase.c ****     s_inited              = 1;
+ 1512              		.loc 1 429 5 is_stmt 1 view .LVU449
+ 1513              		.loc 1 429 27 is_stmt 0 view .LVU450
+ 1514 002e 0C4B     		ldr	r3, .L114+8
+ 1515 0030 1A60     		str	r2, [r3]
+ 430:KTimeSlice/Algorithm/flash_blanced_erase.c ****     return 0;
+ 1516              		.loc 1 430 5 is_stmt 1 view .LVU451
+ 1517              	.L106:
+ 431:KTimeSlice/Algorithm/flash_blanced_erase.c **** }
+ 1518              		.loc 1 431 1 is_stmt 0 view .LVU452
+ 1519 0032 2046     		mov	r0, r4
+ 1520 0034 10BD     		pop	{r4, pc}
+ 1521              	.L112:
+ 415:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+ 1522              		.loc 1 415 9 is_stmt 1 view .LVU453
+ 1523 0036 FFF7FEFF 		bl	HAL_FLASH_Lock
+ 1524              	.LVL145:
+ 416:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1525              		.loc 1 416 9 view .LVU454
+ 416:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1526              		.loc 1 416 16 is_stmt 0 view .LVU455
+ 1527 003a 4FF0FF33 		mov	r3, #-1
+ 1528 003e 1C46     		mov	r4, r3
+ 1529 0040 F7E7     		b	.L106
+ 1530              	.L113:
+ 420:KTimeSlice/Algorithm/flash_blanced_erase.c ****         return -1;
+ 1531              		.loc 1 420 9 is_stmt 1 view .LVU456
+ 1532 0042 FFF7FEFF 		bl	HAL_FLASH_Lock
+ 1533              	.LVL146:
+ 421:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1534              		.loc 1 421 9 view .LVU457
+ 421:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1535              		.loc 1 421 16 is_stmt 0 view .LVU458
+ 1536 0046 4FF0FF33 		mov	r3, #-1
+ 1537 004a 1C46     		mov	r4, r3
+ 1538 004c F1E7     		b	.L106
+ 1539              	.L110:
+ 411:KTimeSlice/Algorithm/flash_blanced_erase.c ****     }
+ 1540              		.loc 1 411 16 view .LVU459
+ 1541 004e 4FF0FF33 		mov	r3, #-1
+ 1542 0052 1C46     		mov	r4, r3
+ 1543 0054 EDE7     		b	.L106
+ 1544              	.L115:
+ 1545 0056 00BF     		.align	2
+ 1546              	.L114:
+ 1547 0058 00000000 		.word	s_cache
+ 1548 005c 00800008 		.word	134250496
+ 1549 0060 00000000 		.word	s_inited
+ 1550              		.cfi_endproc
+ 1551              	.LFE255:
+ 1553              		.section	.bss.s_inited,"aw",%nobits
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 39
+
+
+ 1554              		.align	2
+ 1557              	s_inited:
+ 1558 0000 00000000 		.space	4
+ 1559              		.section	.bss.s_cache,"aw",%nobits
+ 1560              		.align	2
+ 1563              	s_cache:
+ 1564 0000 00000000 		.space	16
+ 1564      00000000 
+ 1564      00000000 
+ 1564      00000000 
+ 1565              		.text
+ 1566              	.Letext0:
+ 1567              		.file 2 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 1568              		.file 3 "D:/code_env/arm-gnu-toolchain-15.2.rel1-mingw-w64-i686-arm-none-eabi/arm-none-eabi/includ
+ 1569              		.file 4 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 1570              		.file 5 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h"
+ 1571              		.file 6 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h"
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s 			page 40
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 flash_blanced_erase.c
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:21     .text.fbe_read_byte:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:26     .text.fbe_read_byte:00000000 fbe_read_byte
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:44     .text.fbe_read_halfword:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:49     .text.fbe_read_halfword:00000000 fbe_read_halfword
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:68     .text.fbe_read_word:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:73     .text.fbe_read_word:00000000 fbe_read_word
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:91     .text.fbe_crc_update:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:96     .text.fbe_crc_update:00000000 fbe_crc_update
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:150    .text.fbe_crc_calc:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:155    .text.fbe_crc_calc:00000000 fbe_crc_calc
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:215    .text.fbe_crc_flash:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:220    .text.fbe_crc_flash:00000000 fbe_crc_flash
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:300    .text.fbe_scan_sector:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:305    .text.fbe_scan_sector:00000000 fbe_scan_sector
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:497    .text.fbe_erase_sector:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:502    .text.fbe_erase_sector:00000000 fbe_erase_sector
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:579    .text.fbe_switch_sector:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:584    .text.fbe_switch_sector:00000000 fbe_switch_sector
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:676    .text.fbe_switch_sector:00000050 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:1563   .bss.s_cache:00000000 s_cache
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:683    .text.fbe_write_halfword:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:688    .text.fbe_write_halfword:00000000 fbe_write_halfword
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:727    .text.fbe_write_word:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:732    .text.fbe_write_word:00000000 fbe_write_word
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:771    .text.fbe_write_byte:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:776    .text.fbe_write_byte:00000000 fbe_write_byte
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:815    .text.fbe_write_record:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:820    .text.fbe_write_record:00000000 fbe_write_record
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:963    .text.fbe_init:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:969    .text.fbe_init:00000000 fbe_init
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:1167   .text.fbe_init:000000b4 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:1557   .bss.s_inited:00000000 s_inited
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:1175   .text.fbe_read:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:1181   .text.fbe_read:00000000 fbe_read
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:1293   .text.fbe_read:00000058 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:1299   .text.fbe_write:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:1305   .text.fbe_write:00000000 fbe_write
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:1449   .text.fbe_write:0000007c $d
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:1455   .text.fbe_format:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:1461   .text.fbe_format:00000000 fbe_format
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:1547   .text.fbe_format:00000058 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:1554   .bss.s_inited:00000000 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccXq3Lba.s:1560   .bss.s_cache:00000000 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+HAL_FLASHEx_Erase
+HAL_FLASH_Unlock
+HAL_FLASH_Lock
+HAL_FLASH_Program

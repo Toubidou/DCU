@@ -132,6 +132,8 @@ int main(void)
 		dev_imu_read_gyro(&gyroData);
 		app_log("acc: x=%d, y=%d, z=%d\r\n", accData.x, accData.y, accData.z);
 		app_log("gyro: x=%d, y=%d, z=%d\r\n", gyroData.x, gyroData.y, gyroData.z);
+		
+		bsp_can_send(can_test_data, 8);
 		HAL_Delay(1000);
 		/* USER CODE END WHILE */
 

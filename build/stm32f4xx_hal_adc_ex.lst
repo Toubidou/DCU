@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
   28:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****              (+++) Enable the clock for the ADC GPIOs using the following function:
   29:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****                    __HAL_RCC_GPIOx_CLK_ENABLE()
   30:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****              (+++) Configure these ADC pins in analog mode using HAL_GPIO_Init()
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 2
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 2
 
 
   31:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****        (##) In case of using interrupts (e.g. HAL_ADC_Start_IT())
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
   85:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** /* Includes ------------------------------------------------------------------*/
   86:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** #include "stm32f4xx_hal.h"
   87:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 3
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 3
 
 
   88:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** /** @addtogroup STM32F4xx_HAL_Driver
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  142:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   * @param  hadc pointer to a ADC_HandleTypeDef structure that contains
  143:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   *         the configuration information for the specified ADC.
  144:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   * @retval HAL status
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 4
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 4
 
 
  145:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   */
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  199:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****     /* (To ensure of no unknown state from potential previous ADC operations) */
  200:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****     __HAL_ADC_CLEAR_FLAG(hadc, ADC_FLAG_JEOC);
  201:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 5
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 5
 
 
  202:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****     /* Pointer to the common control register to which is belonging hadc    */
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  256:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   __HAL_LOCK(hadc);
  257:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
  258:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   /* Enable the ADC peripheral */
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 6
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 6
 
 
  259:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  313:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****     /* Check if Multimode enabled */
  314:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****     if (HAL_IS_BIT_CLR(tmpADC_Common->CCR, ADC_CCR_MULTI))
  315:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****     {
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 7
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 7
 
 
  316:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       tmp1 = HAL_IS_BIT_CLR(hadc->Instance->CR2, ADC_CR2_JEXTEN);
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  370:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   /* Stop potential conversion and disable ADC peripheral                     */
  371:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   /* Conditioned to:                                                          */
  372:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   /* - No conversion on the other group (regular group) is intended to        */
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 8
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 8
 
 
  373:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   /*   continue (injected and regular groups stop conversion and ADC disable  */
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  427:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       if ((Timeout == 0U) || ((HAL_GetTick() - tickstart) > Timeout))
  428:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       {
  429:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****         /* New check to avoid false timeout detection in case of preemption */
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 9
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 9
 
 
  430:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****         if (!(__HAL_ADC_GET_FLAG(hadc, ADC_FLAG_JEOC)))
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  484:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   */
  485:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** HAL_StatusTypeDef HAL_ADCEx_InjectedStop_IT(ADC_HandleTypeDef *hadc)
  486:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** {
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 10
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 10
 
 
  487:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   HAL_StatusTypeDef tmp_hal_status = HAL_OK;
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  541:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   *            @arg ADC_INJECTED_RANK_1: Injected Channel1 selected
  542:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   *            @arg ADC_INJECTED_RANK_2: Injected Channel2 selected
  543:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   *            @arg ADC_INJECTED_RANK_3: Injected Channel3 selected
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 11
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 11
 
 
  544:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   *            @arg ADC_INJECTED_RANK_4: Injected Channel4 selected
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  598:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** HAL_StatusTypeDef HAL_ADCEx_MultiModeStart_DMA(ADC_HandleTypeDef *hadc, uint32_t *pData, uint32_t L
  599:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** {
  600:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   __IO uint32_t counter = 0U;
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 12
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 12
 
 
  601:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   ADC_Common_TypeDef *tmpADC_Common;
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  655:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
  656:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****     /* Process unlocked */
  657:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****     /* Unlock before starting ADC conversions: in case of potential           */
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 13
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 13
 
 
  658:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****     /* interruption, to let the process to ADC IRQ Handler.                   */
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  712:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****     SET_BIT(hadc->ErrorCode, HAL_ADC_ERROR_INTERNAL);
  713:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   }
  714:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 14
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 14
 
 
  715:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   /* Return function status */
@@ -838,7 +838,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  769:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** }
  770:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
  771:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** /**
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 15
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 15
 
 
  772:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   * @brief  Returns the last ADC1, ADC2 and ADC3 regular conversions results
@@ -898,7 +898,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  826:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
  827:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   /* Check the parameters */
  828:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   assert_param(IS_ADC_CHANNEL(sConfigInjected->InjectedChannel));
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 16
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 16
 
 
  829:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   assert_param(IS_ADC_INJECTED_RANK(sConfigInjected->InjectedRank));
@@ -958,7 +958,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  883:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   /*       software start.                                                  */
  884:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   if (sConfigInjected->ExternalTrigInjecConv != ADC_INJECTED_SOFTWARE_START)
  885:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   {
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 17
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 17
 
 
  886:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****     /* Select external trigger to start conversion */
@@ -1018,7 +1018,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  940:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****     default:
  941:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       /* Set injected channel 4 offset */
  942:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       hadc->Instance->JOFR4 &= ~(ADC_JOFR4_JOFFSET4);
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 18
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 18
 
 
  943:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       hadc->Instance->JOFR4 |= sConfigInjected->InjectedOffset;
@@ -1078,7 +1078,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  997:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   tmpADC_Common = ADC_COMMON_REGISTER(hadc);
  998:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
  999:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   /* Set ADC mode */
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 19
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 19
 
 
 1000:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   tmpADC_Common->CCR &= ~(ADC_CCR_MULTI);
@@ -1138,7 +1138,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
 1054:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       __HAL_ADC_DISABLE_IT(hadc, ADC_IT_EOC);
 1055:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
 1056:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       /* Set ADC state */
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 20
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 20
 
 
 1057:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       CLEAR_BIT(hadc->State, HAL_ADC_STATE_REG_BUSY);
@@ -1198,7 +1198,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
 1097:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   hadc->State = HAL_ADC_STATE_ERROR_DMA;
   43              		.loc 1 1097 3 is_stmt 1 view .LVU4
   44              		.loc 1 1097 15 is_stmt 0 view .LVU5
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 21
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 21
 
 
   45 0004 4023     		movs	r3, #64
@@ -1258,7 +1258,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
   91              	.LFE252:
   93              		.section	.text.ADC_MultiModeDMAConvCplt,"ax",%progbits
   94              		.align	1
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 22
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 22
 
 
   95              		.syntax unified
@@ -1318,7 +1318,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
 1047:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****          HAL_IS_BIT_CLR(hadc->Instance->CR2, ADC_CR2_EOCS)))
  137              		.loc 1 1047 10 view .LVU30
  138 0022 D16A     		ldr	r1, [r2, #44]
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 23
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 23
 
 
 1046:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****         (HAL_IS_BIT_CLR(hadc->Instance->SQR1, ADC_SQR1_L) ||
@@ -1378,7 +1378,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  179              		.loc 1 1071 9 is_stmt 0 view .LVU44
  180 005a 9B6B     		ldr	r3, [r3, #56]
  181              	.LVL12:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 24
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 24
 
 
 1071:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   }
@@ -1438,7 +1438,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  153:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
  226              		.loc 1 153 3 view .LVU57
  159:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   {
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 25
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 25
 
 
  227              		.loc 1 159 3 view .LVU58
@@ -1498,7 +1498,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  266              		.loc 1 174 7 is_stmt 0 view .LVU73
  267 0046 0268     		ldr	r2, [r0]
  268 0048 9368     		ldr	r3, [r2, #8]
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 26
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 26
 
 
  174:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   {
@@ -1558,7 +1558,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  307 0082 0268     		ldr	r2, [r0]
  308 0084 9168     		ldr	r1, [r2, #8]
  309              	.LVL17:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 27
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 27
 
 
  211:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       if (tmp1 && tmp2)
@@ -1618,7 +1618,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  348 00ae 1448     		ldr	r0, .L27+12
  349              	.LVL24:
  222:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       {
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 28
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 28
 
 
  350              		.loc 1 222 10 view .LVU106
@@ -1678,7 +1678,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  393              	.L19:
  394              	.LCFI5:
  395              		.cfi_restore_state
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 29
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 29
 
 
  153:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
@@ -1738,7 +1738,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  444              		.cfi_startproc
  445              		@ args = 0, pretend = 0, frame = 8
  446              		@ frame_needed = 0, uses_anonymous_args = 0
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 30
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 30
 
 
  447              		@ link register save eliminated.
@@ -1798,7 +1798,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  485 002c A2FB0323 		umull	r2, r3, r2, r3
  486 0030 9B0C     		lsrs	r3, r3, #18
  269:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****     while (counter != 0U)
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 31
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 31
 
 
  487              		.loc 1 269 34 view .LVU142
@@ -1858,7 +1858,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  527 006a 4364     		str	r3, [r0, #68]
  528              	.L35:
  299:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 32
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 32
 
 
  529              		.loc 1 299 5 view .LVU157
@@ -1918,7 +1918,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  567              		.loc 1 321 9 is_stmt 1 view .LVU173
  321:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       }
  568              		.loc 1 321 23 is_stmt 0 view .LVU174
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 33
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 33
 
 
  569 009e 9368     		ldr	r3, [r2, #8]
@@ -1978,7 +1978,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  608              		.loc 1 331 23 is_stmt 0 view .LVU189
  609 00c6 9A68     		ldr	r2, [r3, #8]
  610              	.LVL46:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 34
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 34
 
 
  331:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       }
@@ -2038,7 +2038,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  655              	.L39:
  345:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** }
  656              		.loc 1 345 10 view .LVU200
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 35
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 35
 
 
  657 00f0 0020     		movs	r0, #0
@@ -2098,7 +2098,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  704              		.loc 1 368 3 discriminator 2 view .LVU209
  705 000a 0122     		movs	r2, #1
  706 000c 80F83C20 		strb	r2, [r0, #60]
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 36
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 36
 
 
  368:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
@@ -2158,7 +2158,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  747 004e 1A64     		str	r2, [r3, #64]
  397:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   }
  748              		.loc 1 397 5 view .LVU224
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 37
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 37
 
 
  749              	.LVL60:
@@ -2218,7 +2218,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  793              		.loc 1 415 1 is_stmt 0 view .LVU236
  794 0000 70B5     		push	{r4, r5, r6, lr}
  795              	.LCFI9:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 38
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 38
 
 
  796              		.cfi_def_cfa_offset 16
@@ -2278,7 +2278,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  835 0026 F1D1     		bne	.L55
  432:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****           /* Process unlocked */
  836              		.loc 1 432 11 is_stmt 1 view .LVU252
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 39
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 39
 
 
  432:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****           /* Process unlocked */
@@ -2338,7 +2338,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  453:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       (HAL_IS_BIT_CLR(hadc->Instance->JSQR, ADC_JSQR_JL)  ||
  876              		.loc 1 453 63 discriminator 1 view .LVU268
  877 005c 12F4401F 		tst	r2, #3145728
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 40
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 40
 
 
  878 0060 03D0     		beq	.L60
@@ -2398,7 +2398,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  471:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
  918              		.loc 1 471 1 view .LVU283
  919 009a 70BD     		pop	{r4, r5, r6, pc}
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 41
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 41
 
 
  920              	.LVL71:
@@ -2458,7 +2458,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  966              		.loc 1 493 3 view .LVU293
  501:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       HAL_IS_BIT_CLR(hadc->Instance->CR1, ADC_CR1_JAUTO))
  967              		.loc 1 501 3 view .LVU294
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 42
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 42
 
 
  501:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       HAL_IS_BIT_CLR(hadc->Instance->CR1, ADC_CR1_JAUTO))
@@ -2518,7 +2518,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1009 0052 42F02002 		orr	r2, r2, #32
  1010 0056 1A64     		str	r2, [r3, #64]
  525:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   }
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 43
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 43
 
 
  1011              		.loc 1 525 5 view .LVU308
@@ -2578,7 +2578,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1056              		@ link register save eliminated.
  548:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   __IO uint32_t tmp = 0U;
  1057              		.loc 1 548 1 is_stmt 0 view .LVU320
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 44
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 44
 
 
  1058 0000 82B0     		sub	sp, sp, #8
@@ -2638,7 +2638,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1097 002c 0193     		str	r3, [sp, #4]
  565:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****     case ADC_INJECTED_RANK_3:
  1098              		.loc 1 565 5 is_stmt 1 view .LVU336
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 45
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 45
 
 
  1099              	.L80:
@@ -2698,7 +2698,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1141              		.thumb
  1142              		.thumb_func
  1144              	HAL_ADCEx_MultiModeStart_DMA:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 46
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 46
 
 
  1145              	.LVL85:
@@ -2758,7 +2758,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  613:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   {
  1184              		.loc 1 613 12 is_stmt 0 view .LVU365
  1185 001a 0268     		ldr	r2, [r0]
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 47
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 47
 
 
  613:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   {
@@ -2818,7 +2818,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  628:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   {
  1226              		.loc 1 628 6 view .LVU380
  1227 0050 10F0010F 		tst	r0, #1
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 48
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 48
 
 
  1228 0054 4ED0     		beq	.L87
@@ -2878,7 +2878,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1267 0092 2148     		ldr	r0, .L95+8
  1268 0094 D063     		str	r0, [r2, #60]
  665:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 49
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 49
 
 
  1269              		.loc 1 665 5 is_stmt 1 view .LVU396
@@ -2938,7 +2938,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1307 00c4 0A46     		mov	r2, r1
  1308 00c6 1849     		ldr	r1, .L95+24
  1309              	.LVL90:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 50
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 50
 
 
  697:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
@@ -2998,7 +2998,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1350              		.loc 1 709 5 is_stmt 0 view .LVU426
  1351 00f6 43F01003 		orr	r3, r3, #16
  1352 00fa 2364     		str	r3, [r4, #64]
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 51
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 51
 
 
  712:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   }
@@ -3058,7 +3058,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1403              		@ frame_needed = 0, uses_anonymous_args = 0
  727:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   ADC_Common_TypeDef *tmpADC_Common;
  1404              		.loc 1 727 3 view .LVU433
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 52
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 52
 
 
  728:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
@@ -3118,7 +3118,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1444 002a 84F83C30 		strb	r3, [r4, #60]
  765:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
  1445              		.loc 1 765 3 view .LVU449
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 53
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 53
 
 
  768:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** }
@@ -3178,7 +3178,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1488              	.L108:
  1489              		.align	2
  1490              	.L107:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 54
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 54
 
 
  1491 0060 00230140 		.word	1073816320
@@ -3238,7 +3238,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1541              		@ link register save eliminated.
  803:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   /* NOTE : This function Should not be modified, when the callback is needed,
  1542              		.loc 1 803 3 view .LVU470
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 55
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 55
 
 
  807:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
@@ -3298,7 +3298,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  847:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
  1584              		.loc 1 847 3 is_stmt 1 discriminator 2 view .LVU486
  1585 000e 0122     		movs	r2, #1
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 56
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 56
 
 
  1586 0010 80F83C20 		strb	r2, [r0, #60]
@@ -3358,7 +3358,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  868:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   hadc->Instance->JSQR |=  ADC_SQR1(sConfigInjected->InjectedNbrOfConversion);
  1625              		.loc 1 868 7 is_stmt 0 view .LVU502
  1626 0058 1868     		ldr	r0, [r3]
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 57
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 57
 
 
  868:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   hadc->Instance->JSQR |=  ADC_SQR1(sConfigInjected->InjectedNbrOfConversion);
@@ -3418,7 +3418,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  877:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
  1666              		.loc 1 877 27 view .LVU518
  1667 00a6 4A68     		ldr	r2, [r1, #4]
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 58
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 58
 
 
  1668 00a8 0C69     		ldr	r4, [r1, #16]
@@ -3478,7 +3478,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1707 00e2 8268     		ldr	r2, [r0, #8]
  891:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****     hadc->Instance->CR2 |= sConfigInjected->ExternalTrigInjecConvEdge;
  1708              		.loc 1 891 25 view .LVU534
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 59
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 59
 
 
  1709 00e4 22F44012 		bic	r2, r2, #3145728
@@ -3538,7 +3538,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1746 010c 4268     		ldr	r2, [r0, #4]
  915:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   }
  1747              		.loc 1 915 25 view .LVU552
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 60
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 60
 
 
  1748 010e 42F48052 		orr	r2, r2, #4096
@@ -3598,7 +3598,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1786 0138 3B4A     		ldr	r2, .L136+4
  1787 013a 9042     		cmp	r0, r2
  1788 013c 5CD0     		beq	.L134
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 61
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 61
 
 
  1789              	.L127:
@@ -3658,7 +3658,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1827 0170 DCF81000 		ldr	r0, [ip, #16]
  864:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   }
  1828              		.loc 1 864 30 view .LVU585
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 62
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 62
 
 
  1829 0174 0A88     		ldrh	r2, [r1]
@@ -3718,7 +3718,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1868 01aa 1868     		ldr	r0, [r3]
  920:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   }
  1869              		.loc 1 920 19 view .LVU601
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 63
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 63
 
 
  1870 01ac 4268     		ldr	r2, [r0, #4]
@@ -3778,7 +3778,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1907              		.loc 1 938 21 view .LVU618
  1908 01d8 C269     		ldr	r2, [r0, #28]
  938:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****       break;
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 64
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 64
 
 
  1909              		.loc 1 938 29 view .LVU619
@@ -3838,7 +3838,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  1948 0206 4260     		str	r2, [r0, #4]
  1949 0208 99E7     		b	.L127
  1950              	.L135:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 65
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 65
 
 
  960:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   {
@@ -3898,7 +3898,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  982:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c **** 
  1998              		.loc 1 982 1 is_stmt 1 view -0
  1999              		.cfi_startproc
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 66
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 66
 
 
  2000              		@ args = 0, pretend = 0, frame = 0
@@ -3958,7 +3958,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  2038 0022 5860     		str	r0, [r3, #4]
 1004:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   tmpADC_Common->CCR |= multimode->DMAAccessMode;
  2039              		.loc 1 1004 3 is_stmt 1 view .LVU661
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 67
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 67
 
 
 1004:Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c ****   tmpADC_Common->CCR |= multimode->DMAAccessMode;
@@ -4018,7 +4018,7 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  2077              		.cfi_def_cfa_offset 0
  2078 004c 7047     		bx	lr
  2079              	.LVL124:
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 68
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 68
 
 
  2080              	.L140:
@@ -4047,48 +4047,48 @@ ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 1
  2102              		.file 9 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc_ex.h"
  2103              		.file 10 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h"
  2104              		.file 11 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
-ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s 			page 69
+ARM GAS  C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s 			page 69
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 stm32f4xx_hal_adc_ex.c
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:21     .text.ADC_MultiModeDMAError:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:26     .text.ADC_MultiModeDMAError:00000000 ADC_MultiModeDMAError
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:62     .text.ADC_MultiModeDMAHalfConvCplt:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:67     .text.ADC_MultiModeDMAHalfConvCplt:00000000 ADC_MultiModeDMAHalfConvCplt
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:94     .text.ADC_MultiModeDMAConvCplt:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:99     .text.ADC_MultiModeDMAConvCplt:00000000 ADC_MultiModeDMAConvCplt
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:193    .text.HAL_ADCEx_InjectedStart:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:199    .text.HAL_ADCEx_InjectedStart:00000000 HAL_ADCEx_InjectedStart
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:426    .text.HAL_ADCEx_InjectedStart:000000f4 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:434    .text.HAL_ADCEx_InjectedStart_IT:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:440    .text.HAL_ADCEx_InjectedStart_IT:00000000 HAL_ADCEx_InjectedStart_IT
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:672    .text.HAL_ADCEx_InjectedStart_IT:000000fc $d
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:680    .text.HAL_ADCEx_InjectedStop:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:686    .text.HAL_ADCEx_InjectedStop:00000000 HAL_ADCEx_InjectedStop
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:780    .text.HAL_ADCEx_InjectedPollForConversion:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:786    .text.HAL_ADCEx_InjectedPollForConversion:00000000 HAL_ADCEx_InjectedPollForConversion
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:939    .text.HAL_ADCEx_InjectedStop_IT:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:945    .text.HAL_ADCEx_InjectedStop_IT:00000000 HAL_ADCEx_InjectedStop_IT
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1043   .text.HAL_ADCEx_InjectedGetValue:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1049   .text.HAL_ADCEx_InjectedGetValue:00000000 HAL_ADCEx_InjectedGetValue
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1138   .text.HAL_ADCEx_MultiModeStart_DMA:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1144   .text.HAL_ADCEx_MultiModeStart_DMA:00000000 HAL_ADCEx_MultiModeStart_DMA
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1380   .text.HAL_ADCEx_MultiModeStart_DMA:00000110 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1391   .text.HAL_ADCEx_MultiModeStop_DMA:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1397   .text.HAL_ADCEx_MultiModeStop_DMA:00000000 HAL_ADCEx_MultiModeStop_DMA
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1491   .text.HAL_ADCEx_MultiModeStop_DMA:00000060 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1496   .text.HAL_ADCEx_MultiModeGetValue:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1502   .text.HAL_ADCEx_MultiModeGetValue:00000000 HAL_ADCEx_MultiModeGetValue
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1523   .text.HAL_ADCEx_MultiModeGetValue:00000008 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1528   .text.HAL_ADCEx_InjectedConvCpltCallback:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1534   .text.HAL_ADCEx_InjectedConvCpltCallback:00000000 HAL_ADCEx_InjectedConvCpltCallback
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1549   .text.HAL_ADCEx_InjectedConfigChannel:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1555   .text.HAL_ADCEx_InjectedConfigChannel:00000000 HAL_ADCEx_InjectedConfigChannel
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1982   .text.HAL_ADCEx_InjectedConfigChannel:00000224 $d
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1989   .text.HAL_ADCEx_MultiModeConfigChannel:00000000 $t
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:1995   .text.HAL_ADCEx_MultiModeConfigChannel:00000000 HAL_ADCEx_MultiModeConfigChannel
-C:\Users\Toubidou\AppData\Local\Temp\ccp4xpeB.s:2089   .text.HAL_ADCEx_MultiModeConfigChannel:00000054 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:21     .text.ADC_MultiModeDMAError:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:26     .text.ADC_MultiModeDMAError:00000000 ADC_MultiModeDMAError
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:62     .text.ADC_MultiModeDMAHalfConvCplt:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:67     .text.ADC_MultiModeDMAHalfConvCplt:00000000 ADC_MultiModeDMAHalfConvCplt
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:94     .text.ADC_MultiModeDMAConvCplt:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:99     .text.ADC_MultiModeDMAConvCplt:00000000 ADC_MultiModeDMAConvCplt
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:193    .text.HAL_ADCEx_InjectedStart:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:199    .text.HAL_ADCEx_InjectedStart:00000000 HAL_ADCEx_InjectedStart
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:426    .text.HAL_ADCEx_InjectedStart:000000f4 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:434    .text.HAL_ADCEx_InjectedStart_IT:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:440    .text.HAL_ADCEx_InjectedStart_IT:00000000 HAL_ADCEx_InjectedStart_IT
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:672    .text.HAL_ADCEx_InjectedStart_IT:000000fc $d
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:680    .text.HAL_ADCEx_InjectedStop:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:686    .text.HAL_ADCEx_InjectedStop:00000000 HAL_ADCEx_InjectedStop
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:780    .text.HAL_ADCEx_InjectedPollForConversion:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:786    .text.HAL_ADCEx_InjectedPollForConversion:00000000 HAL_ADCEx_InjectedPollForConversion
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:939    .text.HAL_ADCEx_InjectedStop_IT:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:945    .text.HAL_ADCEx_InjectedStop_IT:00000000 HAL_ADCEx_InjectedStop_IT
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1043   .text.HAL_ADCEx_InjectedGetValue:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1049   .text.HAL_ADCEx_InjectedGetValue:00000000 HAL_ADCEx_InjectedGetValue
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1138   .text.HAL_ADCEx_MultiModeStart_DMA:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1144   .text.HAL_ADCEx_MultiModeStart_DMA:00000000 HAL_ADCEx_MultiModeStart_DMA
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1380   .text.HAL_ADCEx_MultiModeStart_DMA:00000110 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1391   .text.HAL_ADCEx_MultiModeStop_DMA:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1397   .text.HAL_ADCEx_MultiModeStop_DMA:00000000 HAL_ADCEx_MultiModeStop_DMA
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1491   .text.HAL_ADCEx_MultiModeStop_DMA:00000060 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1496   .text.HAL_ADCEx_MultiModeGetValue:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1502   .text.HAL_ADCEx_MultiModeGetValue:00000000 HAL_ADCEx_MultiModeGetValue
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1523   .text.HAL_ADCEx_MultiModeGetValue:00000008 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1528   .text.HAL_ADCEx_InjectedConvCpltCallback:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1534   .text.HAL_ADCEx_InjectedConvCpltCallback:00000000 HAL_ADCEx_InjectedConvCpltCallback
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1549   .text.HAL_ADCEx_InjectedConfigChannel:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1555   .text.HAL_ADCEx_InjectedConfigChannel:00000000 HAL_ADCEx_InjectedConfigChannel
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1982   .text.HAL_ADCEx_InjectedConfigChannel:00000224 $d
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1989   .text.HAL_ADCEx_MultiModeConfigChannel:00000000 $t
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:1995   .text.HAL_ADCEx_MultiModeConfigChannel:00000000 HAL_ADCEx_MultiModeConfigChannel
+C:\Users\Toubidou\AppData\Local\Temp\ccLCvxPV.s:2089   .text.HAL_ADCEx_MultiModeConfigChannel:00000054 $d
 
 UNDEFINED SYMBOLS
 HAL_ADC_ErrorCallback
